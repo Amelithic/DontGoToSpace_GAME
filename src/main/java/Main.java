@@ -1,8 +1,8 @@
-public class ZorkULGame {
+public class Main {
     private Parser parser;
     private Character player;
 
-    public ZorkULGame() {
+    public Main() {
         createRooms();
         parser = new Parser();
     }
@@ -11,12 +11,12 @@ public class ZorkULGame {
         Room outside, theatre, pub, lab, office, cafe;
 
         // create rooms
-        outside = new Room("outside the main entrance of the university");
-        theatre = new Room("in a lecture theatre");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
-        cafe = new Room("in the Cube Cafe");
+        outside = new OutdoorArea("outside the main entrance of the university");
+        theatre = new IndoorArea("in a lecture theatre");
+        pub = new IndoorArea("in the campus pub");
+        lab = new IndoorArea("in a computing lab");
+        office = new IndoorArea("in the computing admin office");
+        cafe = new IndoorArea("in the Cube Cafe");
 
 
         // initialise room exits
@@ -300,7 +300,13 @@ public class ZorkULGame {
     }
 
     public static void main(String[] args) {
-        ZorkULGame game = new ZorkULGame();
+        Main game = new Main();
         game.play();
     }
+}
+
+
+class ZorkUL {
+    public static final String WELCOME_MESSAGE = "Welcome to the ZorkUL Game!";
+    public static final String VERSION = "1.0";
 }

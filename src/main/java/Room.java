@@ -3,10 +3,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Room {
-    private String description;
-    private Map<String, Room> exits; // Map direction to neighboring Room
-    private ArrayList<Item> roomItems;
+public abstract class Room {
+    protected String description;
+    protected Map<String, Room> exits; // Map direction to neighboring Room
+    protected ArrayList<Item> roomItems;
 
     public Room(String description) {
         this.description = description;
