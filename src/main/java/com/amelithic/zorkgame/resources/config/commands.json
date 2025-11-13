@@ -1,0 +1,66 @@
+{
+  "commands": [
+    {
+      "command": "go",
+      "description": "Move to another room",
+      "synonyms": ["move", "walk", "travel"]
+    },
+    {
+      "command": "quit",
+      "description": "End the game",
+      "synonyms": ["exit"]
+    },
+    {
+      "command": "help",
+      "description": "Show help",
+      "synonyms": ["commands"]
+    },
+    {
+      "command": "look",
+      "description": "Look around",
+      "synonyms": ["examine", "scan"]
+    },
+    {
+      "command": "eat",
+      "description": "Eat something",
+      "synonyms": ["consume", "devour", "snack"]
+    },
+    {
+      "command": "show",
+      "description": "Display inventory or items in room",
+      "synonyms": ["display"],
+      "options": [
+            {
+            "parameter": "inventory",
+            "description": "Display current inventory",
+            "synonyms": ["inv"]
+            },
+            {
+            "parameter": "room",
+            "description": "Display items in room",
+            "synonyms": ["items"]
+            }
+        ]
+    },
+    {
+      "command": "take",
+      "description": "Takes item from room and adds to inventory",
+      "synonyms": ["pickup", "grab", "collect"]
+    },
+    {
+      "command": "drop",
+      "description": "Removes item from inventory",
+      "synonyms": ["discard", "remove"]
+    },
+    {
+      "command": "say",
+      "description": "Repeats input from user to screen",
+      "synonyms": ["speak", "tell"]
+    },
+    {
+      "command": "describe",
+      "description": "Describes an item in the room or in inventory",
+      "synonyms": ["explain", "info"]
+    }
+  ]
+}

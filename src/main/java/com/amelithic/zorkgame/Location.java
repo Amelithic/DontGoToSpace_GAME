@@ -1,3 +1,5 @@
+package src.main.java.com.amelithic.zorkgame.locations;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

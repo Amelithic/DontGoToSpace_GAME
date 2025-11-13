@@ -1,0 +1,182 @@
+{ "name": "Default Map",
+  "description": "The default map for the adventure game, featuring several interconnected rooms.",
+  "rooms": [
+        {
+            "id": "base_quarters",
+            "name": "Base Sleeping Quarters",
+            "description": "You find yourself in a dusty old sleeping quarters, lined with rusty bunk beds and storage lockers.",
+            "type": "indoor",
+            "exits": {
+                "north": "base_main"
+            },
+            "items": ["item001", "item002"]
+        },
+        {
+            "id": "base_main",
+            "name": "Main Room of the Base",
+            "description": "You walk into the main room of the base, connecting all other rooms. It is eerily white and expansive.",
+            "type": "indoor",
+            "exits": {
+                "north": "base_corridor",
+                "south": "base_quarters",
+                "west": "base_bathrooms"
+            },
+            "items": ["item001", "item002"]
+        },
+        {
+            "id": "base_corridor",
+            "name": "Base Corridor",
+            "description": "You walk down the messy corridor, lined with boxes and exposed electrical wiring.",
+            "exits": {
+                "north": "airlock",
+                "east": "base_kitchen",
+                "south": "base_main",
+                "west": "base_storage"
+            },
+            "items": ["item001", "item002"]
+        },
+        {
+            "id": "base_kitchen",
+            "name": "Base Kitchen",
+            "description": "You enter the dining quarters of the base. To much disappointment, there isn't much left (in date anyway).",
+            "type": "indoor",
+            "exits": {
+                "west": "base_corridor"
+            },
+            "items": []
+        },
+        {
+            "id": "base_storage",
+            "name": "Base Storage Room",
+            "description": "You peak into the storage room. The room is overstrewn with piles of boxes and fallen metal shelving, but oddly enough it doesn't look much different than it used to.",
+            "type": "indoor",
+            "exits": {
+                "east": "base_corridor"
+            },
+            "items": []
+        },
+        {
+            "id": "base_bathrooms",
+            "name": "Base Bathrooms",
+            "description": "You walk into the bathrooms. It's hard to make out much from how dark it is, but you can still see some stalls and a fallen over vent cover. Concerning.",
+            "type": "indoor",
+            "exits": {
+                "east": "base_main",
+                "southwest": "tunnel_01"
+            },
+            "items": ["item001", "item002"]
+        },
+        {
+            "id": "tunnel_01",
+            "name": "Tunnel",
+            "description": "You push aside the vent cover and crawl through the exposed metal tunnel. Eventually, you reach a point where the tunnel diverges into two.",
+            "type": "tunnel",
+            "exits": {
+                "back": "base_bathrooms",
+                "left": "tunnel_02",
+                "right": "tunnel_03"
+            }
+        },
+        {
+            "id": "tunnel_02",
+            "name": "Tunnel",
+            "description": "You follow the tunnel to the left. It is very cramped, and you are unsure whether to continue on.",
+            "type": "tunnel",
+            "exits": {
+                "forward": "base_secret",
+                "back": "tunnel_01"
+            }
+        },
+        {
+            "id": "tunnel_03",
+            "name": "Tunnel",
+            "description": "You follow the tunnel to the right. It gets gradually darker until you can see nothing, and you realise you're stuck.",
+            "type": "tunnel"
+        },
+        {
+            "id": "base_secret",
+            "name": "Secret Room",
+            "description": "You followed your instincts to continue forward, and reached a secret room!",
+            "type": "indoor",
+            "exits": {
+                "back": "tunnel_02"
+            },
+            "items": ["item001"]
+        },
+        {
+            "id": "airlock",
+            "name": "Airlock",
+            "description": "The airlock doors clunkily open. As you step in, the doors shut and the air sensors regulate. There are controls next to you to open the outside latch or return to the corridor.",
+            "type": "indoor",
+            "exits": {
+                "north": "outdoors_01",
+                "south": "base_corridor"
+            }
+        },
+        {
+            "id": "outdoors_01",
+            "name": "Outside the Base",
+            "description": "You take a step into the sandy clearing in front of the base. The wind howls, and as you look around you feel very lost.",
+            "type": "outdoor",
+            "exits": {
+                "north": "crater",
+                "east": "outdoors_02",
+                "west": "cliff"
+            }
+        },
+        {
+            "id": "cliff",
+            "name": "Cliff",
+            "description": "You trek west. It's hard to see where you're going as the wind blows clouds of dust in your direction. All you can see is a steep, foggy descent.",
+            "type": "outdoor"
+        },
+        {
+            "id": "outdoors_02",
+            "name": "Dustlands",
+            "description": "You venture into more dustlands. You've gone quite far from the base and the terrain has become rockier.",
+            "type": "outdoor",
+            "exits": {                
+                "south": "base_corridor",
+                "west": "broken_spacecraft"
+            }
+        },
+        {
+            "id": "broken_spacecraft",
+            "name": "Broken Spacecraft",
+            "description": "Through the dust storm, you see the outline of a spacecraft. Coming closer, you discover it's in dire need of some new parts...",
+            "type": "outdoor",
+            "exits": {
+                "north": "outdoors_02"
+            }
+        },
+        {
+            "id": "crater",
+            "name": "Crater",
+            "description": "Carefully, you enter a humongous meteor crater. You notice a couple rough pathways carved into the sides that seem to exit the crater.",
+            "type": "outdoor",
+            "exits": {
+                "northwest": "cave",
+                "northeast": "old_spacecraft",
+                "south": "outdoors_01"
+            }
+        },
+        {
+            "id": "cave",
+            "name": "Cave",
+            "description": "What you thought was a pathway turned into a small cave. You hear a vague rumbling, but it's hard to tell because of the wind.",
+            "type": "outdoor",
+            "exits": {
+                "southeast": "crater"
+            }
+        },
+        {
+            "id": "old_spacecraft",
+            "name": "Retired Old Spacecraft",
+            "description": "You climb up a path on the side of the crater. You discover an old spacecraft from the 1970s. It is in no shape to to go anywhere, but it may contain some useful supplies.",
+            "type": "outdoor",
+            "exits": {
+                "southwest": "crater"
+            }
+        }
+    ]
+}
