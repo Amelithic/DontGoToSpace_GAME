@@ -1,3 +1,7 @@
+package com.amelithic.zorkgame.items;
+
+import com.amelithic.zorkgame.items.*;
+
 public class FoodItem extends Item {
     private int nutritionValue;
 

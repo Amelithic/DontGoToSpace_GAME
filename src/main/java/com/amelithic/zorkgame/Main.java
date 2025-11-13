@@ -1,3 +1,15 @@
+package com.amelithic.zorkgame;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import com.amelithic.zorkgame.characters.Character;
+import com.amelithic.zorkgame.items.Item;
+import com.amelithic.zorkgame.locations.Room;
+
 public class Main {
     private Parser parser;
     private Character player;
@@ -11,12 +23,19 @@ public class Main {
         Room outside, theatre, pub, lab, office, cafe;
 
         // create rooms
-        outside = new OutdoorArea("outside the main entrance of the university");
+        /*outside = new OutdoorArea("outside the main entrance of the university");
         theatre = new IndoorArea("in a lecture theatre");
         pub = new IndoorArea("in the campus pub");
         lab = new IndoorArea("in a computing lab");
         office = new IndoorArea("in the computing admin office");
-        cafe = new IndoorArea("in the Cube Cafe");
+        cafe = new IndoorArea("in the Cube Cafe");*/
+
+        outside = new Room("outside the main entrance of the university");
+        theatre = new Room("in a lecture theatre");
+        pub = new Room("in the campus pub");
+        lab = new Room("in a computing lab");
+        office = new Room("in the computing admin office");
+        cafe = new Room("in the Cube Cafe");
 
 
         // initialise room exits
@@ -54,6 +73,16 @@ public class Main {
 
         // create the player character and start outside
         player = new Character("player", outside);
+
+        // Deserialize the object from the file
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("player.ser"))) {
+            Character deserializedPerson = (Character) in.readObject();
+            System.out.println("Object has been deserialized!");
+            deserializedPerson.printChar();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void play() {
@@ -186,6 +215,24 @@ public class Main {
 
                 } else {
                     System.out.println("Take what?");
+                }
+                break;
+            case "save":
+                // Deserialize the object from the file
+                try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("player.ser"))) {
+                    Character deserializedPerson = (Character) in.readObject();
+                    System.out.println("Object has been deserialized!");
+                    deserializedPerson.printChar();
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                // Serialize the object to a fileCharacter
+                try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("player.ser"))) {
+                    out.writeObject(player);
+                    System.out.println("Object has been serialized to player.ser");
+                    player.printChar();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 break;
             case "drop":

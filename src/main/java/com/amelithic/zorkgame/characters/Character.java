@@ -1,7 +1,13 @@
+package com.amelithic.zorkgame.characters;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Character {
+import com.amelithic.zorkgame.items.Item;
+import com.amelithic.zorkgame.locations.Room;
+
+public class Character implements Serializable {
     private String name;
     private Room currentRoom;
     private ArrayList<Item> inventory;
@@ -58,6 +64,12 @@ public class Character {
         } else {
             return "There are no items in your inventory.";
         }
+    }
+
+    public void printChar() {
+        System.out.println("Name: "+name);
+        System.out.println("Room: "+currentRoom.getDescription());
+        System.out.println(printInventory());
     }
 
 }

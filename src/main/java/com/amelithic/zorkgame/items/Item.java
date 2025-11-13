@@ -1,6 +1,8 @@
-package main.java;
+package com.amelithic.zorkgame.items;
 
-public class Item {
+import java.io.Serializable;
+
+public class Item implements Serializable {
     private String description;
     private String name;
     private String location;

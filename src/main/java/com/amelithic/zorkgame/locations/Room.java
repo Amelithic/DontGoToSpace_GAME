@@ -1,11 +1,14 @@
-package src.main.java.com.amelithic.zorkgame.locations;
+package com.amelithic.zorkgame.locations;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Room {
+import com.amelithic.zorkgame.items.Item;
+
+public class Room implements Serializable {
     protected String description;
     protected Map<String, Room> exits; // Map direction to neighboring Room
     protected ArrayList<Item> roomItems;

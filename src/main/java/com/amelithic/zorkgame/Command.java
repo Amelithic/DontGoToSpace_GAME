@@ -1,3 +1,5 @@
+package com.amelithic.zorkgame;
+
 public class Command {
     private String commandWord;
     private String secondWord;

@@ -1,4 +1,4 @@
-package main.java;
+package com.amelithic.zorkgame.items;
 
 public class RequiredItem extends Item {
     private String requiredFor;

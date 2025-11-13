@@ -1,9 +1,7 @@
-package locations;
+//package com.amelithic.zorkgame.locations;
 
-import Location;
-
-public class TunnelArea extends Location {
+/*public class TunnelArea extends Location {
     public TunnelArea(String description) {
         super(description);
     }
-}
+}*/

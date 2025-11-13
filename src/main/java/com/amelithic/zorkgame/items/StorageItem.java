@@ -1,4 +1,4 @@
-package main.java;
+package com.amelithic.zorkgame.items;
 
 import java.util.ArrayList;
 

@@ -1,3 +1,5 @@
+package com.amelithic.zorkgame;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ public class CommandWords {
         validCommands.put("take", "Takes item from room and adds to inventory");
         validCommands.put("drop", "Removes item from inventory");
         validCommands.put("say", "Repeats input from user to screen");
+        validCommands.put("save", "Saves Character obj.");
         validCommands.put("describe", "Describes an item in the room or in inventory");
     }
 
