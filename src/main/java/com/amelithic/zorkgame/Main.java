@@ -1,3 +1,6 @@
+/* Don't Go To Space Game by Amelithic */
+
+
 package com.amelithic.zorkgame;
 
 import java.io.FileInputStream;
