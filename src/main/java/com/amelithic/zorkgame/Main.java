@@ -11,7 +11,7 @@ import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.locations.Room;
 
 public class Main {
-    private Parser parser;
+    private final Parser parser;
     private Character player;
 
     public Main() {
