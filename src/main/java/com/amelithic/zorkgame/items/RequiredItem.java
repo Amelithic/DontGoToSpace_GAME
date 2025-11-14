@@ -3,8 +3,8 @@ package com.amelithic.zorkgame.items;
 public class RequiredItem extends Item {
     private String requiredFor;
 
-    public RequiredItem(String name, String description, String requiredFor) {
-        super(name, description);
+    public RequiredItem(String id, String name, String description, String requiredFor) {
+        super(id, name, description);
         this.requiredFor = requiredFor;
     }
 

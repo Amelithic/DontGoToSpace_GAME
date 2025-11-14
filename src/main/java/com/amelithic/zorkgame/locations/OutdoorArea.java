@@ -1,7 +1,7 @@
-//package com.amelithic.zorkgame.locations;
+package com.amelithic.zorkgame.locations;
 
-/*public class OutdoorArea extends Location {
-    public OutdoorArea(String description) {
-        super(description);
+public class OutdoorArea extends Room {
+    public OutdoorArea(String id, String name, String description) {
+        super(id, name, description);
     }
-}*/ 
+}

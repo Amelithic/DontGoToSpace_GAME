@@ -8,10 +8,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Path;
 
 import com.amelithic.zorkgame.characters.Character;
 import com.amelithic.zorkgame.items.Item;
-import com.amelithic.zorkgame.locations.Room;
+import com.amelithic.zorkgame.locations.*;
 
 public class Main {
     private final Parser parser;
@@ -23,15 +24,15 @@ public class Main {
     }
 
     private void createRooms() {
-        Room outside, theatre, pub, lab, office, cafe;
+        //Room outside, theatre, pub, lab, office, cafe;
 
         // create rooms
-        /*outside = new OutdoorArea("outside the main entrance of the university");
-        theatre = new IndoorArea("in a lecture theatre");
+        OutdoorArea outside = new OutdoorArea("id", "otuside", "test desc");
+        /*theatre = new IndoorArea("in a lecture theatre");
         pub = new IndoorArea("in the campus pub");
         lab = new IndoorArea("in a computing lab");
         office = new IndoorArea("in the computing admin office");
-        cafe = new IndoorArea("in the Cube Cafe");*/
+        cafe = new IndoorArea("in the Cube Cafe");
 
         outside = new Room("outside the main entrance of the university");
         theatre = new Room("in a lecture theatre");
@@ -56,11 +57,11 @@ public class Main {
 
         office.setExit("west", lab);
 
-        cafe.setExit("northeast", lab);
+        cafe.setExit("northeast", lab);*/
 
 
         //Adding items to rooms
-        Item apple = new Item("apple", "consumable", true);
+        /*Item apple = new Item("apple", "consumable", true);
         Item treeBark = new Item("tree bark", "consumable but not very preferable", true);
         Item plasticBag = new Item("plastic bag", "destroyed piece of (inedible) rubbish", false);
         Item computerChips = new Item("computer chips", "a pile of computer chips", false);
@@ -72,7 +73,7 @@ public class Main {
         outside.setRoomItems(apple, treeBark, plasticBag);
         lab.setRoomItems(computerChips, computerChips, computerChips);
         cafe.setRoomItems(hotChocolate, cake);
-        pub.setRoomItems(plasticBag,alcohol);
+        pub.setRoomItems(plasticBag,alcohol);*/
 
         // create the player character and start outside
         player = new Character("player", outside);
@@ -85,6 +86,11 @@ public class Main {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        Path fileNameMap = Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\resources\\config\\map_default.json");
+        Path fileNameItems = Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\resources\\config\\items.json");
+
+        Map defaultMap = new Map(fileNameMap, fileNameItems);
 
     }
 
@@ -158,28 +164,28 @@ public class Main {
                         }
                     }
                     if (edibleItem != null) {
-                        if (edibleItem.isEdible() == true) {
+                        //if (edibleItem.getClass("FoodItem") == true) {
                             if (edibleItem.getName().toLowerCase() == "cake") {
                                 System.out.println("You consumed " + edibleItem.getName());
                                 player.removeFromInventory(edibleItem);
 
-                                Item crumbs = new Item("crumbs", "leftover crumbs from cake", true);
-                                player.setInventory(crumbs);
-                                System.out.printf("Added %s to inventory!\n", crumbs.getName());
-                            } else if (edibleItem.getName().toLowerCase() == "alcohol") {
+                                //Item crumbs = new Item("crumbs", "leftover crumbs from cake", true);
+                                //player.setInventory(crumbs);
+                                //System.out.printf("Added %s to inventory!\n", crumbs.getName());
+                        //    } else if (edibleItem.getName().toLowerCase() == "alcohol") {
                                 System.out.println("You consumed " + edibleItem.getName());
                                 player.removeFromInventory(edibleItem);
 
-                                Item bottle = new Item("bottle", "empty alcohol bottle", false);
-                                player.setInventory(bottle);
-                                System.out.printf("Added %s to inventory!\n", bottle.getName());
-                            } else {
+                                //Item bottle = new Item("bottle", "empty alcohol bottle", false);
+                                //player.setInventory(bottle);
+                                //System.out.printf("Added %s to inventory!\n", bottle.getName());
+                        //    } else {
                                 System.out.println("You consumed " + edibleItem.getName());
                                 player.removeFromInventory(edibleItem);
-                            }
-                        } else {
+                        //    }
+                        //} else {
                             System.out.printf("You cannot consume %s!\n", edibleItem.getName());
-                        }
+                        //}
                     } else {
                         System.out.println("There is no item of that type to eat in your inventory.");
                     }

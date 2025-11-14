@@ -27,6 +27,7 @@
             "id": "base_corridor",
             "name": "Base Corridor",
             "description": "You walk down the messy corridor, lined with boxes and exposed electrical wiring.",
+            "type": "indoor",
             "exits": {
                 "north": "airlock",
                 "east": "base_kitchen",

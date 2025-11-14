@@ -1,13 +1,12 @@
 package com.amelithic.zorkgame.characters;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.locations.Room;
 
-public class Character implements Serializable {
+public class Character {
     private String name;
     private Room currentRoom;
     private ArrayList<Item> inventory;

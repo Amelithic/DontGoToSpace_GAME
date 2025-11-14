@@ -1,23 +1,22 @@
 package com.amelithic.zorkgame.items;
 
-import java.io.Serializable;
+public class Item {
+    protected String description;
+    protected String name;
+    protected String location;
+    protected String id;
+    protected boolean isVisible;
+    protected boolean isPortable;
 
-public class Item implements Serializable {
-    private String description;
-    private String name;
-    private String location;
-    private int id;
-    private boolean isVisible;
-    private boolean isEdible;
-
-    public Item(String name, String description) {
-        this(name, description, false);
+    public Item(String id, String name, String description) {
+        this(id, name, description, true, true);
     }
-    public Item(String name, String description, boolean isEdible) {
+    public Item(String id, String name, String description, boolean isVisible, boolean isPortable) {
+        this.id = id;
         this.name = name;
         this.description = description;
-        this.isVisible = true;
-        this.isEdible = isEdible;
+        this.isVisible = isVisible;
+        this.isPortable = isPortable;
     }
 
     public String getDescription() {
@@ -44,11 +43,11 @@ public class Item implements Serializable {
         this.location = location;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -56,12 +55,16 @@ public class Item implements Serializable {
         return isVisible;
     }
 
-    public void setVisible(boolean visible) {
-        isVisible = visible;
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
     }
 
-    public boolean isEdible() {
-        return isEdible;
+    public boolean isPortable() {
+        return isPortable;
+    }
+
+    public void setPortable(boolean isPortable) {
+        this.isPortable = isPortable;
     }
 
 }

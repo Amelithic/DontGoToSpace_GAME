@@ -1,21 +1,19 @@
 package com.amelithic.zorkgame.items;
 
-import com.amelithic.zorkgame.items.*;
-
 public class FoodItem extends Item {
-    private int nutritionValue;
+    private boolean isEdible;
 
-    public FoodItem(String name, String description, int nutritionValue) {
-        super(name, description, true);
-        this.nutritionValue = nutritionValue;
+    public FoodItem(String id, String name, String description) {
+        super(id, name, description);
+        this.isEdible = true;
     }
 
-    public int getNutritionValue() {
-        return nutritionValue;
+    public boolean getEdible() {
+        return isEdible;
     }
 
-    public void setNutritionValue(int nutritionValue) {
-        this.nutritionValue = nutritionValue;
+    public void setEdible(boolean isEdible) {
+        this.isEdible = isEdible;
     }
     
 }
