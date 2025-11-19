@@ -1,5 +1,43 @@
 { "name": "Default Map",
   "description": "The default map for the adventure game, featuring several interconnected rooms.",
+  "items": [
+        {
+            "id": "apple",
+            "name": "Apple",
+            "description": "A tasty treat! (Consumable)",
+            "type": "food",
+            "isPortable": true
+        },
+        {
+            "id": "item001",
+            "name": "OOOOOOOO",
+            "description": "OOOOOOOO a tasty treat! (Consumable)",
+            "type": "food",
+            "isPortable": true
+        },
+        {
+            "id": "item002",
+            "name": "Table",
+            "description": "A wooden table with four legs",
+            "type": "storage",
+            "inventory": ["apple", "apple"],
+            "isPortable": false
+        },
+        {
+            "id": "item003",
+            "name": "Book",
+            "description": "An old leather-bound book",
+            "type": "required",
+            "isPortable": true
+        },
+        {
+            "id": "item004",
+            "name": "Statue",
+            "description": "A heavy marble statue",
+            "type": "none",
+            "isPortable": false
+        }
+    ],
   "rooms": [
         {
             "id": "base_quarters",

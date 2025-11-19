@@ -72,4 +72,8 @@ public abstract class Room {
     public String getLongDescription() {
         return "You are " + description + ".\nExits: " + getExitString();
     }
+
+    public String getName() {
+        return name;
+    }
 }

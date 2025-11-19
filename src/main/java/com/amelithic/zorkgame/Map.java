@@ -35,15 +35,11 @@ public class Map {
         return objmap.readTree(src);
     }
 
-    public Map(Path mapFile, Path itemFile) {
+    public Map(Path mapFile) {
         try {
             String mapFileStr = Files.readString(mapFile);
             System.out.println(mapFileStr); //debug
             JsonNode map = parse(mapFileStr);
-
-            String itemFileStr = Files.readString(itemFile);
-            System.out.println(itemFileStr); //debug
-            JsonNode itemJson = parse(itemFileStr);
 
             //set name field to "name": "{name of map}" at top of JSON
             this.name = map.get("name").asText();
@@ -51,7 +47,7 @@ public class Map {
 
             //initialise all items + add to array"
             items = new ArrayList<>();
-            ArrayNode itemsArrayFromFile = (ArrayNode) itemJson.get("items");
+            ArrayNode itemsArrayFromFile = (ArrayNode) map.get("items");
             for (int i=0; i < itemsArrayFromFile.size(); i++) {
                 String itemId = itemsArrayFromFile.get(i).get("id").asText();
                 String itemName = itemsArrayFromFile.get(i).get("name").asText();
@@ -106,32 +102,45 @@ public class Map {
                 rooms.add(room);
 
                 //items in room
-                ArrayNode roomsItemArray = (ArrayNode) roomsArrayFromFile.get("items");
+                ArrayNode roomsItemArray = (ArrayNode) roomsArrayFromFile.get(i).get("items");
                 if (roomsItemArray != null && roomsItemArray.isArray()) {
                     //it exists, now check if its not empty...
                     if (roomsItemArray.size() > 0) {
                         //for each array item
                         for (int item = 0; item < roomsItemArray.size(); item++) {
-                            String roomItemId = roomsItemArray.get(item).toString(); //id of item in room
-                            System.out.println(roomItemId);
+                            String roomItemId = roomsItemArray.get(item).asText(); //id of item in room
 
                             //check if item exists in items array
                             for (Item mapItemId : items) {
-                                if (mapItemId.getId() == roomItemId) {
+                                if (mapItemId.getId().equals(roomItemId)) {
                                     //add if matching ids -> item exists
-                                    room.setRoomItems(items.get(items.indexOf(roomItemId)));
+                                    Item roomItem = items.get(items.indexOf(mapItemId));
+                                    room.setRoomItems(roomItem);
                                 }
                             }
 
                         }
                     }
                 }
-                System.out.println(room.printRoomItems());
+                //System.out.println(room.printRoomItems()); //debug
             }
         } catch (IOException e) {
-            System.err.println("EXception when reading the JSON map file...");
+            System.err.println("Exception when reading the JSON map file...");
             e.printStackTrace();
         }
     }
-    
+
+    //getters (no need for setters?)
+    public String getName() {
+        return name;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+    public ArrayList<Room> getRooms() {
+        return rooms;
+    }
 }

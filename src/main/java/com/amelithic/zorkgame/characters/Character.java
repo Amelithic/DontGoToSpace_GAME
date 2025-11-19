@@ -10,11 +10,13 @@ public class Character {
     private String name;
     private Room currentRoom;
     private ArrayList<Item> inventory;
+    private boolean isAdmin;
 
     public Character(String name, Room startingRoom) {
         this.name = name;
         this.currentRoom = startingRoom;
         this.inventory = new ArrayList<>();
+        this.isAdmin = false;
     }
 
     public String getName() {
