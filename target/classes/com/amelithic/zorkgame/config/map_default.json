@@ -111,9 +111,9 @@
             "description": "You push aside the vent cover and crawl through the exposed metal tunnel. Eventually, you reach a point where the tunnel diverges into two.",
             "type": "tunnel",
             "exits": {
-                "back": "base_bathrooms",
-                "left": "tunnel_02",
-                "right": "tunnel_03"
+                "north": "base_bathrooms",
+                "east": "tunnel_02",
+                "south": "tunnel_03"
             }
         },
         {
@@ -122,8 +122,8 @@
             "description": "You follow the tunnel to the left. It is very cramped, and you are unsure whether to continue on.",
             "type": "tunnel",
             "exits": {
-                "forward": "base_secret",
-                "back": "tunnel_01"
+                "east": "base_secret",
+                "west": "tunnel_01"
             }
         },
         {
@@ -138,7 +138,7 @@
             "description": "You followed your instincts to continue forward, and reached a secret room!",
             "type": "indoor",
             "exits": {
-                "back": "tunnel_02"
+                "west": "tunnel_02"
             },
             "items": ["item001"]
         },

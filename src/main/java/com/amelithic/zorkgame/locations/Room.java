@@ -7,13 +7,15 @@ import java.util.Map;
 
 import com.amelithic.zorkgame.items.Item;
 
-public abstract class Room {
+public abstract class Room<T> {
+    //fields
     protected String id;
     protected String name;
     protected String description;
-    protected Map<String, Room> exits; // Map direction to neighboring Room
+    protected Map<T, Room> exits; // Map direction to neighboring Room
     protected ArrayList<Item> roomItems;
 
+    //constructors
     private Room() {};
     public Room(String id, String name, String description) {
         this.id = id;
@@ -23,21 +25,30 @@ public abstract class Room {
         roomItems = new ArrayList<>();
     }
 
+    //getters + setters
+    public String getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
     public String getDescription() {
         return description;
     }
+    public String getLongDescription() {
+        return "You are " + description + ".\nExits: " + getExitString();
+    }
+    
 
-    public void setExit(String direction, Room neighbor) {
+    public void setExit(T direction, Room neighbor) {
         exits.put(direction, neighbor);
     }
-
-    public Room getExit(String direction) {
+    public Room getExit(T direction) {
         return exits.get(direction);
     }
-
     public String getExitString() {
         StringBuilder sb = new StringBuilder();
-        for (String direction : exits.keySet()) {
+        for (T direction : exits.keySet()) {
             sb.append(direction).append(" ");
         }
         return sb.toString().trim();
@@ -67,13 +78,5 @@ public abstract class Room {
         } else {
             return false; //no item
         }
-    }
-
-    public String getLongDescription() {
-        return "You are " + description + ".\nExits: " + getExitString();
-    }
-
-    public String getName() {
-        return name;
     }
 }

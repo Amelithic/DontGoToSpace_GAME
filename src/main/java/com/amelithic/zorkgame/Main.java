@@ -11,14 +11,19 @@ import com.amelithic.zorkgame.characters.Character;
 
 public class Main {
     private Character player;
-    private Map map;
+    private GameMap map;
 
     public Main() {
-        Path fileNameMap = Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\resources\\config\\map_default.json");
-        map = new Map(fileNameMap);
+        Path fileNameMap = Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\map_default.json");
+        map = new GameMap(fileNameMap);
 
-        player = new Character("Amelie", map.getRooms().get(1));
-        System.out.println(player.getName()+": "+player.getCurrentRoom().getName());
+        try {
+            player = new Character("Amelie", map.getRooms().get(0));
+            System.out.println(player.getName()+": "+player.getCurrentRoom().getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void printWelcome() {

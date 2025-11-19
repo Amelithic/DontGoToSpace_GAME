@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.amelithic.zorkgame.items.FoodItem;
 import com.amelithic.zorkgame.items.Item;
@@ -17,12 +19,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-public class Map {
+public class GameMap {
     //fields
     private String name;
     private String description;
     private ArrayList<Item> items; //all initialised Item objects in the Map (used in Rooms)
-    private ArrayList<Room> rooms; //all initialised Room objects in the Map
+    private ArrayList<Room<ExitDirection>> rooms; //all initialised Room objects in the Map
     private static ObjectMapper objmap = getDefaultObjectMapper(); //for JSON parsing
 
     private static ObjectMapper getDefaultObjectMapper() {
@@ -35,7 +37,20 @@ public class Map {
         return objmap.readTree(src);
     }
 
-    public Map(Path mapFile) {
+    public enum ExitDirection {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST,
+        NORTH_EAST,
+        NORTH_WEST,
+        SOUTH_EAST,
+        SOUTH_WEST
+    }
+
+    //constructors
+    private GameMap() {}
+    public GameMap(Path mapFile) {
         try {
             String mapFileStr = Files.readString(mapFile);
             System.out.println(mapFileStr); //debug
@@ -84,19 +99,19 @@ public class Map {
                 String roomDesc = roomsArrayFromFile.get(i).get("description").asText();
                 String roomType = roomsArrayFromFile.get(i).get("type").asText();
 
-                Room room;
+                Room<ExitDirection> room;
                 switch (roomType) {
                     case "indoor":
-                        room = new IndoorArea(roomId, roomName, roomDesc);
+                        room = new IndoorArea<>(roomId, roomName, roomDesc);
                         break;
                     case "outdoor":
-                        room = new OutdoorArea(roomId, roomName, roomDesc);
+                        room = new OutdoorArea<>(roomId, roomName, roomDesc);
                         break;
                     case "tunnel":
-                        room = new TunnelArea(roomId, roomName, roomDesc);
+                        room = new TunnelArea<>(roomId, roomName, roomDesc);
                         break;
                     default:
-                        room = new IndoorArea(roomId, roomName, roomDesc);
+                        room = new IndoorArea<>(roomId, roomName, roomDesc);
                         break;
                 }
                 rooms.add(room);
@@ -122,8 +137,68 @@ public class Map {
                         }
                     }
                 }
-                //System.out.println(room.printRoomItems()); //debug
+                //System.out.println(room.printRoomItems()); //debug                
             }
+
+
+            //adding exits after all rooms exist
+            for (int i=0; i < roomsArrayFromFile.size(); i++) {
+                String roomId = roomsArrayFromFile.get(i).get("id").asText();
+
+                JsonNode roomExitsArray = roomsArrayFromFile.get(i).get("exits");
+                if (roomExitsArray != null && roomExitsArray.isContainerNode()) {
+                    Iterator<Map.Entry<String, JsonNode>> fields = roomExitsArray.fields();
+                    while (fields.hasNext()) {
+                        Map.Entry<String, JsonNode> entry = fields.next();
+
+                        String direction = entry.getKey().toLowerCase();
+                        ExitDirection enumDirection;
+                        switch (direction) {
+                            case "north":
+                                enumDirection = ExitDirection.NORTH;
+                                break;
+                            case "east":
+                                enumDirection = ExitDirection.EAST;
+                                break;
+                            case "west":
+                                enumDirection = ExitDirection.WEST;
+                                break;
+                            case "south":
+                                enumDirection = ExitDirection.SOUTH;
+                                break;
+                            case "northeast":
+                                enumDirection = ExitDirection.NORTH_EAST;
+                                break;
+                            case "northwest":
+                                enumDirection = ExitDirection.NORTH_WEST;
+                                break;
+                            case "southeast":
+                                enumDirection = ExitDirection.SOUTH_EAST;
+                                break;
+                            case "southwest":
+                                enumDirection = ExitDirection.SOUTH_WEST;
+                                break;
+                            default:
+                                enumDirection = null;
+                                break;
+                        }
+                        String destination = entry.getValue().asText();
+                        Room<ExitDirection> targetRoom = null;
+                        for (Room<ExitDirection> roomObj : rooms) {
+                            if (roomObj.getId().equals(destination)) {
+                                targetRoom = roomObj;
+                            }
+                            if (targetRoom != null) {
+                                Room<ExitDirection> thisRoom = rooms.get(rooms.indexOf(roomObj));
+                                thisRoom.setExit(enumDirection, targetRoom);
+                                System.out.println(thisRoom.getId()+": "+enumDirection+" -> "+destination);
+                            }
+                        }
+                        //TODO: Fix this shit (see output -> NORTH... then next direction)
+                    }
+                }
+            }
+
         } catch (IOException e) {
             System.err.println("Exception when reading the JSON map file...");
             e.printStackTrace();
@@ -140,7 +215,7 @@ public class Map {
     public ArrayList<Item> getItems() {
         return items;
     }
-    public ArrayList<Room> getRooms() {
+    public ArrayList<Room<ExitDirection>> getRooms() {
         return rooms;
     }
 }
