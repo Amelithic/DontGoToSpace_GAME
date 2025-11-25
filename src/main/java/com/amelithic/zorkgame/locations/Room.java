@@ -1,7 +1,6 @@
 package com.amelithic.zorkgame.locations;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +45,13 @@ public abstract class Room<T> {
     public Room getExit(T direction) {
         return exits.get(direction);
     }
+    public boolean hasExit(T direction) {
+        if (exits.containsKey(direction)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public String getExitString() {
         StringBuilder sb = new StringBuilder();
         for (T direction : exits.keySet()) {
@@ -55,7 +61,14 @@ public abstract class Room<T> {
     }
 
     public void setRoomItems(Item... items) {
-        Collections.addAll(roomItems, items);
+        //Collections.addAll(roomItems, items);
+        for (Item item : items) {
+            if (roomItems.contains(item)) {
+                item.increaseCount(1);
+            } else {
+                roomItems.add(item);
+            }
+        }
     }
     public ArrayList<Item> getRoomItems() {
         return roomItems;
@@ -73,7 +86,12 @@ public abstract class Room<T> {
     }
     public boolean removeRoomItem(Item item) {
         if (roomItems.contains(item)) {
-            roomItems.remove(item);
+            Item itemInRoom = roomItems.get(roomItems.indexOf(item));
+            if (itemInRoom.getCount() > 1) {
+                itemInRoom.decreaseCount(1);
+            } else {
+                roomItems.remove(item);
+            }
             return true;
         } else {
             return false; //no item

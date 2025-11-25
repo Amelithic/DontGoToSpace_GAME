@@ -10,7 +10,7 @@ import java.util.Scanner;
 import com.amelithic.zorkgame.characters.Character;
 
 public class Main {
-    private Character player;
+    private static Character player;
     private GameMap map;
 
     public Main() {
@@ -38,6 +38,11 @@ public class Main {
         System.out.print("Your command words are: ");
     }
 
+    public GameMap getMap() {
+        return map;
+    }
+    
+
     public static void main(String[] args) {
         Main gameState = new Main();
         Scanner scanner = new Scanner(System.in);
@@ -48,15 +53,11 @@ public class Main {
             System.out.print("> ");
             String input = scanner.nextLine();
 
-            boolean matched = false;
-            Optional<Command> cmd = commandManager.parse(input);
-            if (cmd.isPresent()) {
-                //cmd.get().execute(gameState, player);
-                matched = true;
-                break;
-            }
-
-            if (!matched) {
+            Optional<Command> cmdCheck = commandManager.parse(gameState, player, input);
+            if (cmdCheck.isPresent()) {
+                Command cmd = cmdCheck.get();
+                cmd.execute();
+            } else {
                 System.out.println("I don't understand that command.");
             }
 

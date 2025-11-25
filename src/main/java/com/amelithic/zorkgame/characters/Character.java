@@ -1,7 +1,6 @@
 package com.amelithic.zorkgame.characters;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.locations.Room;
@@ -42,14 +41,26 @@ public class Character {
     }
 
     public void setInventory(Item... items) {
-        Collections.addAll(inventory, items);
+        //Collections.addAll(inventory, items);
+        for (Item item : items) {
+            if (inventory.contains(item)) {
+                item.increaseCount(1);
+            } else {
+                inventory.add(item);
+            }
+        }
     }
     public ArrayList<Item> getInventory() {
         return inventory;
     }
     public boolean removeFromInventory(Item item) {
         if (inventory.contains(item)) {
-            inventory.remove(item);
+            Item itemInRoom = inventory.get(inventory.indexOf(item));
+            if (itemInRoom.getCount() > 1) {
+                itemInRoom.decreaseCount(1);
+            } else {
+                inventory.remove(item);
+            }
             return true;
         } else {
             return false; //no item

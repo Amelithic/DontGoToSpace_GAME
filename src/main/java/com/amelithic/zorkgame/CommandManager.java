@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.amelithic.zorkgame.characters.Character;
+
 public class CommandManager {
     private final List<Command> commands = new ArrayList<>();
 
@@ -21,9 +23,12 @@ public class CommandManager {
         commands.add(new DescribeCommand());
     }
 
-    public Optional<Command> parse(String input) {
+    //TODO: clear previous values from command before execute
+    //-> overlap of values eg. 'describe table', then 'describe nonsense' returns table description
+
+    public Optional<Command> parse(Main game, Character player, String input) {
         for (Command cmd : commands) {
-            Optional<Command> result = cmd.parse(input);
+            Optional<Command> result = cmd.parse(game, player, input);
             if (result.isPresent()) {
                 return result;
             }

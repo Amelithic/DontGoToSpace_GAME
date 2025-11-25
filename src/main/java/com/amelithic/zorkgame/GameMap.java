@@ -53,7 +53,7 @@ public class GameMap {
     public GameMap(Path mapFile) {
         try {
             String mapFileStr = Files.readString(mapFile);
-            System.out.println(mapFileStr); //debug
+            //System.out.println(mapFileStr); //debug
             JsonNode map = parse(mapFileStr);
 
             //set name field to "name": "{name of map}" at top of JSON
