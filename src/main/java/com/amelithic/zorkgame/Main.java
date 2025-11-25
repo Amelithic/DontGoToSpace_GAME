@@ -11,11 +11,13 @@ import com.amelithic.zorkgame.characters.Character;
 
 public class Main {
     private static Character player;
+    private static boolean gameRunning;
     private GameMap map;
 
     public Main() {
         Path fileNameMap = Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\map_default.json");
         map = new GameMap(fileNameMap);
+        gameRunning = true;
 
         try {
             player = new Character("Amelie", map.getRooms().get(0));
@@ -41,6 +43,9 @@ public class Main {
     public GameMap getMap() {
         return map;
     }
+    public void setGameRunning(boolean gameRunning) {
+        Main.gameRunning = gameRunning;
+    }
     
 
     public static void main(String[] args) {
@@ -48,7 +53,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         CommandManager commandManager = new CommandManager();
 
-        boolean gameRunning = true;
         while (gameRunning) {
             System.out.print("> ");
             String input = scanner.nextLine();

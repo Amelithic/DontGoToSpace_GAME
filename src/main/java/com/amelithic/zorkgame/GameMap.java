@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.amelithic.zorkgame.items.FoodItem;
@@ -152,49 +153,24 @@ public class GameMap {
                         Map.Entry<String, JsonNode> entry = fields.next();
 
                         String direction = entry.getKey().toLowerCase();
-                        ExitDirection enumDirection;
-                        switch (direction) {
-                            case "north":
-                                enumDirection = ExitDirection.NORTH;
-                                break;
-                            case "east":
-                                enumDirection = ExitDirection.EAST;
-                                break;
-                            case "west":
-                                enumDirection = ExitDirection.WEST;
-                                break;
-                            case "south":
-                                enumDirection = ExitDirection.SOUTH;
-                                break;
-                            case "northeast":
-                                enumDirection = ExitDirection.NORTH_EAST;
-                                break;
-                            case "northwest":
-                                enumDirection = ExitDirection.NORTH_WEST;
-                                break;
-                            case "southeast":
-                                enumDirection = ExitDirection.SOUTH_EAST;
-                                break;
-                            case "southwest":
-                                enumDirection = ExitDirection.SOUTH_WEST;
-                                break;
-                            default:
-                                enumDirection = null;
-                                break;
-                        }
-                        String destination = entry.getValue().asText();
-                        Room<ExitDirection> targetRoom = null;
-                        for (Room<ExitDirection> roomObj : rooms) {
-                            if (roomObj.getId().equals(destination)) {
-                                targetRoom = roomObj;
+                        ExitDirection enumDirection = mapDirection(direction);
+
+                        String destinationId = entry.getValue().asText();
+                        Room<ExitDirection> targetRoom = findRoomById(destinationId, rooms);
+
+                        if (enumDirection != null && targetRoom != null) {
+                            Room<ExitDirection> room = null;
+                            for (Room<ExitDirection> possibleRoom : rooms) {
+                                if (possibleRoom.getId().equalsIgnoreCase(roomId)) {
+                                    room = possibleRoom;
+                                }
                             }
-                            if (targetRoom != null) {
-                                Room<ExitDirection> thisRoom = rooms.get(rooms.indexOf(roomObj));
-                                thisRoom.setExit(enumDirection, targetRoom);
-                                System.out.println(thisRoom.getId()+": "+enumDirection+" -> "+destination);
+
+                            if (room != null) {
+                                room.setExit(enumDirection, targetRoom);
+                                //System.out.println(room.getName() + ": " + enumDirection + " -> " + destinationId);
                             }
                         }
-                        //TODO: Fix this shit (see output -> NORTH... then next direction)
                     }
                 }
             }
@@ -217,5 +193,28 @@ public class GameMap {
     }
     public ArrayList<Room<ExitDirection>> getRooms() {
         return rooms;
+    }
+
+    //useful methods
+    private ExitDirection mapDirection(String direction) {
+        switch (direction.toLowerCase()) {
+            case "north":      return ExitDirection.NORTH;
+            case "east":       return ExitDirection.EAST;
+            case "west":       return ExitDirection.WEST;
+            case "south":      return ExitDirection.SOUTH;
+            case "northeast":  return ExitDirection.NORTH_EAST;
+            case "northwest":  return ExitDirection.NORTH_WEST;
+            case "southeast":  return ExitDirection.SOUTH_EAST;
+            case "southwest":  return ExitDirection.SOUTH_WEST;
+            default:           return null;
+        }
+    }
+    private Room<ExitDirection> findRoomById(String id, List<Room<ExitDirection>> rooms) {
+        for (Room<ExitDirection> room : rooms) {
+            if (room.getId().equals(id)) {
+                return room;
+            }
+        }
+        return null;
     }
 }

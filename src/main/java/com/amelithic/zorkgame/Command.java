@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.amelithic.zorkgame.GameMap.ExitDirection;
 import com.amelithic.zorkgame.characters.Character;
+import com.amelithic.zorkgame.items.FoodItem;
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.locations.Room;
 
@@ -35,7 +36,7 @@ class TakeItemCommand implements Command {
 
         text = text.trim().toLowerCase(); //remove spaces and all lowercase
         if (text.matches("^(take|pick up|grab)\\s+.+$")) {
-            String itemInString = text.replaceFirst("^(take|pick up|grab)( the)? ", "");
+            itemInString = text.replaceFirst("^(take|pick up|grab)( the)? ", "");
             if (!itemInString.isEmpty()) {
                 return Optional.of(this);
             } else {
@@ -54,7 +55,7 @@ class TakeItemCommand implements Command {
         for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
             Item item = (Item) player.getCurrentRoom().getRoomItems().get(i);
 
-            if (item.getName().equalsIgnoreCase(itemInString)) {
+            if (item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) {
                 takeItem = item;
                 break;
             } else {
@@ -74,6 +75,8 @@ class TakeItemCommand implements Command {
                 }
 
             }
+        } else {
+            System.out.println("There is no item of that type in this room.");
         }
     }
 
@@ -120,7 +123,7 @@ class DropCommand implements Command {
     public void execute() {
         //find item in inventory
         for (Item item : player.getInventory()) {
-            if (item.getName().equalsIgnoreCase(itemInString)) {
+            if (item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) {
                 removeItem = item;
                 break;
             } else {
@@ -141,7 +144,7 @@ class DropCommand implements Command {
                 }
             }
         } else {
-            System.out.println("There is no item of that type in this room.");
+            System.out.println("There is no item of that type in your inventory.");
         }
     }
 
@@ -187,7 +190,7 @@ class DescribeCommand implements Command {
     public void execute() {
         //find item in room or in inventory
         for (Item item : player.getInventory()) {
-            if (item.getName().equalsIgnoreCase(itemInString)) {
+            if (item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) {
                 describeItem = item;
                 break;
             } else {
@@ -295,7 +298,7 @@ class GoCommand implements Command {
                     int roomIndexInMap = game.getMap().getRooms().indexOf(targetRoom);
                     Room roomInMap = game.getMap().getRooms().get(roomIndexInMap);
                     player.setCurrentRoom(roomInMap);
-                    System.out.println(roomInMap.getName()+": "+roomInMap.getDescription()+"\nExits: "+roomInMap.getExitString());
+                    System.out.println(roomInMap.getName()+": "+roomInMap.getDescription()+"\nExits: "+roomInMap.getExitString()+"\nItems: "+roomInMap.printRoomItems());
                 }
             } else {
                 System.out.println("There is no exit '"+enumDirection+"' from this location, please try again.");
@@ -339,8 +342,7 @@ class QuitCommand implements Command {
 
     @Override
     public void execute() {
-        //TODO: logic
-        // game.quit();
+        game.setGameRunning(false);
     }
 
     @Override
@@ -362,6 +364,7 @@ class QuitCommand implements Command {
 class HelpCommand implements Command {
     private Character player; //author of command (whos running it)
     private Main game; //game instance
+    private String itemInString;
 
     @Override
     public Optional<Command> parse(Main game, Character player, String text) {
@@ -370,6 +373,8 @@ class HelpCommand implements Command {
 
         text = text.trim().toLowerCase();
         if (text.matches("^(help|commands)\\s+.+$")) {
+            //TODO: support for optional args
+            itemInString = text.replaceFirst("^(help|commands)\\s+", "");
             return Optional.of(this);
         }
         return Optional.empty();
@@ -377,8 +382,8 @@ class HelpCommand implements Command {
 
     @Override
     public void execute() {
-        //TODO: logic
-        // game.showHelp();
+        //TODO: better help than this
+        System.out.println("You call out for help, but in space no one can hear you scream...");
     }
 
     @Override
@@ -400,6 +405,7 @@ class HelpCommand implements Command {
 class LookCommand implements Command {
     private Character player; //author of command (whos running it)
     private Main game; //game instance
+    private String itemInString;
 
     @Override
     public Optional<Command> parse(Main game, Character player, String text) {
@@ -407,8 +413,12 @@ class LookCommand implements Command {
         this.game = game;
 
         text = text.trim().toLowerCase();
-        if (text.equals("look") || text.equals("examine") || text.equals("scan")) {
+        if (text.matches("^(look|examine|scan)\\s+.+$")) {
+            itemInString = text.replaceFirst("^(look|examine|scan)\\s+", "");
             return Optional.of(this);
+        } else if (text.matches("^(look|examine|scan)")) {
+            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            System.out.println(modText+" what?");
         }
         return Optional.empty();
     }
@@ -416,7 +426,10 @@ class LookCommand implements Command {
     @Override
     public void execute() {
         //TODO: logic
-        // game.lookAround();
+        /*TODO:
+        * if "around" or "room" -> describe room
+        * if "item in room" -> describe item
+        * if "storage item" -> display contents */
     }
 
     @Override
@@ -438,7 +451,8 @@ class LookCommand implements Command {
 class EatCommand implements Command {
     private Character player; //author of command (whos running it)
     private Main game; //game instance
-    private String item;
+    private String itemInString;
+    private FoodItem foodItem;
 
     @Override
     public Optional<Command> parse(Main game, Character player, String text) {
@@ -447,7 +461,7 @@ class EatCommand implements Command {
 
         text = text.trim().toLowerCase();
         if (text.matches("^(eat|consume|devour|snack)\\s+.+$")) {
-            item = text.replaceFirst("^(eat|consume|devour|snack)\\s+", "");
+            itemInString = text.replaceFirst("^(eat|consume|devour|snack)\\s+", "");
             return Optional.of(this);
         } else if (text.matches("^(eat|consume|devour|snack)")) {
             String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
@@ -507,9 +521,9 @@ class ShowCommand implements Command {
     @Override
     public void execute() {
         if (target.equals("inventory") || target.equals("inv")) {
-            player.printInventory();
+            System.out.println(player.printInventory());
         } else if (target.equals("room") || target.equals("items")) {
-            player.getCurrentRoom().printRoomItems();
+            System.out.println("Items in room: "+player.getCurrentRoom().printRoomItems());
         }
     }
 
