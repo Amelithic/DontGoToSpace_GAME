@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "GUI",
+            "request": "launch",
+            "mainClass": "com.amelithic.zorkgame.GUI",
+            "projectName": "zork-game",
+            "vmArgs": "--module-path \"--module-path \"C:/Users/ameli/.m2/repository/org/openjfx/javafx-base/21;C:/Users/ameli/.m2/repository/org/openjfx/javafx-controls/21;C:/Users/ameli/.m2/repository/org/openjfx/javafx-fxml/21;C:/Users/ameli/.m2/repository/org/openjfx/javafx-graphics/21\" --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
