@@ -9,10 +9,13 @@ import com.amelithic.zorkgame.characters.Player;
 
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
@@ -32,9 +35,26 @@ public class GUIController {
 
     @FXML
     private StackPane card; // from FXML
+    @FXML
+    private TextArea outputConsole;
+
+    @FXML
+    private TextField inputConsole;
 
     @FXML
     public void initialize() {
+        outputConsole.setEditable(false);
+        outputConsole.setWrapText(true);
+        inputConsole.setPromptText("Enter your command here..."); //to set the hint text
+
+        //outputConsole.setDisable(true); //cannot mouse select
+
+        //TODO: map inputConsole to commands, output to outputConsole
+
+        //inputConsole.onActionProperty(event -> {
+          //  System.out.println(event)
+        //});
+
         // Flip once on hover
         card.setOnMouseEntered(event -> {
             flipCard(card);
@@ -42,6 +62,29 @@ public class GUIController {
 
     }
 
+    @FXML
+    public void inputToTextField(ActionEvent event){ 
+        //System.out.println(event.getSource().getClass());
+        TextField inputField;
+
+        if (event.getSource() instanceof TextField textField) {
+            inputField = textField;
+            String inputString = inputField.getText();
+            System.out.println(inputString);
+            inputField.setText("");
+
+            Optional<Command> cmdCheck = commandManager.parse(gameState, player, inputString);
+            if (cmdCheck.isPresent()) {
+                Command cmd = cmdCheck.get();
+                String result = cmd.execute();
+                outputConsole.appendText("\n"+result);
+            } else {
+                outputConsole.appendText("\nI don't understand that command.");
+            }
+
+            //outputConsole.appendText(inputString);
+        }
+    }
 
     @FXML //references button with #move in onAction property
     public void move(Event event){
@@ -51,9 +94,10 @@ public class GUIController {
         Optional<Command> cmdCheck = commandManager.parse(gameState, player, "go "+idButtonPressed);
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
-            cmd.execute();
+            String result = cmd.execute();
+            outputConsole.appendText("\n"+result);
         } else {
-            System.out.println("I don't understand that command.");
+            outputConsole.appendText("\nI don't understand that command.");
         }
     }
 
@@ -62,9 +106,10 @@ public class GUIController {
         Optional<Command> cmdCheck = commandManager.parse(gameState, player, "show inv");
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
-            cmd.execute();
+            String result = cmd.execute();
+            outputConsole.appendText("\n"+result);
         } else {
-            System.out.println("I don't understand that command.");
+            outputConsole.appendText("\nI don't understand that command.");
         }
     }
 
@@ -73,7 +118,8 @@ public class GUIController {
         Optional<Command> cmdCheck = commandManager.parse(gameState, player, "exit");
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
-            cmd.execute();
+            String result = cmd.execute();
+            outputConsole.appendText("\n"+result);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
         } else {

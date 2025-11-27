@@ -12,7 +12,7 @@ import com.amelithic.zorkgame.locations.Room;
 
 public interface Command {
     Optional<Command> parse(Main game, Player player, String text); //parsing inputs
-    void execute(); //command logic
+    String execute(); //command logic
 
     //Output text
     String getName();
@@ -50,7 +50,7 @@ class TakeItemCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         //find item in room
         for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
             Item item = (Item) player.getCurrentRoom().getRoomItems().get(i);
@@ -69,15 +69,16 @@ class TakeItemCommand implements Command {
             if (player.getCurrentRoom().getRoomItems().contains(takeItem)) {
                 player.setInventory(takeItem);
                 if (player.getCurrentRoom().removeRoomItem(takeItem)) {
-                    System.out.printf("Added %s to inventory!\n", takeItem.getName());
+                    return String.format("Added %s to inventory!\n", takeItem.getName());
                 } else {
-                    System.out.println("Cannot add item");
+                    return "Cannot add item";
                 }
 
             }
         } else {
-            System.out.println("There is no item of that type in this room.");
+            return "There is no item of that type in this room.";
         }
+        return "Invalid item, please try again.";
     }
 
     //getters
@@ -120,7 +121,7 @@ class DropCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         //find item in inventory
         for (Item item : player.getInventory()) {
             if (item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) {
@@ -138,14 +139,15 @@ class DropCommand implements Command {
 
                 player.getCurrentRoom().setRoomItems(removeItem);
                 if (player.removeFromInventory(removeItem)) {
-                    System.out.printf("Dropped %s!\n", removeItem.getName());
+                    return String.format("Dropped %s!\n", removeItem.getName());
                 } else {
-                    System.out.println("Cannot drop item");
+                    return "Cannot drop item";
                 }
             }
         } else {
-            System.out.println("There is no item of that type in your inventory.");
+            return "There is no item of that type in your inventory.";
         }
+        return "Invalid item, please try again.";
     }
 
     @Override
@@ -187,7 +189,7 @@ class DescribeCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         //find item in room or in inventory
         for (Item item : player.getInventory()) {
             if (item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) {
@@ -208,9 +210,9 @@ class DescribeCommand implements Command {
         }
 
         if (describeItem != null) {
-            System.out.println(describeItem.getName()+": "+describeItem.getDescription());
+            return describeItem.getName()+": "+describeItem.getDescription();
         } else {
-            System.out.println("There is no item of that type in this room or inventory.");
+            return "There is no item of that type in this room or inventory.";
         }
     }
 
@@ -255,7 +257,7 @@ class GoCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         //if valid enum direction && valid direction for room exits
         ExitDirection enumDirection;
         switch (direction) {
@@ -298,14 +300,16 @@ class GoCommand implements Command {
                     int roomIndexInMap = game.getMap().getRooms().indexOf(targetRoom);
                     Room roomInMap = game.getMap().getRooms().get(roomIndexInMap);
                     player.setCurrentRoom(roomInMap);
-                    System.out.println(roomInMap.getName()+": "+roomInMap.getDescription()+"\nExits: "+roomInMap.getExitString()+"\nItems: "+roomInMap.printRoomItems());
+                    return roomInMap.getName()+": "+roomInMap.getDescription()+"\nExits: "+roomInMap.getExitString()+"\nItems: "+roomInMap.printRoomItems();
                 }
             } else {
-                System.out.println("There is no exit '"+enumDirection+"' from this location, please try again.");
+                return "There is no exit '"+enumDirection+"' from this location, please try again.";
             }
         } else {
-            System.out.println("Not a valid direction, please try again.");
+            return "Not a valid direction, please try again.";
         }
+
+        return "Invalid direction, please try again.";
     }
 
     @Override
@@ -341,8 +345,9 @@ class QuitCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         game.setGameRunning(false);
+        return "Thank you for playing, goodbye!";
     }
 
     @Override
@@ -381,9 +386,9 @@ class HelpCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         //TODO: better help than this
-        System.out.println("You call out for help, but in space no one can hear you scream...");
+        return "You call out for help, but in space no one can hear you scream...";
     }
 
     @Override
@@ -424,12 +429,13 @@ class LookCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         //TODO: logic
         /*TODO:
         * if "around" or "room" -> describe room
         * if "item in room" -> describe item
         * if "storage item" -> display contents */
+       return "Nothing rn";
     }
 
     @Override
@@ -471,9 +477,10 @@ class EatCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         //TODO: logic
         // game.eatItem(item);
+        return "Nothing rn";
     }
 
     @Override
@@ -519,12 +526,13 @@ class ShowCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         if (target.equals("inventory") || target.equals("inv")) {
-            System.out.println(player.printInventory());
+            return player.printInventory();
         } else if (target.equals("room") || target.equals("items")) {
-            System.out.println("Items in room: "+player.getCurrentRoom().printRoomItems());
-        }
+            return "Items in room: "+player.getCurrentRoom().printRoomItems();
+        } 
+        return "Invalid option, please try again.";
     }
 
     @Override
@@ -563,9 +571,9 @@ class SayCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public String execute() {
         //TODO: logic
-        System.out.println(message);
+        return message;
     }
 
     @Override
