@@ -1,23 +1,32 @@
 package com.amelithic.zorkgame.gui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.amelithic.zorkgame.Command;
 import com.amelithic.zorkgame.CommandManager;
 import com.amelithic.zorkgame.Main;
+import com.amelithic.zorkgame.TrieAutocomplete;
 import com.amelithic.zorkgame.characters.Player;
+import com.amelithic.zorkgame.items.Item;
 
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -49,11 +58,65 @@ public class GUIController {
 
         //outputConsole.setDisable(true); //cannot mouse select
 
-        //TODO: map inputConsole to commands, output to outputConsole
+        //change to component listener
+        outputConsole.textProperty().addListener((obs, oldText, newText) -> {
+            outputConsole.setScrollTop(Double.MAX_VALUE);
+            //TODO: fix -> eat table breaks scroll
+        });
 
-        //inputConsole.onActionProperty(event -> {
-          //  System.out.println(event)
-        //});
+        // Create popup with a ListView
+        Popup autoCompletePopup = new Popup();
+        ListView<String> autoCompleteList = new ListView<>();
+        autoCompletePopup.getContent().add(autoCompleteList);
+
+
+        inputConsole.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> obs, String oldText, String newText) {
+                TrieAutocomplete trie = new TrieAutocomplete();
+                //add all possible words given scenario
+                for (Item playerItem : player.getInventory()) {
+                    trie.insert(playerItem.getName());
+                    trie.insert(playerItem.getId());
+                }
+                for (Item roomItem : (ArrayList<Item>) player.getCurrentRoom().getRoomItems()) {
+                    //dunno why issue? 
+                    //TODO: fix required cast
+                    trie.insert(roomItem.getName());
+                    trie.insert(roomItem.getId());
+                }
+                String[] playerRoomExits = player.getCurrentRoom().getExitString().split(" ");
+                for (String roomExit : playerRoomExits) {
+                    trie.insert(roomExit);
+                }
+                //TODO: add list of possible commands per area
+                
+                List<String> results = trie.search(newText); // your autocomplete trie
+                
+                if (!results.isEmpty()) {
+                    autoCompleteList.getItems().setAll(results);
+                    
+                    // Position popup ABOVE the input field
+                    Bounds bounds = inputConsole.localToScreen(inputConsole.getBoundsInLocal());
+                    autoCompletePopup.show(inputConsole,
+                            bounds.getMinX(),
+                            bounds.getMinY() - autoCompleteList.getHeight()); // above the field
+                    //TODO: fix dimensions of popup
+                } else {
+                    autoCompletePopup.hide();
+                }
+            }
+        });
+        // Handle selection
+        autoCompleteList.setOnMouseClicked(event -> {
+            String selected = autoCompleteList.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                inputConsole.setText(selected);
+                autoCompletePopup.hide();
+            }
+        });
+
+
 
         // Flip once on hover
         card.setOnMouseEntered(event -> {
@@ -77,9 +140,9 @@ public class GUIController {
             if (cmdCheck.isPresent()) {
                 Command cmd = cmdCheck.get();
                 String result = cmd.execute();
-                outputConsole.appendText("\n"+result);
+                outputConsole.appendText(result);
             } else {
-                outputConsole.appendText("\nI don't understand that command.");
+                outputConsole.appendText("I don't understand that command.\n");
             }
 
             //outputConsole.appendText(inputString);
@@ -95,9 +158,9 @@ public class GUIController {
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
             String result = cmd.execute();
-            outputConsole.appendText("\n"+result);
+            outputConsole.appendText(result+"\n");
         } else {
-            outputConsole.appendText("\nI don't understand that command.");
+            outputConsole.appendText("I don't understand that command.\n");
         }
     }
 
@@ -107,9 +170,9 @@ public class GUIController {
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
             String result = cmd.execute();
-            outputConsole.appendText("\n"+result);
+            outputConsole.appendText(result+"\n");
         } else {
-            outputConsole.appendText("\nI don't understand that command.");
+            outputConsole.appendText("I don't understand that command.\n");
         }
     }
 
@@ -119,11 +182,11 @@ public class GUIController {
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
             String result = cmd.execute();
-            outputConsole.appendText("\n"+result);
+            outputConsole.appendText(result+"\n");
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
         } else {
-            System.out.println("I don't understand that command.");
+            System.out.println("I don't understand that command.\n");
         }
     }
 
