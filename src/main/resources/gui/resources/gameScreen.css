@@ -1,0 +1,14 @@
+.text {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.iconButton {
+    -fx-background-color: transparent;
+}
+.iconButton:hover {
+    -fx-background-color: rgba(0,0,0,0.2);
+}
+.iconButton:pressed {
+    -fx-background-color: rgba(0,0,0,0.5);
+}

@@ -3,14 +3,18 @@
 
 package com.amelithic.zorkgame;
 
+import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Scanner;
 
-import com.amelithic.zorkgame.characters.Character;
+import com.amelithic.zorkgame.characters.Player;
+
+import javafx.application.Application;
 
 public class Main {
-    private static Character player;
+    private static Player player;
     private static boolean gameRunning;
     private GameMap map;
 
@@ -20,8 +24,8 @@ public class Main {
         gameRunning = true;
 
         try {
-            player = new Character("Amelie", map.getRooms().get(0));
-            System.out.println(player.getName()+": "+player.getCurrentRoom().getName());
+            player = new Player("Amelie", map.getRooms().get(0));
+            System.out.println(player.displayInfo());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,6 +47,9 @@ public class Main {
     public GameMap getMap() {
         return map;
     }
+    public Player getPlayer() {
+        return player;
+    }
     public void setGameRunning(boolean gameRunning) {
         Main.gameRunning = gameRunning;
     }
@@ -52,6 +59,30 @@ public class Main {
         Main gameState = new Main();
         Scanner scanner = new Scanner(System.in);
         CommandManager commandManager = new CommandManager();
+
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
+            String uiMode = properties.getProperty("ui.ui_mode").trim();
+            System.out.println(uiMode);
+            if (uiMode != null) {
+                switch (uiMode) {
+                    case "gui":
+                        System.err.println("GUI SELECTED");
+                        Application.launch(GUI.class, args);
+                        break;
+                    case "cli":
+                        System.err.println("CLI SELECTED");
+                        break;
+                    default:
+                        System.err.println("property not found");
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         while (gameRunning) {
             System.out.print("> ");

@@ -6,57 +6,75 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
+<?scenebuilder-stylesheet /gui/resources/gameScreen.css?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amelithic.zorkgame.gui.GUIController">
    <children>
+      <!-- Background Image -->
+      <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="false" fx:id="bg">
+         <Image url="/images/galaxy2.png"/>
+      </ImageView> 
+
+      <!-- Inventory Preview -->
       <VBox alignment="CENTER" layoutX="600.0" layoutY="14.0" prefHeight="188.0" prefWidth="36.0" style="-fx-padding: 10px; -fx-spacing: 20px;">
          <children>
-            <Icon content="HELP_OUTLINE" />
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>            
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>            
             <Separator prefWidth="200.0" />
-            <Icon content="HELP_OUTLINE" />
-            <Separator prefWidth="200.0" />
-            <Icon content="HELP_OUTLINE" />
-            <Separator prefWidth="200.0" />
-            <Icon content="HELP_OUTLINE" />
-            <Separator prefWidth="200.0" />
-            <Icon content="HELP_OUTLINE" />
-            <Separator prefWidth="200.0" />
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="more inv">
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="inv" styleClass="iconButton" onAction="#inventoryView">
                <graphic>
-                  <Icon content="HELP_OUTLINE" />
+                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/settings.png"/>
+                  </ImageView>
                </graphic>
             </Button>
          </children>
       </VBox>
-      <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="true" />
+
+      <!-- Player Stats Bar -->
       <HBox alignment="CENTER" layoutX="125.0" layoutY="14.0" prefHeight="32.0" prefWidth="401.0" style="-fx-padding: 10px; -fx-spacing: 50px;">
          <children>
-            <Label text="Label" />
+            <Label text="Label" styleClass="text" />
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <Label text="Label" />
+            <Label text="Label" styleClass="text" />
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <Label text="Label" />
+            <Label text="Label" styleClass="text" />
          </children>
       </HBox>
-      <TextArea layoutX="100.0" layoutY="275.0" prefHeight="100.0" prefWidth="451.0" />
-      <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="map">
-         <graphic>
-            <Icon content="HELP_OUTLINE" />
-         </graphic>
-      </Button>
-      <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="help">
-         <graphic>
-            <Icon content="HELP_OUTLINE" />
-         </graphic>
-      </Button>
+
+      <!-- Input Box and Display Card -->
+      <TextArea fx:id="commandBox" layoutX="100.0" layoutY="275.0" prefHeight="100.0" prefWidth="451.0" />
+      <StackPane fx:id="card" layoutX="244.0" layoutY="60.0" prefHeight="200.0" prefWidth="162.0" style="-fx-background-color: eee; -fx-padding: 10px 50px 10px 50px;">
+         <ImageView fitHeight="100.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="false">
+            <Image url="/images/galaxy3.png"/>
+         </ImageView> 
+      </StackPane>
+
+
+      <!-- Controls Grid -->
       <GridPane layoutX="14.0" layoutY="160.0" prefHeight="90.0" prefWidth="90.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -69,58 +87,93 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="nw">
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="nw" styleClass="iconButton" onAction="#move">
                <graphic>
-                  <Icon content="HELP_OUTLINE" />
+                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/angle-up-left.png"/>
+                  </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="n" GridPane.columnIndex="1">
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="n" GridPane.columnIndex="1" styleClass="iconButton" onAction="#move">
                <graphic>
-                  <Icon content="HELP_OUTLINE" />
+                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/angle-up.png"/>
+                  </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="ne" GridPane.columnIndex="2">
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="ne" GridPane.columnIndex="2" styleClass="iconButton" onAction="#move">
                <graphic>
-                  <Icon content="HELP_OUTLINE" />
+                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/angle-up-right.png"/>
+                  </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="w" GridPane.rowIndex="1">
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="w" GridPane.rowIndex="1" styleClass="iconButton" onAction="#move">
                <graphic>
-                  <Icon content="HELP_OUTLINE" />
+                  <ImageView fitWidth="32" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/angle-left.png"/>
+                  </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="s" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="s" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="iconButton" onAction="#move">
                <graphic>
-                  <Icon content="HELP_OUTLINE" />
+                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/angle-down.png"/>
+                  </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="sw" GridPane.rowIndex="2">
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="sw" GridPane.rowIndex="2" styleClass="iconButton" onAction="#move">
                <graphic>
-                  <Icon content="HELP_OUTLINE" />
+                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/angle-down-left.png"/>
+                  </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="se" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="se" GridPane.columnIndex="2" GridPane.rowIndex="2" styleClass="iconButton" onAction="#move">
                <graphic>
-                  <Icon content="HELP_OUTLINE" />
+                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/angle-down-right.png"/>
+                  </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="e" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="e" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="iconButton" onAction="#move">
                <graphic>
-                  <Icon content="HELP_OUTLINE" />
+                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/angle-right.png"/>
+                  </ImageView>
                </graphic>
             </Button>
          </children>
       </GridPane>
-      <Button layoutX="14.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="exit">
+
+      <!-- Buttons -->
+      <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="map" styleClass="iconButton">
          <graphic>
-            <Icon content="HELP_OUTLINE" />
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
          </graphic>
       </Button>
-      <Button layoutX="59.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" text="save">
+      <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" fx:id="help" styleClass="iconButton">
          <graphic>
-            <Icon content="HELP_OUTLINE" />
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
          </graphic>
       </Button>
-      <TextFlow layoutX="244.0" layoutY="60.0" prefHeight="200.0" prefWidth="162.0" style="-fx-background-color: eee; -fx-padding: 10px 50px 10px 50px;" />
+      <Button layoutX="14.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="exit" styleClass="iconButton" onAction="#exit">
+         <graphic>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/sign-out.png"/>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button layoutX="59.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="save" styleClass="iconButton">
+         <graphic>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/download.png"/>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
-</Pane>
+</AnchorPane>

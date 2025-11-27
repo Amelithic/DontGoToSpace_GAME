@@ -3,7 +3,7 @@ package com.amelithic.zorkgame;
 import java.util.Optional;
 
 import com.amelithic.zorkgame.GameMap.ExitDirection;
-import com.amelithic.zorkgame.characters.Character;
+import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.FoodItem;
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.locations.Room;
@@ -11,7 +11,7 @@ import com.amelithic.zorkgame.locations.Room;
 //TODO: Complete all command logic before commmit
 
 public interface Command {
-    Optional<Command> parse(Main game, Character player, String text); //parsing inputs
+    Optional<Command> parse(Main game, Player player, String text); //parsing inputs
     void execute(); //command logic
 
     //Output text
@@ -24,13 +24,13 @@ public interface Command {
 class TakeItemCommand implements Command {
     //fields
     private String itemInString;
-    private Character player; //author of command (whos running it)
+    private Player player; //author of command (whos running it)
     private Main game; //game instance
     private Item takeItem;
 
     //methods
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.game = game;
         this.player = player;
 
@@ -99,12 +99,12 @@ class TakeItemCommand implements Command {
 
 class DropCommand implements Command {
     private String itemInString;
-    private Character player; //author of command (whos running it)
+    private Player player; //author of command (whos running it)
     private Main game; //game instance
     private Item removeItem;
 
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
 
@@ -165,13 +165,13 @@ class DropCommand implements Command {
 } //end Drop
 
 class DescribeCommand implements Command {
-    private Character player; //author of command (whos running it)
+    private Player player; //author of command (whos running it)
     private Main game; //game instance
     private String itemInString;
     private Item describeItem;
 
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
 
@@ -232,11 +232,11 @@ class DescribeCommand implements Command {
 
 class GoCommand implements Command {
     private String direction;
-    private Character player; //author of command (whos running it)
+    private Player player; //author of command (whos running it)
     private Main game; //game instance
 
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
 
@@ -247,7 +247,7 @@ class GoCommand implements Command {
         if (text.matches("^(go|move|walk|travel)( to| to the)?\\s+.+$")) {
             direction = text.replaceFirst("^(go|move|walk|travel)( to| to the)?\\s+", "");
             return Optional.of(this);
-        } else if (text.matches("^(go|move|walk|travel)( to| to the)?")) {
+        } else if (text.matches("^(go|move|walk|travel)")) {
             String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
             System.out.println(modText+" where?");
         }
@@ -259,28 +259,28 @@ class GoCommand implements Command {
         //if valid enum direction && valid direction for room exits
         ExitDirection enumDirection;
         switch (direction) {
-            case "north", "up":
+            case "n", "north", "up":
                 enumDirection = ExitDirection.NORTH;
                 break;
-            case "east", "right":
+            case "e", "east", "right":
                 enumDirection = ExitDirection.EAST;
                 break;
-            case "west", "left":
+            case "w", "west", "left":
                 enumDirection = ExitDirection.WEST;
                 break;
-            case "south", "down":
+            case "s", "south", "down":
                 enumDirection = ExitDirection.SOUTH;
                 break;
-            case "northeast", "north-east", "north east":
+            case "ne", "northeast", "north-east", "north east":
                 enumDirection = ExitDirection.NORTH_EAST;
                 break;
-            case "northwest", "north-west", "north west":
+            case "nw", "northwest", "north-west", "north west":
                 enumDirection = ExitDirection.NORTH_WEST;
                 break;
-            case "southeast", "south-east", "south east":
+            case "se", "southeast", "south-east", "south east":
                 enumDirection = ExitDirection.SOUTH_EAST;
                 break;
-            case "southwest", "south-west", "south west":
+            case "sw", "southwest", "south-west", "south west":
                 enumDirection = ExitDirection.SOUTH_WEST;
                 break;
             default:
@@ -325,11 +325,11 @@ class GoCommand implements Command {
 } //end Go
 
 class QuitCommand implements Command {
-    private Character player; //author of command (whos running it)
+    private Player player; //author of command (whos running it)
     private Main game; //game instance
 
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
 
@@ -362,12 +362,12 @@ class QuitCommand implements Command {
 } //end Quit
 
 class HelpCommand implements Command {
-    private Character player; //author of command (whos running it)
+    private Player player; //author of command (whos running it)
     private Main game; //game instance
     private String itemInString;
 
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
 
@@ -403,12 +403,12 @@ class HelpCommand implements Command {
 } //end Help
 
 class LookCommand implements Command {
-    private Character player; //author of command (whos running it)
+    private Player player; //author of command (whos running it)
     private Main game; //game instance
     private String itemInString;
 
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
 
@@ -449,13 +449,13 @@ class LookCommand implements Command {
 }
 
 class EatCommand implements Command {
-    private Character player; //author of command (whos running it)
+    private Player player; //author of command (whos running it)
     private Main game; //game instance
     private String itemInString;
     private FoodItem foodItem;
 
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
 
@@ -493,12 +493,12 @@ class EatCommand implements Command {
 } //end Eat
 
 class ShowCommand implements Command {
-    private Character player; //author of command (whos running it)
+    private Player player; //author of command (whos running it)
     private Main game; //game instance
     private String target;
 
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
 
@@ -544,13 +544,13 @@ class ShowCommand implements Command {
 }
 
 class SayCommand implements Command {
-    private Character author; //author of command (whos running it)
-    private Character recipient; //author of command (whos running it)
+    private Player author; //author of command (whos running it)
+    private Player recipient; //author of command (whos running it)
     private Main game; //game instance
     private String message;
 
     @Override
-    public Optional<Command> parse(Main game, Character player, String text) {
+    public Optional<Command> parse(Main game, Player player, String text) {
         this.author = player;
         this.game = game;
 

@@ -35,7 +35,7 @@ public abstract class Room<T> {
         return description;
     }
     public String getLongDescription() {
-        return "You are " + description + ".\nExits: " + getExitString();
+        return description + "\nExits: " + getExitString() + printRoomItems();
     }
     
 
