@@ -1,6 +1,7 @@
 package com.amelithic.zorkgame;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.gui.GUIController;
@@ -41,12 +42,25 @@ public class GUI extends Application {
 
         stage.setResizable(false);
 
-        stage.setTitle("Hello!");
+        String gameTitle = fetchTitle();
+        stage.setTitle(gameTitle);
         stage.setScene(scene); //add to stage
         stage.show();
     }
 
     public static void main(String[] args) {
         launch();
+    }
+
+    public static String fetchTitle() {
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
+            String gameTitle = properties.getProperty("game.title").trim();
+            return gameTitle
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Game Title"; //if read file error
     }
 }
