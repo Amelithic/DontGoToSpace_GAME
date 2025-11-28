@@ -14,17 +14,28 @@ import com.amelithic.zorkgame.characters.Player;
 import javafx.application.Application;
 
 public class Main {
+    //fields
     private static Player player;
     private static boolean gameRunning;
     private GameMap map;
+    private Properties properties;
 
+    //constructors
     public Main() {
         Path fileNameMap = Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\map_default.json");
         map = new GameMap(fileNameMap);
         gameRunning = true;
 
         try {
-            player = new Player("Amelie", map.getRooms().get(0));
+            //TODO: can properties be made a global object in Main?
+            properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
+            String startRoomId = properties.getProperty("engine.start_room").trim();
+            Room startRoom;
+            for (Room room : map.getRooms()) {
+                if (room.getId().equals(startRoom)) startRoom = room;
+            }
+            //TODO: move player to main() -> ask for userninput for name
+            player = new Player("Amelie", map.getRooms().get(map.getRooms().indexOf(startRoom)));
             System.out.println(player.displayInfo());
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,18 +43,7 @@ public class Main {
 
     }
 
-    private void printWelcome() {
-        System.out.println();
-        System.out.println("Welcome to the University adventure!");
-        System.out.println("Type 'help' if you need help.");
-        System.out.println();
-    }
-
-    private void printHelp() {
-        System.out.println("You are lost. You are alone. You wander around the university.");
-        System.out.print("Your command words are: ");
-    }
-
+    //getters
     public GameMap getMap() {
         return map;
     }
@@ -54,15 +54,13 @@ public class Main {
         Main.gameRunning = gameRunning;
     }
     
-
+    //main
     public static void main(String[] args) {
         Main gameState = new Main();
         Scanner scanner = new Scanner(System.in);
         CommandManager commandManager = new CommandManager();
 
-        Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
             String uiMode = properties.getProperty("ui.ui_mode").trim();
             System.out.println(uiMode);
             if (uiMode != null) {
