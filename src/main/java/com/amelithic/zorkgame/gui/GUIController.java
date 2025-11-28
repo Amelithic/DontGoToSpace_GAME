@@ -26,6 +26,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Popup;
@@ -77,7 +79,6 @@ public class GUIController {
         ListView<String> autoCompleteList = new ListView<>();
         autoCompletePopup.getContent().add(autoCompleteList);
 
-
         inputConsole.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> obs, String oldText, String newText) {
@@ -97,9 +98,15 @@ public class GUIController {
                 for (String roomExit : playerRoomExits) {
                     trie.insert(roomExit);
                 }
-                //TODO: add list of possible commands per area
+                for (Command command : commandManager.getAllCommands()) {
+                    trie.insert(command.getName());
+                    String[] synonyms = command.getSynonyms().split(", ");
+                    for (String string : synonyms) trie.insert(string);
+                }
                 
-                List<String> results = trie.search(newText); // your autocomplete trie
+                String[] newTextWords = newText.split(" ");
+                String lastWord = newTextWords[newTextWords.length - 1];
+                List<String> results = trie.search(lastWord); // your autocomplete trie
                 
                 if (!results.isEmpty()) {
                     autoCompleteList.getItems().setAll(results);
@@ -119,8 +126,31 @@ public class GUIController {
         autoCompleteList.setOnMouseClicked(event -> {
             String selected = autoCompleteList.getSelectionModel().getSelectedItem();
             if (selected != null) {
+                //TODO: not override text when >1 words
                 inputConsole.setText(selected);
+                inputConsole.endOfNextWord();
                 autoCompletePopup.hide();
+            }
+        });
+        autoCompleteList.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.TAB) { 
+                autoCompleteList.getSelectionModel().selectFirst(); //first in list by default
+                String selected = autoCompleteList.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    inputConsole.setText(selected);
+                    inputConsole.endOfNextWord();
+                    autoCompletePopup.hide();
+                    event.consume(); // prevent default focus traversal
+                } else if (event.getCode() == KeyCode.UP) {
+                    autoCompleteList.requestFocus();
+                    autoCompleteList.getSelectionModel().selectPrevious();
+                    event.consume();
+                } else if (event.getCode() == KeyCode.DOWN) {
+                    autoCompleteList.requestFocus();
+                    autoCompleteList.getSelectionModel().selectNext();
+                    event.consume();
+                }
+
             }
         });
 
