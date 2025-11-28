@@ -27,7 +27,11 @@ public class Main {
         try {
             //TODO: can properties be made a global object in Main?
             properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
-            String startRoom = properties.getProperty("engine.startRoom").trim();
+            String startRoomId = properties.getProperty("engine.start_room").trim();
+            Room startRoom;
+            for (Room room : map.getRooms()) {
+                if (room.getId().equals(startRoom)) startRoom = room;
+            }
             player = new Player("Amelie", map.getRooms().get(map.getRooms().indexOf(startRoom)));
             System.out.println(player.displayInfo());
         } catch (Exception e) {
