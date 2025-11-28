@@ -1,6 +1,7 @@
 package com.amelithic.zorkgame;
 
 import java.io.IOException;
+import java.io.FileInputStream;
 import java.util.Properties;
 
 import com.amelithic.zorkgame.characters.Player;
