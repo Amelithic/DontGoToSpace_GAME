@@ -24,6 +24,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Popup;
@@ -46,9 +48,10 @@ public class GUIController {
     private StackPane card; // from FXML
     @FXML
     private TextArea outputConsole;
-
     @FXML
     private TextField inputConsole;
+    @FXML
+    private ImageView bg;
 
     @FXML
     public void initialize() {
@@ -57,6 +60,11 @@ public class GUIController {
         inputConsole.setPromptText("Enter your command here..."); //to set the hint text
 
         //outputConsole.setDisable(true); //cannot mouse select
+
+        //set bg image
+        String roomId = player.getCurrentRoom().getId();
+        String roomImgUrl = returnImageUrl(roomId);
+        bg.setImage(new Image(roomImgUrl));
 
         //change to component listener
         outputConsole.textProperty().addListener((obs, oldText, newText) -> {
@@ -159,6 +167,9 @@ public class GUIController {
             Command cmd = cmdCheck.get();
             String result = cmd.execute();
             outputConsole.appendText(result+"\n");
+            String roomId = player.getCurrentRoom().getId();
+            String roomImgUrl = returnImageUrl(roomId);
+            bg.setImage(new Image(roomImgUrl));
         } else {
             outputConsole.appendText("I don't understand that command.\n");
         }
@@ -203,5 +214,42 @@ public class GUIController {
         rotator.play();
     }
 
-
+    private String returnImageUrl(String roomId) {
+        switch (roomId) {
+            case "base_quarters":
+                return "/images/quarters.png";
+            case "base_main":
+                return "/images/mainroom.png";
+            case "base_corridor":
+                return "/images/corridor.png";
+            case "base_kitchen":
+                return "/images/kitchen.png";
+            case "base_bathrooms":
+                return "/images/bathrooms.png";
+            case "base_storage":
+                return "/images/storageroom.png";
+            case "tunnel_01", "tunnel_02", "tunnel_03":
+                return "/images/tunnel.png";
+            case "base_secret":
+                return "/images/secretroom.png";
+            case "airlock":
+                return "/images/airlock.png";
+            case "outdoors_01":
+                return "/images/outside.png";
+            case "cliff":
+                return "/images/cliff.png";
+            case "outdoors_02":
+                return "/images/dustlands.png";
+            case "broken_spacecraft":
+                return "/images/brokenship.png";
+            case "crater":
+                return "/images/crater.png";
+            case "cave":
+                return "/images/cave.png";
+            case "old_spacecraft":
+                return "/images/oldship.png";
+            default:
+                return "/images/galaxy2.png";
+        }
+    }
 }

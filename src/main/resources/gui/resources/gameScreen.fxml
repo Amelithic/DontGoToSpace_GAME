@@ -22,9 +22,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amelithic.zorkgame.gui.GUIController">
    <children>
       <!-- Background Image -->
-      <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="false" fx:id="bg">
-         <Image url="/images/galaxy2.png"/>
-      </ImageView> 
+      <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="false" fx:id="bg" styleClass="imageVignette" /> 
 
       <!-- Inventory Preview -->
       <VBox alignment="CENTER" layoutX="600.0" layoutY="14.0" prefHeight="188.0" prefWidth="36.0" style="-fx-padding: 10px; -fx-spacing: 20px;">

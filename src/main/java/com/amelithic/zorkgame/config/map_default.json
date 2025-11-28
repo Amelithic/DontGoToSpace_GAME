@@ -175,8 +175,8 @@
             "description": "You venture into more dustlands. You've gone quite far from the base and the terrain has become rockier.",
             "type": "outdoor",
             "exits": {                
-                "south": "base_corridor",
-                "west": "broken_spacecraft"
+                "west": "outdoors_01",
+                "south": "broken_spacecraft"
             }
         },
         {

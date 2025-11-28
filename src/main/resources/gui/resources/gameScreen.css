@@ -3,6 +3,10 @@
     -fx-font-size: 14px;
 }
 
+.imageVignette {
+    -fx-effect: innershadow(gaussian, black, 70, 0.2, 0, 0);
+}
+
 .iconButton {
     -fx-background-color: transparent;
 }
