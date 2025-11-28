@@ -431,10 +431,9 @@ class LookCommand implements Command {
     @Override
     public String execute() {
         //TODO: logic
-        /*TODO:
-        * if "around" or "room" -> describe room
-        * if "item in room" -> describe item
-        * if "storage item" -> display contents */
+        /* TODO: if "around" or "room" -> describe room
+        * TODO: if "item in room" -> describe item
+        * TODO: if "storage item" -> display contents */
        return "Nothing rn";
     }
 
@@ -478,9 +477,36 @@ class EatCommand implements Command {
 
     @Override
     public String execute() {
-        //TODO: logic
-        // game.eatItem(item);
-        return "Nothing rn";
+        //find item in inventory
+        for (Item item : player.getInventory()) {
+            if ((item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) && item instanceof FoodItem) {
+                foodItem = (FoodItem) item;
+                break;
+            } else {
+                continue;
+            }
+        }
+
+        //verify it exists
+        if (foodItem != null) {
+        //check its in inventory + remove from inventory + add to room
+            if (player.getInventory().contains(foodItem)) {
+
+                if (player.removeFromInventory(foodItem)) {
+                    String optionalString = "";
+
+                    /*TODO: add item-specific logic -> add String field to FoodItem with optionalString from JSON
+                    * TODO: parse extra field in game map on item initialisation 
+                    * TODO: get foodItem optional string and add, if any*/
+                    return String.format("Consumed %s!\n", foodItem.getName())+optionalString;
+                } else {
+                    return String.format("Cannot eat %s", foodItem.getName());
+                }
+            }
+        } else {
+            return "There is no item of that type in your inventory.";
+        }
+        return "Invalid item, please try again.";
     }
 
     @Override
@@ -552,6 +578,7 @@ class ShowCommand implements Command {
 }
 
 class SayCommand implements Command {
+    //for future use: LAN multiplayer option
     private Player author; //author of command (whos running it)
     private Player recipient; //author of command (whos running it)
     private Main game; //game instance
@@ -573,7 +600,7 @@ class SayCommand implements Command {
     @Override
     public String execute() {
         //TODO: logic
-        return message;
+        return author.getName()+"> "+message;
     }
 
     @Override
