@@ -127,7 +127,10 @@ public class GUIController {
             String selected = autoCompleteList.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 //TODO: not override text when >1 words
-                inputConsole.setText(selected);
+                String newInput = "";
+                for (int i=0; i < newTextWords.length()-1; i++) newInput += newTextWords[i] + " ";
+                newInput += selected;
+                inputConsole.setText(newInput);
                 inputConsole.endOfNextWord();
                 autoCompletePopup.hide();
             }
@@ -137,7 +140,10 @@ public class GUIController {
                 autoCompleteList.getSelectionModel().selectFirst(); //first in list by default
                 String selected = autoCompleteList.getSelectionModel().getSelectedItem();
                 if (selected != null) {
-                    inputConsole.setText(selected);
+                    String newInput = "";
+                    for (int i=0; i < newTextWords.length()-1; i++) newInput += newTextWords[i] + " ";
+                    newInput += selected;
+                    inputConsole.setText(newInput);
                     inputConsole.endOfNextWord();
                     autoCompletePopup.hide();
                     event.consume(); // prevent default focus traversal
