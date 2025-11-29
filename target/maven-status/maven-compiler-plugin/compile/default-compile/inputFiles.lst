@@ -1,6 +1,8 @@
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\items\RequiredItem.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\locations\OutdoorArea.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\Main.java
+C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\characters\Player.java
+C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\gui\GUIController.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\locations\Room.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\GUI.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\locations\IndoorArea.java
@@ -12,5 +14,5 @@ C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\it
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\items\Item.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\CommandManager.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\locations\TunnelArea.java
-C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\Player.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\GameMap.java
+C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\TrieAutocomplete.java
