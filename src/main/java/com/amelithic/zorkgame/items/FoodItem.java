@@ -1,11 +1,17 @@
 package com.amelithic.zorkgame.items;
 
-public class FoodItem extends Item {
-    private boolean isEdible;
+interface Consumable {
+    String getConsumptionMessage();
+}
 
-    public FoodItem(String id, String name, String description) {
+public class FoodItem extends Item implements Consumable {
+    private boolean isEdible;
+    private String consumptionMessage;
+
+    public FoodItem(String id, String name, String description, String consumptionMessage) {
         super(id, name, description);
         this.isEdible = true;
+        this.consumptionMessage = consumptionMessage;
     }
 
     public boolean getEdible() {
@@ -14,6 +20,11 @@ public class FoodItem extends Item {
 
     public void setEdible(boolean isEdible) {
         this.isEdible = isEdible;
+    }
+
+    @Override
+    public String getConsumptionMessage() {
+        return consumptionMessage;
     }
     
 }

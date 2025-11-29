@@ -493,12 +493,7 @@ class EatCommand implements Command {
             if (player.getInventory().contains(foodItem)) {
 
                 if (player.removeFromInventory(foodItem)) {
-                    String optionalString = "";
-
-                    /*TODO: add item-specific logic -> add String field to FoodItem with optionalString from JSON
-                    * TODO: parse extra field in game map on item initialisation 
-                    * TODO: get foodItem optional string and add, if any*/
-                    return String.format("Consumed %s!\n", foodItem.getName())+optionalString;
+                    return String.format("Consumed %s!\n", foodItem.getName())+foodItem.getConsumptionMessage();
                 } else {
                     return String.format("Cannot eat %s", foodItem.getName());
                 }

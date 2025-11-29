@@ -1,10 +1,48 @@
-.text {
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
+/*custom colour variables*/
+.root {
+    -fx-base: rgb(26, 27, 34);
+    -fx-base-transparent: rgba(26, 27, 34, 0.875);
+    -fx-base-lighter: rgb(38, 39, 47);
+    -fx-base-light: rgb(226, 227, 238);
+    -fx-accent: rgb(68, 43, 143);
 }
+
+.text, #autoList .list-cell {
+    -fx-text-fill: -fx-base-light;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Consolas';
+}
+#autoList .list-cell:selected {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: -fx-base-light;
+}
+#autoList .list-cell:selected:hover {
+    -fx-background-color: -fx-base-light;
+    -fx-text-fill: -fx-accent;
+}
+#autoList {
+    -fx-border-color: -fx-accent;
+}
+
 
 .imageVignette {
     -fx-effect: innershadow(gaussian, black, 70, 0.2, 0, 0);
+}
+
+.darkMode {
+    -fx-background-color: -fx-base;
+}
+.darkModeTransparent {
+    -fx-background-color: -fx-base-transparent;
+    -fx-control-inner-background: transparent;  /* inner text area background */
+    -fx-background-insets: 0;                   /* avoid default shading */
+    -fx-background-radius: 0;      
+}
+
+#card {
+    -fx-background-color: -fx-base-light;
+    -fx-text-fill: -fx-base;
+    -fx-padding: 10px 50px 10px 50px;
 }
 
 .iconButton {

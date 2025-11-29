@@ -6,13 +6,15 @@
             "name": "Apple",
             "description": "A tasty treat! (Consumable)",
             "type": "food",
+            "consumeMessage": "om nom nom nom nom (guy from Monster House)",
             "isPortable": true
         },
         {
             "id": "item001",
-            "name": "OOOOOOOO",
+            "name": "Cake",
             "description": "OOOOOOOO a tasty treat! (Consumable)",
             "type": "food",
+            "consumeMessage": "om nom nom nom nom (guy from Monster House)",
             "isPortable": true
         },
         {

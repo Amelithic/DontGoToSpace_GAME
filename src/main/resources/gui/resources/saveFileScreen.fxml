@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.Icon?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
+<?scenebuilder-stylesheet /gui/resources/gameScreen.css?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amelithic.zorkgame.gui.TitleController">
+   <children>
+      <!-- Background Image -->
+      <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="false" fx:id="bg" styleClass="imageVignette" /> 
+
+      <!-- Inventory Preview -->
+      <VBox alignment="CENTER" layoutX="600.0" layoutY="14.0" prefHeight="188.0" prefWidth="36.0" style="-fx-padding: 10px; -fx-spacing: 20px;">
+         <children>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>            
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>            
+            <Separator prefWidth="200.0" />
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="inv" styleClass="iconButton">
+               <graphic>
+                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                        <Image url="/gui/resources/icons/settings.png"/>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </VBox>
+
+      <!-- Buttons -->
+      <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="map" styleClass="iconButton">
+         <graphic>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" fx:id="help" styleClass="iconButton">
+         <graphic>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/bulb.png"/>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button layoutX="14.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="exit" styleClass="iconButton" onAction="#exit">
+         <graphic>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/sign-out.png"/>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button layoutX="59.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="save" styleClass="iconButton" onAction="#game">
+         <graphic>
+            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                  <Image url="/gui/resources/icons/download.png"/>
+            </ImageView>
+         </graphic>
+      </Button>
+   </children>
+</AnchorPane>
