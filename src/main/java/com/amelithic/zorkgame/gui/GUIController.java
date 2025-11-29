@@ -39,6 +39,8 @@ public class GUIController {
     private final Main gameState;
     private final Player player;
     private final CommandManager commandManager;
+    private String[] newTextWords;
+    private Popup autoCompletePopup;
 
     public GUIController(Main gameState, Player player, CommandManager commandManager) {
         this.gameState = gameState;
@@ -60,6 +62,7 @@ public class GUIController {
         outputConsole.setEditable(false);
         outputConsole.setWrapText(true);
         inputConsole.setPromptText("Enter your command here..."); //to set the hint text
+    
 
         //outputConsole.setDisable(true); //cannot mouse select
 
@@ -75,8 +78,12 @@ public class GUIController {
         });
 
         // Create popup with a ListView
-        Popup autoCompletePopup = new Popup();
+        autoCompletePopup = new Popup();
+        autoCompletePopup.setHideOnEscape(true);
+        autoCompletePopup.setAutoHide(true); //doesnt show if not focused`
         ListView<String> autoCompleteList = new ListView<>();
+        autoCompleteList.setPrefHeight(120); //roughly 5 entries shown
+        autoCompleteList.setId("autoList");
         autoCompletePopup.getContent().add(autoCompleteList);
 
         inputConsole.textProperty().addListener(new ChangeListener<String>() {
@@ -104,11 +111,12 @@ public class GUIController {
                     for (String string : synonyms) trie.insert(string);
                 }
                 
-                String[] newTextWords = newText.split(" ");
+                newTextWords = newText.split(" ");
                 String lastWord = newTextWords[newTextWords.length - 1];
                 List<String> results = trie.search(lastWord); // your autocomplete trie
                 
-                if (!results.isEmpty()) {
+                //continue if new text entered and results > 1
+                if ((!results.isEmpty()) && (!oldText.equals(newText))) {
                     autoCompleteList.getItems().setAll(results);
                     
                     // Position popup ABOVE the input field
@@ -126,9 +134,8 @@ public class GUIController {
         autoCompleteList.setOnMouseClicked(event -> {
             String selected = autoCompleteList.getSelectionModel().getSelectedItem();
             if (selected != null) {
-                //TODO: not override text when >1 words
                 String newInput = "";
-                for (int i=0; i < newTextWords.length()-1; i++) newInput += newTextWords[i] + " ";
+                for (int i=0; i < newTextWords.length-1; i++) newInput += newTextWords[i] + " ";
                 newInput += selected;
                 inputConsole.setText(newInput);
                 inputConsole.endOfNextWord();
@@ -141,9 +148,10 @@ public class GUIController {
                 String selected = autoCompleteList.getSelectionModel().getSelectedItem();
                 if (selected != null) {
                     String newInput = "";
-                    for (int i=0; i < newTextWords.length()-1; i++) newInput += newTextWords[i] + " ";
+                    for (int i=0; i < newTextWords.length-1; i++) newInput += newTextWords[i] + " ";
                     newInput += selected;
                     inputConsole.setText(newInput);
+                    //TODO: moves to end of new words, not previous
                     inputConsole.endOfNextWord();
                     autoCompletePopup.hide();
                     event.consume(); // prevent default focus traversal
@@ -179,6 +187,7 @@ public class GUIController {
             String inputString = inputField.getText();
             System.out.println(inputString);
             inputField.setText("");
+            autoCompletePopup.hide();
 
             Optional<Command> cmdCheck = commandManager.parse(gameState, player, inputString);
             if (cmdCheck.isPresent()) {
