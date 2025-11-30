@@ -3,11 +3,11 @@ package com.amelithic.zorkgame.items;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class StorageItem extends Item {
+public class StorageItem extends Item implements Usable{
     private ArrayList<Item> inventory;
 
-    public StorageItem(String id, String name, String description) {
-        super(id, name, description);
+    public StorageItem(String id, String name, String description, boolean isPortable) {
+        super(id, name, description, isPortable);
         inventory = new ArrayList<>();
     }
 
@@ -37,5 +37,10 @@ public class StorageItem extends Item {
         } else {
             return false; //no item
         }
+    }
+
+    @Override
+    public String use() {
+        return "yay";
     }
 }

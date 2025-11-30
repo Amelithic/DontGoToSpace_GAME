@@ -74,25 +74,29 @@ public class GameMap {
                 Item item;
                 switch (itemType) {
                     case "none":
-                        item = new Item(itemId,itemName,itemDesc);
+                        boolean isPortable = itemsArrayFromFile.get(i).get("isPortable").asBoolean();
+                        item = new Item(itemId,itemName,itemDesc, isPortable);
                         break;
-                    case "food":
+                    case "food": //always portable = true
                         String foodConsumeMessage = itemsArrayFromFile.get(i).get("consumeMessage").asText();
                         item = new FoodItem(itemId, itemName, itemDesc, (foodConsumeMessage != null && foodConsumeMessage.length() > 0)? foodConsumeMessage : "");
                         break;
-                    case "required":
+                    case "required": //always portable = true
                         item = new RequiredItem(itemId, itemName, itemDesc, itemType);
                         break;
                     case "storage":
-                        item = new StorageItem(itemId, itemName, itemType);
+                        isPortable = itemsArrayFromFile.get(i).get("isPortable").asBoolean();
+                        item = new StorageItem(itemId, itemName, itemDesc, isPortable);
                         break;
                     case "info":
+                        isPortable = itemsArrayFromFile.get(i).get("isPortable").asBoolean();
                         String infoFile = "src\\main\\java\\com\\amelithic\\zorkgame\\config\\info_json\\"+itemsArrayFromFile.get(i).get("infoFile").asText();
                         Path infoFilePath = Path.of(infoFile);
-                        item = new InfoItem(itemId, itemName, itemType, infoFilePath);
+                        item = new InfoItem(itemId, itemName, itemType, isPortable, infoFilePath);
                         break;
                     default:
-                        item = new Item(itemId,itemName,itemDesc);
+                        isPortable = itemsArrayFromFile.get(i).get("isPortable").asBoolean();
+                        item = new Item(itemId,itemName,itemDesc, isPortable);
                         break;
                 }
                 items.add(item);

@@ -19,7 +19,7 @@ interface Readable {
     String[] readPage(int pageId);
 }
 
-public class InfoItem extends Item implements Readable {
+public class InfoItem extends Item implements Readable, Usable {
     private Path infoPath;
     private String initialMessage;
     private Map<Integer,String[]> pages; //pageId -> [pageName, pageContent]
@@ -36,8 +36,8 @@ public class InfoItem extends Item implements Readable {
         return objmap.readTree(src);
     }
 
-    public InfoItem(String id, String name, String description, Path infoPath) {
-        super(id, name, description);
+    public InfoItem(String id, String name, String description, boolean isPortable, Path infoPath) {
+        super(id, name, description, isPortable);
         this.infoPath = infoPath;
 
         try {
@@ -76,6 +76,11 @@ public class InfoItem extends Item implements Readable {
     @Override
     public String[] readPage(int pageId) {
         return pages.get(pageId);
+    }
+
+    @Override
+    public String use() {
+        return "yay";
     }
     
 }

@@ -8,6 +8,7 @@ import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.FoodItem;
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.items.StorageItem;
+import com.amelithic.zorkgame.items.Usable;
 import com.amelithic.zorkgame.locations.Room;
 
 public interface Command {
@@ -66,7 +67,7 @@ class TakeItemCommand implements Command {
         //verify it exists
         if (takeItem != null) {
         //check room contains object + add to inventory + remove from room
-            if (player.getCurrentRoom().getRoomItems().contains(takeItem)) {
+            if ((player.getCurrentRoom().getRoomItems().contains(takeItem)) && (takeItem.isPortable())) {
                 player.setInventory(takeItem);
                 if (player.getCurrentRoom().removeRoomItem(takeItem)) {
                     return String.format("Added %s to inventory!\n", takeItem.getName());
@@ -74,9 +75,9 @@ class TakeItemCommand implements Command {
                     return "Cannot add item";
                 }
 
+            } else {
+                return "This item is not portable, or there is no item of that type in this room.";
             }
-        } else {
-            return "There is no item of that type in this room.";
         }
         return "Invalid item, please try again.";
     }
@@ -231,6 +232,77 @@ class DescribeCommand implements Command {
         return "describe, explain, info";
     }
 } //end Describe
+
+class UseCommand implements Command {
+    //TODO: it alllllll
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+    private String itemInString;
+    private Item useItem;
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+
+        text = text.trim().toLowerCase();
+        if (text.matches("^(use|interact)\\s+.+$")) {
+            itemInString = text.replaceFirst("^(use|interact)\\s+", "");
+            return Optional.of(this);
+        } else if (text.matches("^(use|interact)\\s*$")) {
+            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            System.out.println(modText+" what?");
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        //find item in room or in inventory
+        for (Item item : player.getInventory()) {
+            if (item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) {
+                useItem = item;
+                break;
+            } else {
+                continue;
+            }
+        }
+        for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
+            Item item = (Item) player.getCurrentRoom().getRoomItems().get(i);
+            if (item.getName().equalsIgnoreCase(itemInString)) {
+                useItem = item;
+                break;
+            } else {
+                continue;
+            }
+        }
+
+        if (useItem != null) {
+            if ((useItem instanceof Usable)) {
+                return ((Usable)useItem).use();
+            } else {
+                return "This item cannot be used";
+            }
+        } else {
+            return "There is no item of that type in this room or inventory.";
+        }
+    }
+
+    @Override
+    public String getName() {
+        return "use";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Uses a consumable or interactable item";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "interact";
+    }
+} //end Use
 
 class GoCommand implements Command {
     private String direction;

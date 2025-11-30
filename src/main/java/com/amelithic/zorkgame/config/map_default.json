@@ -42,7 +42,7 @@
             "description": "A dusty but working IBM 3270 computer with flickering green text on screen.",
             "type": "info",
             "infoFile": "info_terminal.json",
-            "isPortable": true
+            "isPortable": false
         },
         {
             "id": "item001",
@@ -84,7 +84,7 @@
             "exits": {
                 "north": "base_main"
             },
-            "items": ["item001", "item002"]
+            "items": ["locker"]
         },
         {
             "id": "base_main",
@@ -129,7 +129,7 @@
             "exits": {
                 "east": "base_corridor"
             },
-            "items": []
+            "items": ["terminal"]
         },
         {
             "id": "base_bathrooms",

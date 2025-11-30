@@ -11,19 +11,17 @@ public class Item implements Stackable {
     protected String name;
     protected String location;
     protected String id;
-    protected boolean isVisible;
     protected boolean isPortable;
     protected int count; //for a stack of multiple languages
 
     //constructors
     public Item(String id, String name, String description) {
-        this(id, name, description, true, true);
+        this(id, name, description, true);
     }
-    public Item(String id, String name, String description, boolean isVisible, boolean isPortable) {
+    public Item(String id, String name, String description, boolean isPortable) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.isVisible = isVisible;
         this.isPortable = isPortable;
         this.count = 0;
     }
@@ -55,13 +53,6 @@ public class Item implements Stackable {
     }
     public void setId(String id) {
         this.id = id;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
-    }
-    public void setVisible(boolean isVisible) {
-        this.isVisible = isVisible;
     }
 
     public boolean isPortable() {
