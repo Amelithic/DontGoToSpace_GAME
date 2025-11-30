@@ -78,7 +78,7 @@ public class GameMap {
                         break;
                     case "food":
                         String foodConsumeMessage = itemsArrayFromFile.get(i).get("consumeMessage").asText();
-                        item = new FoodItem(itemId, itemName, itemType, (foodConsumeMessage != null && foodConsumeMessage.length() > 0)? foodConsumeMessage : "");
+                        item = new FoodItem(itemId, itemName, itemDesc, (foodConsumeMessage != null && foodConsumeMessage.length() > 0)? foodConsumeMessage : "");
                         break;
                     case "required":
                         item = new RequiredItem(itemId, itemName, itemDesc, itemType);

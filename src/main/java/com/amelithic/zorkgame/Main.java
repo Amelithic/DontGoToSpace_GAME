@@ -93,7 +93,7 @@ public class Main {
             Optional<Command> cmdCheck = commandManager.parse(gameState, player, input);
             if (cmdCheck.isPresent()) {
                 Command cmd = cmdCheck.get();
-                cmd.execute();
+                System.out.println(cmd.execute());
             } else {
                 System.out.println("I don't understand that command.");
             }

@@ -380,8 +380,10 @@ class HelpCommand implements Command {
 
         text = text.trim().toLowerCase();
         if (text.matches("^(help|commands)\\s+.+$")) {
-            //TODO: support for optional args
             itemInString = text.replaceFirst("^(help|commands)\\s+", "");
+            return Optional.of(this);
+        } else if (text.matches("^(help|commands)\\s*$")) {
+            itemInString = "";
             return Optional.of(this);
         }
         return Optional.empty();
@@ -389,8 +391,20 @@ class HelpCommand implements Command {
 
     @Override
     public String execute() {
-        //TODO: better help than this
-        return "You call out for help, but in space no one can hear you scream...";
+        CommandManager cmdManager = new CommandManager();
+        if (!itemInString.isEmpty() || !itemInString.equals("")) {
+            for (Command cmd : cmdManager.getAllCommands()) {
+                if (cmd.getName().equalsIgnoreCase(itemInString)) {
+                    return cmd.getName()+ "\n" + cmd.getDescription() + "\nSynonyms: " + cmd.getSynonyms();
+                }
+            }
+            //if no matching command to arg
+            return "Command now found, please try again.";
+        } else {
+            String possibleCommands = "Possible commands: ";
+            for (Command cmd : cmdManager.getAllCommands()) possibleCommands += "\n\t" + cmd.getName();
+            return possibleCommands;
+        }
     }
 
     @Override
@@ -400,7 +414,7 @@ class HelpCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Show help";
+        return "Shows help for specific commands or all possible commands";
     }
 
     @Override
@@ -432,6 +446,7 @@ class LookCommand implements Command {
 
     @Override
     public String execute() {
+        //possible matches
         ArrayList<String> itemSearchArray = new ArrayList<>(); //array of all item ids and names
         for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
             Item item = (Item) player.getCurrentRoom().getRoomItems().get(i);
@@ -440,15 +455,16 @@ class LookCommand implements Command {
         }
 
         if (itemInString.matches("^(around|room|here)")) {
-            return player.getCurrentRoom().getLongDescription();
+            return player.getCurrentRoom().getLongDescription(); //look around room
         } else {
+            //look at items
             if (!itemSearchArray.isEmpty()) for (String itemPossibleString : itemSearchArray) {
-                if (itemInString.matches(itemPossibleString)) {
+                if (itemPossibleString.equalsIgnoreCase(itemInString)) {
                     //if string matches, find corresponding item
 
                     for (Item item : (ArrayList<Item>) player.getCurrentRoom().getRoomItems()) {
                         String itemReturn = "";
-                        if ((itemPossibleString.equals(item.getId())) || (itemPossibleString.equals(item.getName()))) {
+                        if ((itemPossibleString.equalsIgnoreCase(item.getId())) || (itemPossibleString.equalsIgnoreCase(item.getName()))) {
                             itemReturn += item.getDescription();
                         }
 
@@ -462,7 +478,7 @@ class LookCommand implements Command {
                 }
             }
         }
-       return "Nothing rn";
+       return "Nothing to look at, please try again.";
     }
 
     @Override
