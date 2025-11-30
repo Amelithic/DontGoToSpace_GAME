@@ -17,10 +17,13 @@ public class CommandManager {
         commands.add(new LookCommand());
         commands.add(new EatCommand());
         commands.add(new ShowCommand());
-        commands.add(new TakeItemCommand());
+        commands.add(new TakeCommand());
         commands.add(new DropCommand());
         commands.add(new SayCommand());
         commands.add(new DescribeCommand());
+        commands.add(new UseCommand());
+        commands.add(new SaveCommand());
+        commands.add(new LoadCommand());
     }
 
     //TODO: clear previous values from command before execute

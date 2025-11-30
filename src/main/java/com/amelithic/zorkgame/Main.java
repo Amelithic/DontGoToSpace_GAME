@@ -19,12 +19,14 @@ public class Main {
     private static Player player;
     private static boolean gameRunning;
     private static GameMap map;
+    private static SaveManager saveManager;
     private static Properties properties;
 
     //constructors
     public Main() {
         Path fileNameMap = Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\map_default.json");
         map = new GameMap(fileNameMap);
+        saveManager = new SaveManager();
         gameRunning = true;
 
         properties = new Properties();
@@ -48,11 +50,22 @@ public class Main {
     }
 
     //getters
-    public GameMap getMap() {
+    public static GameMap getMap() {
         return map;
     }
-    public Player getPlayer() {
+    public static void setMap(GameMap map) {
+        Main.map = map;
+    }
+
+    public static Player getPlayer() {
         return player;
+    }
+    public static void setPlayer(Player player) {
+        Main.player = player;
+    }
+
+    public static SaveManager getSaveManager() {
+        return saveManager;
     }
     public void setGameRunning(boolean gameRunning) {
         Main.gameRunning = gameRunning;

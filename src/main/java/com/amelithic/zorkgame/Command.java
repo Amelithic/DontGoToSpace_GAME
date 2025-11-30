@@ -21,8 +21,7 @@ public interface Command {
     String getSynonyms();
 }
 
-
-class TakeItemCommand implements Command {
+class TakeCommand implements Command {
     //fields
     private String itemInString;
     private Player player; //author of command (whos running it)
@@ -68,7 +67,7 @@ class TakeItemCommand implements Command {
         if (takeItem != null) {
         //check room contains object + add to inventory + remove from room
             if ((player.getCurrentRoom().getRoomItems().contains(takeItem)) && (takeItem.isPortable())) {
-                player.setInventory(takeItem);
+                player.addToInventory(takeItem);
                 if (player.getCurrentRoom().removeRoomItem(takeItem)) {
                     return String.format("Added %s to inventory!\n", takeItem.getName());
                 } else {
@@ -138,7 +137,7 @@ class DropCommand implements Command {
         //check its in inventory + remove from inventory + add to room
             if (player.getInventory().contains(removeItem)) {
 
-                player.getCurrentRoom().setRoomItems(removeItem);
+                player.getCurrentRoom().addRoomItems(removeItem);
                 if (player.removeFromInventory(removeItem)) {
                     return String.format("Dropped %s!\n", removeItem.getName());
                 } else {
@@ -399,6 +398,81 @@ class GoCommand implements Command {
         return "go, move, walk, travel";
     }
 } //end Go
+
+class SaveCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+
+        text = text.trim().toLowerCase();
+        if (text.equals("save")) {
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        return Main.getSaveManager().save(game);
+    }
+
+    @Override
+    public String getName() {
+        return "save";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Save the game";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "";
+    }
+} //end Save
+class LoadCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+
+        text = text.trim().toLowerCase();
+        if (text.equals("load")) {
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        SaveManager saveManager = Main.getSaveManager();
+        saveManager.load(saveManager.getSaves().get(0));
+        return "Loaded save successfully";
+    }
+
+    @Override
+    public String getName() {
+        return "load";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Load a saved state of the game";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "";
+    }
+} //end Load
 
 class QuitCommand implements Command {
     private Player player; //author of command (whos running it)

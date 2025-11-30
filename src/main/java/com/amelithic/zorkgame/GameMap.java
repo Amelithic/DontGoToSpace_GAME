@@ -27,6 +27,7 @@ public class GameMap {
     private String description;
     private ArrayList<Item> items; //all initialised Item objects in the Map (used in Rooms)
     private ArrayList<Room<ExitDirection>> rooms; //all initialised Room objects in the Map
+    private ArrayList<Goal> goals;
     private static ObjectMapper objmap = getDefaultObjectMapper(); //for JSON parsing
 
     private static ObjectMapper getDefaultObjectMapper() {
@@ -62,7 +63,20 @@ public class GameMap {
             this.name = map.get("name").asText();
             this.description = map.get("description").asText();
 
-            //initialise all items + add to array"
+            //initialise all goals + add to array
+            goals = new ArrayList<>();
+            ArrayNode goalsArrayFromFile = (ArrayNode) map.get("goals");
+            for (int i=0; i < goalsArrayFromFile.size(); i++) {
+                int goalId = goalsArrayFromFile.get(i).get("goalId").asInt();
+                String goalName = goalsArrayFromFile.get(i).get("goalName").asText();
+                boolean isSolved = goalsArrayFromFile.get(i).get("isSolved").asBoolean();
+
+                Goal goal = new Goal(goalId, goalName, isSolved);
+                goals.add(goal);
+            }
+
+
+            //initialise all items + add to array
             items = new ArrayList<>();
             ArrayNode itemsArrayFromFile = (ArrayNode) map.get("items");
             for (int i=0; i < itemsArrayFromFile.size(); i++) {
@@ -142,7 +156,7 @@ public class GameMap {
                                 if (mapItemId.getId().equals(roomItemId)) {
                                     //add if matching ids -> item exists
                                     Item roomItem = items.get(items.indexOf(mapItemId));
-                                    room.setRoomItems(roomItem);
+                                    room.addRoomItems(roomItem);
                                 }
                             }
 

@@ -1,5 +1,32 @@
 { "name": "Default Map",
   "description": "The default map for the adventure game, featuring several interconnected rooms.",
+  "goals": [
+    {
+        "goalId":1,
+        "goalName": "Get all 5 rocket parts",
+        "isSolved": false
+    }, 
+    {
+        "goalId":2,
+        "goalName": "Fix electrical unit",
+        "isSolved": false
+    },
+    {
+        "goalId":3,
+        "goalName": "Kill alien 1",
+        "isSolved": false
+    },
+    {
+        "goalId":4,
+        "goalName": "Kill alien 2",
+        "isSolved": false
+    },
+    {
+        "goalId":5,
+        "goalName": "Find secret room",
+        "isSolved": false
+    }
+  ],
   "items": [
         {
             "id": "thruster",
