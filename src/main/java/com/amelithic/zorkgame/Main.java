@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import com.amelithic.zorkgame.characters.Player;
+import com.amelithic.zorkgame.locations.Room;
 
 import javafx.application.Application;
 
@@ -17,8 +18,8 @@ public class Main {
     //fields
     private static Player player;
     private static boolean gameRunning;
-    private GameMap map;
-    private Properties properties;
+    private static GameMap map;
+    private static Properties properties;
 
     //constructors
     public Main() {
@@ -26,17 +27,20 @@ public class Main {
         map = new GameMap(fileNameMap);
         gameRunning = true;
 
+        properties = new Properties();
+
         try {
-            //TODO: can properties be made a global object in Main?
             properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
             String startRoomId = properties.getProperty("engine.start_room").trim();
-            Room startRoom;
+            Room startRoom = null;
             for (Room room : map.getRooms()) {
-                if (room.getId().equals(startRoom)) startRoom = room;
+                if (room.getId().equals(startRoomId)) startRoom = room;
             }
             //TODO: move player to main() -> ask for userninput for name
-            player = new Player("Amelie", map.getRooms().get(map.getRooms().indexOf(startRoom)));
-            System.out.println(player.displayInfo());
+            if (startRoom != null) {
+                player = new Player("Amelie", map.getRooms().get(map.getRooms().indexOf(startRoom)));
+                System.out.println(player.displayInfo());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

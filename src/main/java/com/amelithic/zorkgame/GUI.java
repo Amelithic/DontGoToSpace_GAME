@@ -1,7 +1,7 @@
 package com.amelithic.zorkgame;
 
-import java.io.IOException;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import com.amelithic.zorkgame.characters.Player;
@@ -74,7 +74,7 @@ public class GUI extends Application {
         try {
             properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
             String gameTitle = properties.getProperty("game.title").trim();
-            return gameTitle
+            return gameTitle;
         } catch (Exception e) {
             e.printStackTrace();
         }
