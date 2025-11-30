@@ -184,6 +184,8 @@ public class GameController extends GUIController {
             inputField.setText("");
             autoCompletePopup.hide();
 
+            //TODO: check??? -> why it display invalid command?
+
             Optional<Command> cmdCheck = commandManager.parse(gameState, player, inputString);
             if (cmdCheck.isPresent()) {
                 Command cmd = cmdCheck.get();

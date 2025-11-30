@@ -1,0 +1,26 @@
+{
+    "item": "terminal",
+    "intialMessage": "The computer begins to whir and you see a screen showing files in the current directory...",
+    "pages": [
+        {
+            "pageId":0,
+            "pageName": "Mission",
+            "pageContent": "Gotta follow it..."
+        },
+        {
+            "pageId":1,
+            "pageName": "23rd oct 1971",
+            "pageContent": "some text for page 1"
+        },
+        {
+            "pageId":2,
+            "pageName": "24th oct 1971",
+            "pageContent": "some text for page 1"
+        },
+        {
+            "pageId":3,
+            "pageName": "25th oct 1971",
+            "pageContent": "some text for page 1"
+        }
+    ]
+}

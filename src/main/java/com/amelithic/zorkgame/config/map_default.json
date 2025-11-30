@@ -2,11 +2,46 @@
   "description": "The default map for the adventure game, featuring several interconnected rooms.",
   "items": [
         {
-            "id": "apple",
-            "name": "Apple",
-            "description": "A tasty treat! (Consumable)",
-            "type": "food",
-            "consumeMessage": "om nom nom nom nom (guy from Monster House)",
+            "id": "thruster",
+            "name": "Thruster",
+            "description": "A propulsion device required to lauch a spacecraft.",
+            "type": "required",
+            "isPortable": true
+        },
+        {
+            "id": "fuel",
+            "name": "Fuel Cannister",
+            "description": "Contains rocket fuel used for the spacecraft.",
+            "type": "required",
+            "isPortable": true
+        },
+        {
+            "id": "chip",
+            "name": "Controller chip",
+            "description": "A replacement CPU chip used for the spacecraft's electronic systems.",
+            "type": "required",
+            "isPortable": true
+        },
+        {
+            "id": "gearbox",
+            "name": "Gear box",
+            "description": "Mechanical parts used in a spacecraft's steering system.",
+            "type": "required",
+            "isPortable": true
+        },
+        {
+            "id": "idcard",
+            "name": "ID Card",
+            "description": "Your own crew-member ID card, which also functions as a key for the spacecraft.",
+            "type": "required",
+            "isPortable": true
+        },
+        {
+            "id": "terminal",
+            "name": "Terminal",
+            "description": "A dusty but working IBM 3270 computer with flickering green text on screen.",
+            "type": "info",
+            "infoFile": "info_terminal.json",
             "isPortable": true
         },
         {
@@ -18,9 +53,9 @@
             "isPortable": true
         },
         {
-            "id": "item002",
-            "name": "Table",
-            "description": "A wooden table with four legs",
+            "id": "locker",
+            "name": "Locker",
+            "description": "A rusty locker that may contain some useful items...",
             "type": "storage",
             "inventory": ["apple", "apple"],
             "isPortable": false

@@ -1,11 +1,13 @@
 package com.amelithic.zorkgame;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import com.amelithic.zorkgame.GameMap.ExitDirection;
 import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.FoodItem;
 import com.amelithic.zorkgame.items.Item;
+import com.amelithic.zorkgame.items.StorageItem;
 import com.amelithic.zorkgame.locations.Room;
 
 //TODO: Complete all command logic before commmit
@@ -430,10 +432,36 @@ class LookCommand implements Command {
 
     @Override
     public String execute() {
-        //TODO: logic
-        /* TODO: if "around" or "room" -> describe room
-        * TODO: if "item in room" -> describe item
-        * TODO: if "storage item" -> display contents */
+        ArrayList<String> itemSearchArray = new ArrayList<>(); //array of all item ids and names
+        for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
+            Item item = (Item) player.getCurrentRoom().getRoomItems().get(i);
+            itemSearchArray.add(item.getId());
+            itemSearchArray.add(item.getName());
+        }
+
+        if (itemInString.matches("^(around|room|here)")) {
+            return player.getCurrentRoom().getLongDescription();
+        } else {
+            if (!itemSearchArray.isEmpty()) for (String itemPossibleString : itemSearchArray) {
+                if (itemInString.matches(itemPossibleString)) {
+                    //if string matches, find corresponding item
+
+                    for (Item item : (ArrayList<Item>) player.getCurrentRoom().getRoomItems()) {
+                        String itemReturn = "";
+                        if ((itemPossibleString.equals(item.getId())) || (itemPossibleString.equals(item.getName()))) {
+                            itemReturn += item.getDescription();
+                        }
+
+                        //storage items
+                        if (item instanceof StorageItem storageItem) {
+                            itemReturn += "\n" + storageItem.showInventory();
+                        }
+
+                        return itemReturn;
+                    }
+                }
+            }
+        }
        return "Nothing rn";
     }
 

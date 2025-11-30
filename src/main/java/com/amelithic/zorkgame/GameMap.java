@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.amelithic.zorkgame.items.FoodItem;
+import com.amelithic.zorkgame.items.InfoItem;
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.items.RequiredItem;
 import com.amelithic.zorkgame.items.StorageItem;
@@ -84,6 +85,11 @@ public class GameMap {
                         break;
                     case "storage":
                         item = new StorageItem(itemId, itemName, itemType);
+                        break;
+                    case "info":
+                        String infoFile = "src\\main\\java\\com\\amelithic\\zorkgame\\config\\info_json\\"+itemsArrayFromFile.get(i).get("infoFile").asText();
+                        Path infoFilePath = Path.of(infoFile);
+                        item = new InfoItem(itemId, itemName, itemType, infoFilePath);
                         break;
                     default:
                         item = new Item(itemId,itemName,itemDesc);
