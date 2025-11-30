@@ -10,8 +10,6 @@ import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.items.StorageItem;
 import com.amelithic.zorkgame.locations.Room;
 
-//TODO: Complete all command logic before commmit
-
 public interface Command {
     Optional<Command> parse(Main game, Player player, String text); //parsing inputs
     String execute(); //command logic
@@ -576,8 +574,7 @@ class ShowCommand implements Command {
 
         text = text.trim().toLowerCase();
         if (text.matches("^(show|display)\\s+(inventory|inv|room|items)$")) {
-            //TODO: fix
-            // System.err.println("here");
+            //TODO: fix -> ??? dont remember what to fix here? it works tho?
             target = text.replaceFirst("^(show|display)\\s+", "");
             return Optional.of(this);
         } else if (text.matches("^(inventory|inv)")) {
