@@ -156,7 +156,7 @@ public class GameMap {
                                 if (mapItemId.getId().equals(roomItemId)) {
                                     //add if matching ids -> item exists
                                     Item roomItem = items.get(items.indexOf(mapItemId));
-                                    room.addRoomItems(roomItem);
+                                    room.setRoomItems(roomItem);
                                 }
                             }
 
@@ -218,6 +218,9 @@ public class GameMap {
     }
     public ArrayList<Room<ExitDirection>> getRooms() {
         return rooms;
+    }
+    public ArrayList<Goal> getGoals() {
+        return goals;
     }
 
     //useful methods

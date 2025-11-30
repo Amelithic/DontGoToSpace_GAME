@@ -67,7 +67,7 @@ class TakeCommand implements Command {
         if (takeItem != null) {
         //check room contains object + add to inventory + remove from room
             if ((player.getCurrentRoom().getRoomItems().contains(takeItem)) && (takeItem.isPortable())) {
-                player.addToInventory(takeItem);
+                player.setInventory(takeItem);
                 if (player.getCurrentRoom().removeRoomItem(takeItem)) {
                     return String.format("Added %s to inventory!\n", takeItem.getName());
                 } else {
@@ -137,7 +137,7 @@ class DropCommand implements Command {
         //check its in inventory + remove from inventory + add to room
             if (player.getInventory().contains(removeItem)) {
 
-                player.getCurrentRoom().addRoomItems(removeItem);
+                player.getCurrentRoom().setRoomItems(removeItem);
                 if (player.removeFromInventory(removeItem)) {
                     return String.format("Dropped %s!\n", removeItem.getName());
                 } else {
