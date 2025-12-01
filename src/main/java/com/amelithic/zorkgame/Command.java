@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import com.amelithic.zorkgame.GameMap.ExitDirection;
+import com.amelithic.zorkgame.characters.Alien;
 import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.FoodItem;
 import com.amelithic.zorkgame.items.Item;
@@ -510,7 +511,66 @@ class QuitCommand implements Command {
     public String getSynonyms() {
         return "quit, exit";
     }
-} //end Quit
+} //end 
+
+class AttackCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+
+        text = text.trim().toLowerCase();
+        if (text.matches("^(attack|hit|punch)\\s*$")) {
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        //find if player current room has alien
+        Room playerRoom  = player.getCurrentRoom();
+
+        Alien attackee = null;
+        for (Alien alien : game.getMap().getAliens()) {
+            if (alien.getCurrentRoom().equals(playerRoom)) {
+                attackee = alien;
+                break; //get first alien
+            }
+        }
+
+        //attack
+        if (attackee != null) {
+            if (attackee.getDefeated()==false) {
+                //if not defeated, attack
+                attackee.setCurrentHealth(attackee.getCurrentHealth() - player.getAttackDamage());
+                if (attackee.getCurrentHealth() <= 0) attackee.setDefeated(true);
+                return "Alien attacked! Health remaining: "+attackee.getCurrentHealth();
+            } else {
+                return "Alien already defeated!";
+            }
+        }
+        return "Attacked nothing...";
+    }
+
+    @Override
+    public String getName() {
+        return "attack";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Attacks if alien in the room";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "hit, punch";
+    }
+} //end Attack
 
 class HelpCommand implements Command {
     private Player player; //author of command (whos running it)

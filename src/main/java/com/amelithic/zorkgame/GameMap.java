@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.amelithic.zorkgame.characters.Alien;
 import com.amelithic.zorkgame.items.FoodItem;
 import com.amelithic.zorkgame.items.InfoItem;
 import com.amelithic.zorkgame.items.Item;
@@ -28,6 +29,7 @@ public class GameMap {
     private ArrayList<Item> items; //all initialised Item objects in the Map (used in Rooms)
     private ArrayList<Room<ExitDirection>> rooms; //all initialised Room objects in the Map
     private ArrayList<Goal> goals;
+    private ArrayList<Alien> aliens;
     private static ObjectMapper objmap = getDefaultObjectMapper(); //for JSON parsing
 
     private static ObjectMapper getDefaultObjectMapper() {
@@ -200,6 +202,28 @@ public class GameMap {
                 }
             }
 
+            //initialise all characters + add to array
+            //called after as Rooms must exist
+            aliens = new ArrayList<>();
+            ArrayNode characterArrayFromFile = (ArrayNode) map.get("characters");
+            for (int i=0; i < characterArrayFromFile.size(); i++) {
+                //String type = characterArrayFromFile.get(i).get("type").asText(); //for future use
+                String name = characterArrayFromFile.get(i).get("name").asText();
+                String currentRoomString = characterArrayFromFile.get(i).get("currentRoom").asText();
+                int maxHealth = characterArrayFromFile.get(i).get("maxHealth").asInt();
+                int attackDamage = characterArrayFromFile.get(i).get("attackDamage").asInt();
+                
+                Room currentRoom = null;
+                for (Room room : rooms) {
+                    if (room.getId().equalsIgnoreCase(currentRoomString)) {
+                        currentRoom = room;
+                    }
+                }
+
+                Alien alien = new Alien(name, currentRoom, maxHealth, attackDamage);
+                aliens.add(alien);
+            }
+
         } catch (IOException e) {
             System.err.println("Exception when reading the JSON map file...");
             e.printStackTrace();
@@ -221,6 +245,9 @@ public class GameMap {
     }
     public ArrayList<Goal> getGoals() {
         return goals;
+    }
+    public ArrayList<Alien> getAliens() {
+        return aliens;
     }
 
     //useful methods

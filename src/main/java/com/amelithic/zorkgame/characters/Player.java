@@ -9,8 +9,8 @@ public class Player extends Character {
     private ArrayList<Item> inventory;
     private boolean isAdmin;
 
-    public Player(String name, Room startingRoom) {
-        super(name, startingRoom);
+    public Player(String name, Room startingRoom, int maxHealth, int attackDamage) {
+        super(name, startingRoom, maxHealth, attackDamage);
         this.inventory = new ArrayList<>();
         this.isAdmin = false;
     }

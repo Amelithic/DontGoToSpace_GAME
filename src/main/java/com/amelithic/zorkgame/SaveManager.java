@@ -55,8 +55,14 @@ public class SaveManager {
             SaveFile saveFile = mapper.readValue(savePath.toFile(), SaveFile.class);
 
             //Setting loaded values into Main
-            Main.setPlayer(saveFile.getPlayer());
-            Main.setMap(saveFile.getMap());
+            /*Main.setPlayer(saveFile.getPlayer());
+            Main.setMap(saveFile.getMap());*/
+
+            //Manual parse
+            GameMap map = saveFile.getMap();
+
+            //items in rooms
+            //map.getItems() {}
 
             System.out.println("Loaded save: " + savePath);
         } catch (IOException e) {

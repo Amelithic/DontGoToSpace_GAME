@@ -27,6 +27,24 @@
         "isSolved": false
     }
   ],
+  "characters": [
+    {
+        "type": "alien",
+        "name": "Alien 1",
+        "currentRoom": "cave",
+        "maxHealth": 80,
+        "attackDamage": 5,
+        "isDefeated": false
+    },
+    {
+        "type": "alien",
+        "name": "Alien 2",
+        "currentRoom": "outdoors_02",
+        "maxHealth": 200,
+        "attackDamage": 10,
+        "isDefeated": false
+    }
+  ],
   "items": [
         {
             "id": "thruster",

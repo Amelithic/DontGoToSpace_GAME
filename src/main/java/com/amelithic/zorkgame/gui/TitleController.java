@@ -50,4 +50,10 @@ public class TitleController extends GUIController {
     public void game(ActionEvent event) throws IOException {
         switchToGame(event);
     }//end game
+
+    @FXML
+    public void info(ActionEvent event) throws IOException {
+        //TODO: info popup with version info
+        switchToGame(event);
+    }//end game
 }

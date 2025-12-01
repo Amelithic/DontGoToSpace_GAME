@@ -28,22 +28,38 @@
       <!-- Inventory Preview -->
       <VBox alignment="CENTER" layoutX="600.0" layoutY="14.0" prefHeight="188.0" prefWidth="36.0" style="-fx-padding: 10px; -fx-spacing: 20px;">
          <children>
-            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                  <Image url="/gui/resources/icons/bulb.png"/>
-            </ImageView>
-            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                  <Image url="/gui/resources/icons/bulb.png"/>
-            </ImageView>
-            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                  <Image url="/gui/resources/icons/bulb.png"/>
-            </ImageView>
-            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                  <Image url="/gui/resources/icons/bulb.png"/>
-            </ImageView>            
-            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                  <Image url="/gui/resources/icons/bulb.png"/>
-            </ImageView>            
-            <Separator prefWidth="200.0" />
+               <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="new" styleClass="iconButton">
+                  <Label text="New Save"/>
+                  <graphic>
+                     <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                           <Image url="/gui/resources/icons/bulb.png"/>
+                     </ImageView>
+                  </graphic>
+               </Button>
+               <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" fx:id="load" styleClass="iconButton" onAction="#game">
+                  <Label text="Load Save"/>
+                  <graphic>
+                     <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                           <Image url="/gui/resources/icons/bulb.png"/>
+                     </ImageView>
+                  </graphic>
+               </Button>
+               <Button layoutX="14.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="exit" styleClass="iconButton" onAction="#exit">
+                  <Label text="Exit"/>
+                  <graphic>
+                     <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                           <Image url="/gui/resources/icons/sign-out.png"/>
+                     </ImageView>
+                  </graphic>
+               </Button>
+               <Button layoutX="59.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="settings" styleClass="iconButton" disabled>
+                  <Label text="Settings"/>
+                  <graphic>
+                     <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
+                           <Image url="/gui/resources/icons/download.png"/>
+                     </ImageView>
+                  </graphic>
+               </Button>
             <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="inv" styleClass="iconButton">
                <graphic>
                   <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
@@ -55,14 +71,14 @@
       </VBox>
 
       <!-- Buttons -->
-      <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="map" styleClass="iconButton">
+      <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="admin" styleClass="iconButton">
          <graphic>
             <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
                   <Image url="/gui/resources/icons/bulb.png"/>
             </ImageView>
          </graphic>
       </Button>
-      <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" fx:id="help" styleClass="iconButton">
+      <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" fx:id="info" styleClass="iconButton" onAction="#info">
          <graphic>
             <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
                   <Image url="/gui/resources/icons/bulb.png"/>
@@ -73,13 +89,6 @@
          <graphic>
             <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
                   <Image url="/gui/resources/icons/sign-out.png"/>
-            </ImageView>
-         </graphic>
-      </Button>
-      <Button layoutX="59.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="save" styleClass="iconButton" onAction="#game">
-         <graphic>
-            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                  <Image url="/gui/resources/icons/download.png"/>
             </ImageView>
          </graphic>
       </Button>
