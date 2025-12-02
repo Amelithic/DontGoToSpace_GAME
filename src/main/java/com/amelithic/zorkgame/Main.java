@@ -22,14 +22,14 @@ public class Main {
 
     //constructors
     public Main() {
-        Path fileNameMap = Path.of("config/map_default.json");
+        Path fileNameMap = Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\map_default.json");
         this.map = new GameMap(fileNameMap);
         this.saveManager = new SaveManager();
         this.properties = new Properties();
         this.gameRunning = true;
 
         try {
-            properties.load(new FileInputStream("config/config.properties"));
+            properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
             String startRoomId = properties.getProperty("engine.start_room").trim();
             Room startRoom = null;
             for (Room room : map.getRooms()) {
@@ -38,7 +38,6 @@ public class Main {
             //TODO: move player to main() -> ask for userninput for name
             if (startRoom != null) {
                 player = new Player("Unnamed", map.getRooms().get(map.getRooms().indexOf(startRoom)),100,10);
-                System.out.println(player.displayInfo());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,11 +81,11 @@ public class Main {
         String uiMode = game.getProperties().getProperty("ui.ui_mode", "cli").trim();
         switch (uiMode) {
             case "gui":
-                System.out.println("GUI SELECTED");
+                //System.out.println("GUI SELECTED");
                 Application.launch(GUI.class, args);
                 break;
             case "cli":
-                System.out.println("CLI SELECTED");
+                //System.out.println("CLI SELECTED");
                 CLI.run(game);
                 break;
             default:

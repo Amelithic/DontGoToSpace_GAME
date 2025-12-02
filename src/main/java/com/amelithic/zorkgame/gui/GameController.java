@@ -1,9 +1,11 @@
 package com.amelithic.zorkgame.gui;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 import com.amelithic.zorkgame.Command;
 import com.amelithic.zorkgame.CommandManager;
@@ -61,9 +63,6 @@ public class GameController extends GUIController {
         outputConsole.setWrapText(true);
         inputConsole.setPromptText("Enter your command here..."); //to set the hint text
     
-
-        //outputConsole.setDisable(true); //cannot mouse select
-
         //set bg image
         String roomId = player.getCurrentRoom().getId();
         String roomImgUrl = returnImageUrl(roomId);
@@ -178,11 +177,9 @@ public class GameController extends GUIController {
         if (event.getSource() instanceof TextField textField) {
             inputField = textField;
             String inputString = inputField.getText().trim().toLowerCase();
-            System.out.println(inputString);
+            //System.out.println(inputString);
             inputField.setText("");
             autoCompletePopup.hide();
-
-            //TODO: check??? -> why it display invalid command?
 
             Optional<Command> cmdCheck = commandManager.parse(gameState, player, inputString);
             if (cmdCheck.isPresent()) {
@@ -193,7 +190,12 @@ public class GameController extends GUIController {
                 outputConsole.appendText("I don't understand that command.\n");
             }
 
-            //outputConsole.appendText(inputString);
+            //change bg image if move to next room
+            if (inputString.matches("^(go|move|walk|travel).*")) {
+                String roomId = player.getCurrentRoom().getId();
+                String roomImgUrl = returnImageUrl(roomId);
+                bg.setImage(new Image(roomImgUrl));
+            }
         }
     }//end inputToTextField
 
@@ -229,6 +231,23 @@ public class GameController extends GUIController {
 
     @FXML
     public void exit(ActionEvent event) throws IOException {
+        //only saves if auto-save = true
+        try {
+            Properties properties = Main.getProperties();
+            properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
+            String autoSave = properties.getProperty("engine.auto_save").trim();
+
+            if (autoSave.equals("true")) {
+                Optional<Command> cmdCheck = commandManager.parse(gameState, player, "save");
+                if (cmdCheck.isPresent()) {
+                    Command cmd = cmdCheck.get();
+                    cmd.execute();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         switchToTitle(event);
     }//end exit
 

@@ -42,7 +42,7 @@ public class InfoItem extends Item implements Readable, Usable {
 
         try {
             String infoFileStr = Files.readString(infoPath);
-            System.out.println(infoFileStr); //debug
+            //System.out.println(infoFileStr); //debug
             JsonNode lore = parse(infoFileStr);
 
             this.initialMessage = lore.get("intialMessage").asText();

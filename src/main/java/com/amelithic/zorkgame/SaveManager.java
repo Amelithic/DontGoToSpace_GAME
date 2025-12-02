@@ -141,7 +141,7 @@ public class SaveManager {
 
             Player newPlayer = null;
             if (playerCurrentRoom != null) {
-                newPlayer = new Player(playerName, null, playerHealthMax, playerHealthCurrent, playerAttackDamage);
+                newPlayer = new Player(playerName, playerCurrentRoom, playerHealthMax, playerHealthCurrent, playerAttackDamage);
             }
 
             System.out.println("Loaded save successfully: " + savePath);
