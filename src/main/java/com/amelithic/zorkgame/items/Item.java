@@ -12,7 +12,7 @@ public class Item implements Stackable {
     protected String location;
     protected String id;
     protected boolean isPortable;
-    protected int count; //for a stack of multiple languages
+    protected int count; //for a stack of multiple
 
     //constructors
     public Item(String id, String name, String description) {
@@ -23,7 +23,7 @@ public class Item implements Stackable {
         this.name = name;
         this.description = description;
         this.isPortable = isPortable;
-        this.count = 0;
+        this.count = 1;
     }
 
     //getters and setters

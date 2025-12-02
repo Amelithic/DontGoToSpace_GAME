@@ -24,7 +24,6 @@ public class GUI extends Application {
     protected CommandManager commandManager;
     protected Player player;
 
-
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
@@ -69,7 +68,7 @@ public class GUI extends Application {
         launch();
     }
 
-    public static String fetchTitle() {
+    public String fetchTitle() {
         Properties properties = new Properties();
         try {
             properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));

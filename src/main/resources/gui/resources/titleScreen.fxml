@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Font?>
 <?scenebuilder-stylesheet /gui/resources/gameScreen.css?>
 
 
@@ -25,47 +26,34 @@
       <!-- Background Image -->
       <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="false" fx:id="bg" styleClass="imageVignette" /> 
 
-      <!-- Inventory Preview -->
-      <VBox alignment="CENTER" layoutX="600.0" layoutY="14.0" prefHeight="188.0" prefWidth="36.0" style="-fx-padding: 10px; -fx-spacing: 20px;">
+      <!-- Title Menu -->
+      <VBox alignment="TOP_CENTER" layoutX="180" layoutY="23.0" prefHeight="354.0" prefWidth="318.0">
          <children>
-               <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="new" styleClass="iconButton">
-                  <Label text="New Save"/>
-                  <graphic>
-                     <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                           <Image url="/gui/resources/icons/bulb.png"/>
-                     </ImageView>
-                  </graphic>
-               </Button>
-               <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" fx:id="load" styleClass="iconButton" onAction="#game">
-                  <Label text="Load Save"/>
-                  <graphic>
-                     <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                           <Image url="/gui/resources/icons/bulb.png"/>
-                     </ImageView>
-                  </graphic>
-               </Button>
-               <Button layoutX="14.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="exit" styleClass="iconButton" onAction="#exit">
-                  <Label text="Exit"/>
-                  <graphic>
-                     <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                           <Image url="/gui/resources/icons/sign-out.png"/>
-                     </ImageView>
-                  </graphic>
-               </Button>
-               <Button layoutX="59.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="settings" styleClass="iconButton" disabled>
-                  <Label text="Settings"/>
-                  <graphic>
-                     <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                           <Image url="/gui/resources/icons/download.png"/>
-                     </ImageView>
-                  </graphic>
-               </Button>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="inv" styleClass="iconButton">
-               <graphic>
-                  <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                        <Image url="/gui/resources/icons/settings.png"/>
-                  </ImageView>
-               </graphic>
+            <Label fx:id="titleText" alignment="CENTER" contentDisplay="CENTER" prefHeight="78.0" prefWidth="352.0">
+               <font>
+                  <Font size="32.0" />
+               </font>
+            </Label>
+            <AnchorPane prefHeight="46.0" prefWidth="318.0" />
+            <Button fx:id="new" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="New Save" onAction="#newGame">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Button>
+            <Button fx:id="load" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Load Save" onAction="#loadGame">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Button>
+            <Button fx:id="setting" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Settings">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Button>
+            <Button fx:id="Exit" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Exit" onAction="#exit">
+               <font>
+                  <Font size="22.0" />
+               </font>
             </Button>
          </children>
       </VBox>

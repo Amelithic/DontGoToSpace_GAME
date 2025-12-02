@@ -1,5 +1,6 @@
 package com.amelithic.zorkgame;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -439,6 +440,7 @@ class SaveCommand implements Command {
 class LoadCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
+    private String pathToSaveFile;
 
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
@@ -446,8 +448,12 @@ class LoadCommand implements Command {
         this.game = game;
 
         text = text.trim().toLowerCase();
-        if (text.equals("load")) {
+        if (text.matches("^(load)?\\s+.+$")) {
+            pathToSaveFile = text.replaceFirst("^(load)\\s+", "");
             return Optional.of(this);
+        } else if (text.equalsIgnoreCase("load")) {
+            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            System.out.println(modText+" where?");
         }
         return Optional.empty();
     }
@@ -455,7 +461,7 @@ class LoadCommand implements Command {
     @Override
     public String execute() {
         SaveManager saveManager = Main.getSaveManager();
-        saveManager.load(saveManager.getSaves().get(0));
+        player = saveManager.load(Path.of(pathToSaveFile)).get();
         return "Loaded save successfully";
     }
 

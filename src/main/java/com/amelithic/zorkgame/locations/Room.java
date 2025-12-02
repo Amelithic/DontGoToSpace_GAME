@@ -97,4 +97,7 @@ public abstract class Room<T> {
             return false; //no item
         }
     }
+    public void clearRoomItems() {
+        roomItems.clear();
+    }
 }

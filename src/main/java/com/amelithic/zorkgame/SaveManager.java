@@ -4,11 +4,18 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Optional;
 
+import com.amelithic.zorkgame.characters.Alien;
+import com.amelithic.zorkgame.characters.Player;
+import com.amelithic.zorkgame.items.Item;
+import com.amelithic.zorkgame.locations.Room;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class SaveManager {
     //fields
@@ -49,187 +56,105 @@ public class SaveManager {
         return saveFilePaths;
     }
 
-    public void load(Path savePath) {
+    //take in gamestate, load file, return player object instead of create new
+    //or could have empty person object with setters
+    public Optional<Player> load(Path savePath) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            SaveFile saveFile = mapper.readValue(savePath.toFile(), SaveFile.class);
-
-            //Setting loaded values into Main
-            /*Main.setPlayer(saveFile.getPlayer());
-            Main.setMap(saveFile.getMap());*/
+            //SaveFile saveFile = mapper.readValue(savePath.toFile(), SaveFile.class);
+            JsonNode saveFile = mapper.readTree(savePath.toFile());
 
             //Manual parse
-            GameMap map = saveFile.getMap();
+            JsonNode map = saveFile.get("map");
 
             //items in rooms
-            //map.getItems() {}
+            for (Room<GameMap.ExitDirection> room : Main.getMap().getRooms()) {
+                //wipe existing inventory
+                room.clearRoomItems();
 
-            System.out.println("Loaded save: " + savePath);
+                //fill room inventory with save items
+                ArrayNode saveRoomArray = (ArrayNode) map.get("rooms");
+                for (int saveRoomIndex = 0; saveRoomIndex < saveRoomArray.size(); saveRoomIndex++) {
+                    String saveRoomId = saveRoomArray.get(saveRoomIndex).get("id").asText();
+
+                    //find saved item ids in saved room, then find equivalent from Main.getMap()
+                    ArrayList<Item> itemsToLoad = new ArrayList<>();
+                    ArrayNode saveItemArray = (ArrayNode) saveRoomArray.get(saveRoomIndex).get("roomItems");
+                    if (room.getId().equalsIgnoreCase(saveRoomId)) {
+                        for (int saveRoomItemIndex = 0; saveRoomItemIndex < saveItemArray.size(); saveRoomItemIndex++) {
+                            String saveRoomItemId = saveItemArray.get(saveRoomItemIndex).get("id").asText();
+
+                            Item itemToLoad = null;
+                            for (Item item : Main.getMap().getItems()) {
+                                if (item.getId().equalsIgnoreCase(saveRoomItemId)) {
+                                    itemToLoad = item;
+                                }
+                            }
+
+                            if (itemToLoad != null) itemsToLoad.add(itemToLoad);
+                        }
+                    }
+
+                    //save all to Main.getMap() room
+                    for (Item itemToLoad : itemsToLoad) room.setRoomItems(itemToLoad);
+                }
+            }//end items in room
+
+            //aliens rooms
+            for (Alien alien : Main.getMap().getAliens()) {
+                //set current room, set is defeated
+
+                //for each saved alien
+                ArrayNode saveAliensArray = (ArrayNode) map.get("aliens");
+                for (int saveAlienIndex = 0; saveAlienIndex < saveAliensArray.size(); saveAlienIndex++) {
+                    //if names match
+                    String saveAlienName = saveAliensArray.get(saveAlienIndex).get("name").asText();
+                    if (alien.getName().equalsIgnoreCase(saveAlienName)) {
+                        String saveAlienRoomId = saveAliensArray.get(saveAlienIndex).get("currentRoom").get("id").asText();
+                        boolean saveAlienDefeated = saveAliensArray.get(saveAlienIndex).get("defeated").asBoolean();
+
+                        Room<GameMap.ExitDirection> saveAlienRoom = null;
+                        for (Room<GameMap.ExitDirection> room : Main.getMap().getRooms()) {
+                            if (room.getId().equalsIgnoreCase(saveAlienRoomId)) saveAlienRoom = room;
+                        }
+
+                        alien.setDefeated(saveAlienDefeated);
+                        if (saveAlienRoom != null) alien.setCurrentRoom(saveAlienRoom);
+                    }
+                }
+
+            }//end get aliens
+
+            //player data and inventory
+            JsonNode player = saveFile.get("player");
+            String playerName = player.get("name").asText();
+            String playerRoomId = player.get("currentRoom").get("id").asText();
+            int playerHealthMax = player.get("maxHealth").asInt();
+            int playerHealthCurrent = player.get("currentHealth").asInt();
+            int playerAttackDamage = player.get("attackDamage").asInt();
+
+            //find room from playerRoomId
+            Room<GameMap.ExitDirection> playerCurrentRoom = null;
+            for (Room<GameMap.ExitDirection> room : Main.getMap().getRooms()) {
+                if (room.getId().equalsIgnoreCase(playerRoomId)) playerCurrentRoom = room;
+            }
+
+            Player newPlayer = null;
+            if (playerCurrentRoom != null) {
+                newPlayer = new Player(playerName, null, playerHealthMax, playerHealthCurrent, playerAttackDamage);
+            }
+
+            System.out.println("Loaded save successfully: " + savePath);
+            
+            return Optional.of(newPlayer);
+            //return saveFile.getPlayer(); //doesnt work so manual parse
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //SEE THIS FROM GAMEMAP
-        /*
-        try {
-            String mapFileStr = Files.readString(mapFile);
-            //System.out.println(mapFileStr); //debug
-            JsonNode map = parse(mapFileStr);
-
-            //set name field to "name": "{name of map}" at top of JSON
-            this.name = map.get("name").asText();
-            this.description = map.get("description").asText();
-
-            //initialise all goals + add to array
-            goals = new ArrayList<>();
-            ArrayNode goalsArrayFromFile = (ArrayNode) map.get("goals");
-            for (int i=0; i < goalsArrayFromFile.size(); i++) {
-                int goalId = goalsArrayFromFile.get(i).get("goalId").asInt();
-                String goalName = goalsArrayFromFile.get(i).get("goalName").asText();
-                boolean isSolved = goalsArrayFromFile.get(i).get("isSolved").asBoolean();
-
-                Goal goal = new Goal(goalId, goalName, isSolved);
-                goals.add(goal);
-            }
-
-
-            //initialise all items + add to array
-            items = new ArrayList<>();
-            ArrayNode itemsArrayFromFile = (ArrayNode) map.get("items");
-            for (int i=0; i < itemsArrayFromFile.size(); i++) {
-                String itemId = itemsArrayFromFile.get(i).get("id").asText();
-                String itemName = itemsArrayFromFile.get(i).get("name").asText();
-                String itemDesc = itemsArrayFromFile.get(i).get("description").asText();
-                String itemType = itemsArrayFromFile.get(i).get("type").asText();
-
-                Item item;
-                switch (itemType) {
-                    case "none":
-                        boolean isPortable = itemsArrayFromFile.get(i).get("isPortable").asBoolean();
-                        item = new Item(itemId,itemName,itemDesc, isPortable);
-                        break;
-                    case "food": //always portable = true
-                        String foodConsumeMessage = itemsArrayFromFile.get(i).get("consumeMessage").asText();
-                        item = new FoodItem(itemId, itemName, itemDesc, (foodConsumeMessage != null && foodConsumeMessage.length() > 0)? foodConsumeMessage : "");
-                        break;
-                    case "required": //always portable = true
-                        item = new RequiredItem(itemId, itemName, itemDesc, itemType);
-                        break;
-                    case "storage":
-                        isPortable = itemsArrayFromFile.get(i).get("isPortable").asBoolean();
-                        item = new StorageItem(itemId, itemName, itemDesc, isPortable);
-                        break;
-                    case "info":
-                        isPortable = itemsArrayFromFile.get(i).get("isPortable").asBoolean();
-                        String infoFile = "src\\main\\java\\com\\amelithic\\zorkgame\\config\\info_json\\"+itemsArrayFromFile.get(i).get("infoFile").asText();
-                        Path infoFilePath = Path.of(infoFile);
-                        item = new InfoItem(itemId, itemName, itemType, isPortable, infoFilePath);
-                        break;
-                    default:
-                        isPortable = itemsArrayFromFile.get(i).get("isPortable").asBoolean();
-                        item = new Item(itemId,itemName,itemDesc, isPortable);
-                        break;
-                }
-                items.add(item);
-            }
-
-            //initialise all rooms, using items + add to array
-            rooms = new ArrayList<>();
-            ArrayNode roomsArrayFromFile = (ArrayNode) map.get("rooms");
-            for (int i=0; i < roomsArrayFromFile.size(); i++) {
-                String roomId = roomsArrayFromFile.get(i).get("id").asText();
-                String roomName = roomsArrayFromFile.get(i).get("name").asText();
-                String roomDesc = roomsArrayFromFile.get(i).get("description").asText();
-                String roomType = roomsArrayFromFile.get(i).get("type").asText();
-
-                Room<ExitDirection> room;
-                switch (roomType) {
-                    case "indoor":
-                        room = new IndoorArea<>(roomId, roomName, roomDesc);
-                        break;
-                    case "outdoor":
-                        room = new OutdoorArea<>(roomId, roomName, roomDesc);
-                        break;
-                    case "tunnel":
-                        room = new TunnelArea<>(roomId, roomName, roomDesc);
-                        break;
-                    default:
-                        room = new IndoorArea<>(roomId, roomName, roomDesc);
-                        break;
-                }
-                rooms.add(room);
-
-                //items in room
-                ArrayNode roomsItemArray = (ArrayNode) roomsArrayFromFile.get(i).get("items");
-                if (roomsItemArray != null && roomsItemArray.isArray()) {
-                    //it exists, now check if its not empty...
-                    if (roomsItemArray.size() > 0) {
-                        //for each array item
-                        for (int item = 0; item < roomsItemArray.size(); item++) {
-                            String roomItemId = roomsItemArray.get(item).asText(); //id of item in room
-
-                            //check if item exists in items array
-                            for (Item mapItemId : items) {
-                                if (mapItemId.getId().equals(roomItemId)) {
-                                    //add if matching ids -> item exists
-                                    Item roomItem = items.get(items.indexOf(mapItemId));
-                                    room.setRoomItems(roomItem);
-                                }
-                            }
-
-                        }
-                    }
-                }
-                //System.out.println(room.printRoomItems()); //debug                
-            }
-
-
-            //adding exits after all rooms exist
-            for (int i=0; i < roomsArrayFromFile.size(); i++) {
-                String roomId = roomsArrayFromFile.get(i).get("id").asText();
-
-                JsonNode roomExitsArray = roomsArrayFromFile.get(i).get("exits");
-                if (roomExitsArray != null && roomExitsArray.isContainerNode()) {
-                    Iterator<Map.Entry<String, JsonNode>> fields = roomExitsArray.fields();
-                    while (fields.hasNext()) {
-                        Map.Entry<String, JsonNode> entry = fields.next();
-
-                        String direction = entry.getKey().toLowerCase();
-                        ExitDirection enumDirection = mapDirection(direction);
-
-                        String destinationId = entry.getValue().asText();
-                        Room<ExitDirection> targetRoom = findRoomById(destinationId, rooms);
-
-                        if (enumDirection != null && targetRoom != null) {
-                            Room<ExitDirection> room = null;
-                            for (Room<ExitDirection> possibleRoom : rooms) {
-                                if (possibleRoom.getId().equalsIgnoreCase(roomId)) {
-                                    room = possibleRoom;
-                                }
-                            }
-
-                            if (room != null) {
-                                room.setExit(enumDirection, targetRoom);
-                                //System.out.println(room.getName() + ": " + enumDirection + " -> " + destinationId);
-                            }
-                        }
-                    }
-                }
-            }
-
-        } catch (IOException e) {
-            System.err.println("Exception when reading the JSON map file...");
-            e.printStackTrace();
-        } */
+        return Optional.empty();
     }
     
     public String save(Main gameState) {
-        //get current date (for file name)
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        String formattedDate = today.format(formatter);
-        String saveFileName = saveDir+"save"+formattedDate+".json";
-
         //serialisation with Jackson
         ObjectMapper mapper = new ObjectMapper();
 
@@ -237,6 +162,8 @@ public class SaveManager {
         SaveFile saveFile = new SaveFile();
         saveFile.setPlayer(Main.getPlayer());
         saveFile.setMap(Main.getMap());
+
+        String saveFileName = fileNameGenerator();
 
         try {
             mapper.writerWithDefaultPrettyPrinter().writeValue(new File(saveFileName), saveFile);
@@ -246,5 +173,63 @@ public class SaveManager {
         }
         
         return "Saved! Save file created: "+saveFileName;
+    }
+
+    public String fileNameGenerator() {
+        LocalDateTime today = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH-mm-dd-MM-yyyy");
+        String formattedDate = today.format(formatter);
+        String fileName = saveDir+"save"+formattedDate;
+
+        String fileNameChecked = fileNameCheck(fileName, 1);
+        return fileNameChecked+".json";
+    }
+
+    //recursive function
+    public String fileNameCheck(String fileName, int nextNum) {
+        String newFileName = fileName;
+
+        for (int i=0; i < saveFilePaths.size(); i++) {
+            Path path = saveFilePaths.get(i);
+            String pathName = path.getFileName().toString().trim();
+
+            //remove JSON file extension
+            if (pathName.endsWith(".json")) {
+                pathName = pathName.substring(0, pathName.length() - 5); // remove last 5 chars: ".json"
+            }
+
+            //for each path check if name match
+            if (pathName.equals(newFileName.trim())) {
+                if (newFileName.matches(".*\\(\\d+\\)$")) {
+                    nextNum ++; 
+                    // (Anything) followed by '(number)'
+                    newFileName = newFileName.replaceAll("\\(\\d+\\)$", "");
+                    newFileName += "("+nextNum+")";
+                    return newFileName = fileNameCheck(newFileName, nextNum);                
+                }
+            }
+        }
+        return newFileName;
+    }
+}
+
+
+//SaveFile
+class SaveFile {
+    private Player player;
+    private GameMap map;
+
+    public Player getPlayer() {
+        return player;
+    }
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public GameMap getMap() {
+        return map;
+    }
+    public void setMap(GameMap map) {
+        this.map = map;
     }
 }

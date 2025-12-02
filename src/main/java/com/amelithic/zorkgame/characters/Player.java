@@ -9,10 +9,19 @@ public class Player extends Character {
     private ArrayList<Item> inventory;
     private boolean isAdmin;
 
+    public Player(String name, Room startingRoom, int maxHealth, int currentHealth, int attackDamage) {
+        super(name, startingRoom, maxHealth, currentHealth, attackDamage);
+        this.inventory = new ArrayList<>();
+        this.isAdmin = false;
+    }
     public Player(String name, Room startingRoom, int maxHealth, int attackDamage) {
         super(name, startingRoom, maxHealth, attackDamage);
         this.inventory = new ArrayList<>();
         this.isAdmin = false;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setInventory(Item... items) {

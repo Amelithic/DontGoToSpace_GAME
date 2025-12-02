@@ -40,7 +40,7 @@ public class Main {
             }
             //TODO: move player to main() -> ask for userninput for name
             if (startRoom != null) {
-                player = new Player("Amelie", map.getRooms().get(map.getRooms().indexOf(startRoom)),100,10);
+                player = new Player("Unnamed", map.getRooms().get(map.getRooms().indexOf(startRoom)),100,10);
                 System.out.println(player.displayInfo());
             }
         } catch (Exception e) {

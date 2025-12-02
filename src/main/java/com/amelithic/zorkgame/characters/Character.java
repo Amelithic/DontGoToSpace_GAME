@@ -9,7 +9,11 @@ public abstract class Character {
     protected int currentHealth;
     private int attackDamage;
 
+    //overloaded constructors -> optional current health
     public Character(String name, Room startingRoom, int maxHealth, int attackDamage) {
+        this(name, startingRoom, maxHealth, maxHealth, attackDamage);
+    }
+    public Character(String name, Room startingRoom, int maxHealth, int currentHealth, int attackDamage) {
         this.name = name;
         this.currentRoom = startingRoom;
         this.maxHealth = maxHealth;

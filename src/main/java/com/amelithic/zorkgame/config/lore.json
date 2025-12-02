@@ -1,0 +1,12 @@
+{
+    "startGame": "desc at start of game",
+    "rooms": {
+        "base_quarters": [
+            "lore 1",
+            "lore 2"
+        ],
+        "base_main": [
+            "lore 1"
+        ]
+    }
+}

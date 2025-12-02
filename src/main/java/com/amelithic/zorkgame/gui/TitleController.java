@@ -1,5 +1,7 @@
 package com.amelithic.zorkgame.gui;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -13,6 +15,8 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 public class TitleController extends GUIController {
@@ -24,9 +28,27 @@ public class TitleController extends GUIController {
     }
 
     //FXML Components
+    @FXML
+    private Label titleText;
+    private Button load;
 
     @FXML
     public void initialize() {
+        titleText.setText(gui.fetchTitle());
+
+        String saveDir = "./saves/";
+        File dir = new File(saveDir);
+        File[] filesInDir = dir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File d, String name) {
+                return name.toLowerCase().endsWith(".json");
+            }
+        }); //only checks for JSON files in dir
+        if (filesInDir == null) {
+            load.setVisible(false);
+        } //adds valid paths
+
+
         //TODO: if saves empty, don't add load saves options
         //TODO: if saves not empty add load saves
         //TODO: if properties admin true, then show icon in bottom left
@@ -47,8 +69,14 @@ public class TitleController extends GUIController {
     }//end exit
 
     @FXML
-    public void game(ActionEvent event) throws IOException {
-        switchToGame(event);
+    public void loadGame(ActionEvent event) throws IOException {
+        switchToSave(event);
+    }//end game
+
+    @FXML
+    public void newGame(ActionEvent event) throws IOException {
+        //TODO: info popup with version info
+        switchToNew(event);
     }//end game
 
     @FXML
