@@ -20,7 +20,9 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -129,13 +131,21 @@ public class TitleController extends GUIController {
     @FXML
     public void settings(ActionEvent event) throws IOException {
             Popup settingsPopup = new Popup();
-            Label popupContent = new Label();
+            ScrollPane settingsScroll = new ScrollPane();
+            settingsScroll.getStyleClass().add("darkMode");
+
+            //scrollbar policy - dont want horizontal scroll, but vertical if needed
+            settingsScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            settingsScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+
+            TextArea popupContent = new TextArea();
             popupContent.getStyleClass().add("darkMode");
             popupContent.getStyleClass().add("text");
             popupContent.setStyle("-fx-padding: 10px;");
-
+            popupContent.setWrapText(true);
+            popupContent.setEditable(false);
             String popupContentString = "SETTINGS:\n";
-
             try {
                 Properties properties = gameState.getProperties();
                 properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
@@ -146,9 +156,10 @@ public class TitleController extends GUIController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             popupContent.setText(popupContentString);
-            settingsPopup.getContent().add(popupContent);
+
+            settingsScroll.setContent(popupContent);
+            settingsPopup.getContent().add(settingsScroll);
             settingsPopup.setHideOnEscape(true);
             settingsPopup.setAutoHide(true); //doesnt show if not focused`
             settingsPopup.show(((Node)event.getSource()).getScene().getWindow()); //show on screen from where its called from

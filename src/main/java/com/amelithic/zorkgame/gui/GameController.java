@@ -2,6 +2,8 @@ package com.amelithic.zorkgame.gui;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,11 +12,15 @@ import java.util.Properties;
 import com.amelithic.zorkgame.Command;
 import com.amelithic.zorkgame.CommandManager;
 import com.amelithic.zorkgame.GUI;
+import com.amelithic.zorkgame.GameMap;
 import com.amelithic.zorkgame.Main;
 import com.amelithic.zorkgame.TrieAutocomplete;
 import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.items.RequiredItem;
+import com.amelithic.zorkgame.locations.Room;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
@@ -44,6 +50,16 @@ public class GameController extends GUIController {
     //fields
     private String[] newTextWords;
     private Popup autoCompletePopup;
+    private static ObjectMapper objmap = getDefaultObjectMapper(); //for JSON parsing
+
+    private static ObjectMapper getDefaultObjectMapper() {
+        ObjectMapper defaultObjectMapper = new ObjectMapper();
+        //config ...
+        return defaultObjectMapper;
+    }
+    public static JsonNode parse(String src) throws IOException {
+        return objmap.readTree(src);
+    }
 
     //constructor
     public GameController(GUI gui, Main gameState, Player player, CommandManager commandManager) {
@@ -211,6 +227,15 @@ public class GameController extends GUIController {
             inputField.setText("");
             autoCompletePopup.hide();
 
+            if (inputString.equalsIgnoreCase("win")) {
+                for (Item item : gameState.getMap().getItems()) {
+                    if (item instanceof RequiredItem) player.setInventory(item);
+                }
+                for (Room<GameMap.ExitDirection> room : gameState.getMap().getRooms()) {
+                    if (room.getId().equals("broken_spacecraft")) player.setCurrentRoom(room);
+                }
+            }
+
             Optional<Command> cmdCheck = commandManager.parse(gameState, player, inputString);
             if (cmdCheck.isPresent()) {
                 Command cmd = cmdCheck.get();
@@ -374,8 +399,28 @@ public class GameController extends GUIController {
         for (Item item : player.getInventory()) {
             if (item instanceof RequiredItem) requiredItems.add(item);
         }
-
         progress.setText("Progress: "+requiredItems.size()+"/5");
+
+        //goal checker
+        try {
+            String mapFileStr = Files.readString(Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\lore.json"));
+            JsonNode lore = parse(mapFileStr);
+            lore.get("startGame").asText();
+        } catch (IOException e) {
+            System.err.println("Exception when reading the JSON lore file...");
+            e.printStackTrace();
+        }
+
+        //win checker
+        if ((requiredItems.size() >= 5) && (player.getCurrentRoom().getId().equals("broken_spacecraft"))) {
+            win();
+        }
+    }
+
+    public void win() {
+        gameState.setGameRunning(false);
+        outputConsole.appendText("You won the game and got to space!");
+        //switchToWin(event);
     }
 
 }

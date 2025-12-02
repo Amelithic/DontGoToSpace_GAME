@@ -549,12 +549,30 @@ class AttackCommand implements Command {
             }
         }
 
+        Item alienDrop1 = null;
+        Item alienDrop2 = null;
+        for (Item item : game.getMap().getItems()) {
+            if (item.getId().equals("fuel")) alienDrop1 = item;
+            if (item.getId().equals("thruster")) alienDrop2= item;
+        }
+
         //attack
         if (attackee != null) {
             if (attackee.getDefeated()==false) {
                 //if not defeated, attack
                 attackee.setCurrentHealth(attackee.getCurrentHealth() - player.getAttackDamage());
-                if (attackee.getCurrentHealth() <= 0) attackee.setDefeated(true);
+                if (attackee.getCurrentHealth() <= 0) {
+                    attackee.setDefeated(true);
+                    switch (attackee.getName()) {
+                        case "Alien 1":
+                            player.setInventory(alienDrop1);
+                            break;
+                        case "Alien 2":
+                            player.setInventory(alienDrop2);
+                            break;
+                    }
+                    return "Alien defeated! Check inventory for acquired items!";
+                }
                 return "Alien attacked! Health remaining: "+attackee.getCurrentHealth();
             } else {
                 return "Alien already defeated!";

@@ -1,12 +1,10 @@
 {
-    "startGame": "desc at start of game",
-    "rooms": {
-        "base_quarters": [
-            "lore 1",
-            "lore 2"
-        ],
-        "base_main": [
-            "lore 1"
-        ]
-    }
+    "startGame": "You wake up mysteriously from a cryogenic sleep, to discover that you're left behind by your crew, stranded in an abandoned space base on a strange planet...",
+    "mission1": "You open your eyes to a dark sleep quarters and look around. The floors are strewn with personal belongings and broken furniture. Maybe you should explore to see what else is nearby.",
+    "mission2": "You leave the room and decide to explore the space base. The power unit is broken, so you realise you must fix it to explore outdoors.",
+    "mission3": "The power unit whirred to life, and now with the power restored, all you need is a spacesuit to leave the base.",
+    "mission4": "The dusty wind blows across your spacesuit. It is difficult to see, but you can see multiple paths to distant rubble and space equipment north, maybe they will help you get useful supplies to survive.",
+    "mission5": "As you cross the dustlands, you hear a bizarre rumble. A large creature emerges and swipes at you through the fog.",
+    "mission6": "As you inspect the broken spacecraft, you realise it needs 5 main parts replaced to be fully operational: a thruster, gearbox, CPU chip, fuel and an ID card.",
+    "endGame": "With the parts you have gathered, you were able to repair the ship successfully. Using the auto-navigation system, you managed to escape the empty planet and return home! \nCongratulations, you got to space!"
 }

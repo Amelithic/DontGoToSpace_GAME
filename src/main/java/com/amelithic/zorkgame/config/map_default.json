@@ -3,27 +3,67 @@
   "goals": [
     {
         "goalId":1,
-        "goalName": "Get all 5 rocket parts",
+        "goalName": "Get thruster",
         "isSolved": false
     }, 
     {
         "goalId":2,
-        "goalName": "Fix electrical unit",
+        "goalName": "Get fuel",
         "isSolved": false
     },
     {
         "goalId":3,
-        "goalName": "Kill alien 1",
+        "goalName": "Get CPU chip",
         "isSolved": false
     },
     {
         "goalId":4,
-        "goalName": "Kill alien 2",
+        "goalName": "Get ID card",
         "isSolved": false
     },
     {
         "goalId":5,
-        "goalName": "Find secret room",
+        "goalName": "Get gear box",
+        "isSolved": false
+    },
+    {
+        "goalId":6,
+        "goalName": "Leave base quarters",
+        "isSolved": false
+    },
+    {
+        "goalId":7,
+        "goalName": "Fix power unit",
+        "isSolved": false
+    },
+    {
+        "goalId":8,
+        "goalName": "Leave the base (without dying)",
+        "isSolved": false
+    },
+    {
+        "goalId":9,
+        "goalName": "Kill Alien 1",
+        "isSolved": false
+    },
+    {
+        "goalId":10,
+        "goalName": "Kill Alien 2",
+        "isSolved": false
+    },
+    {
+        "goalId":11,
+        "goalName": "Get all 5 rocket parts",
+        "isSolved": false
+    },
+    {
+        "goalId":12,
+        "goalName": "Go to space",
+        "isSolved": false
+    },
+    {
+        "goalId":13,
+        "goalName": "Find the secret room",
         "isSolved": false
     }
   ],
@@ -242,7 +282,8 @@
             "exits": {
                 "north": "crater",
                 "east": "outdoors_02",
-                "west": "cliff"
+                "west": "cliff",
+                "south": "airlock"
             }
         },
         {
