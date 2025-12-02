@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.layout.Region?>
 <?scenebuilder-stylesheet /gui/resources/gameScreen.css?>
 
 
@@ -47,7 +48,7 @@
             <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="inv" styleClass="iconButton" onAction="#inventoryView">
                <graphic>
                   <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                        <Image url="/gui/resources/icons/settings.png"/>
+                        <Image url="/gui/resources/icons/inv.png"/>
                   </ImageView>
                </graphic>
             </Button>
@@ -55,13 +56,13 @@
       </VBox>
 
       <!-- Player Stats Bar -->
-      <HBox alignment="CENTER" layoutX="125.0" layoutY="14.0" prefHeight="32.0" prefWidth="401.0" style="-fx-padding: 10px; -fx-spacing: 50px;">
+      <HBox alignment="CENTER" layoutX="125.0" layoutY="14.0" prefHeight="32.0" prefWidth="401.0" style="-fx-padding: 10px;">
          <children>
-            <Label text="Label" styleClass="text" />
-            <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <Label text="Label" styleClass="text" />
-            <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <Label text="Label" styleClass="text" />
+            <Label fx:id="health" styleClass="text"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="oxygen" styleClass="text"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="progress" styleClass="text"/>
          </children>
       </HBox>
 
@@ -153,11 +154,11 @@
       <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="map" styleClass="iconButton">
          <graphic>
             <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                  <Image url="/gui/resources/icons/bulb.png"/>
+                  <Image url="/gui/resources/icons/map.png"/>
             </ImageView>
          </graphic>
       </Button>
-      <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" fx:id="help" styleClass="iconButton">
+      <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" fx:id="help" styleClass="iconButton" onAction="#help">
          <graphic>
             <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
                   <Image url="/gui/resources/icons/bulb.png"/>
@@ -171,7 +172,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button layoutX="59.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="save" styleClass="iconButton">
+      <Button layoutX="59.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="save" styleClass="iconButton" onAction="#save">
          <graphic>
             <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
                   <Image url="/gui/resources/icons/download.png"/>

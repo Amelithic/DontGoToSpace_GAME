@@ -14,9 +14,11 @@ import com.amelithic.zorkgame.Main;
 import com.amelithic.zorkgame.TrieAutocomplete;
 import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.Item;
+import com.amelithic.zorkgame.items.RequiredItem;
 
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -25,6 +27,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -56,6 +59,12 @@ public class GameController extends GUIController {
     private TextField inputConsole;
     @FXML
     private ImageView bg;
+    @FXML
+    private Label health;
+    @FXML
+    private Label oxygen;
+    @FXML
+    private Label progress;
 
     @FXML
     public void initialize() {
@@ -167,6 +176,27 @@ public class GameController extends GUIController {
             flipCard(card);
         });
 
+        //live stats thread
+        Thread liveStats = new Thread(() -> {
+            while (gameState.getGameRunning()) {
+                //required to send the command to the UI thread, or else update UI is ignored :(
+                Platform.runLater(() -> updateStats());
+                System.out.println("loop!");
+                try {
+                    Thread.sleep(1000); // avoid busy loop
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        });
+        liveStats.setDaemon(true); //thread ends when app closes
+
+        Thread oxyThread = new OxygenThread();
+        oxyThread.setDaemon(true); //thread ends when app closes
+
+        liveStats.start();
+        oxyThread.start();
     }//end initialize
 
     @FXML
@@ -251,6 +281,38 @@ public class GameController extends GUIController {
         switchToTitle(event);
     }//end exit
 
+    @FXML private void save(ActionEvent event) {
+            Optional<Command> cmdCheck = commandManager.parse(gameState, player, "save");
+            if (cmdCheck.isPresent()) {
+                Command cmd = cmdCheck.get();
+                String result = cmd.execute();
+                outputConsole.appendText(result);
+            } else {
+                outputConsole.appendText("I don't understand that command.\n");
+            }
+    }
+
+    @FXML private void help(ActionEvent event) {
+            Popup helpPopup = new Popup();
+            Label popupContent = new Label();
+            popupContent.getStyleClass().add("darkMode");
+            popupContent.getStyleClass().add("text");
+            popupContent.setStyle("-fx-padding: 10px;");
+
+            Optional<Command> cmdCheck = commandManager.parse(gameState, player, "help");
+            if (cmdCheck.isPresent()) {
+                Command cmd = cmdCheck.get();
+                String result = cmd.execute();
+                popupContent.setText(result);
+            } else {
+                popupContent.setText("Error loading commands...");
+            }
+            helpPopup.getContent().add(popupContent);
+            helpPopup.setHideOnEscape(true);
+            helpPopup.setAutoHide(true); //doesnt show if not focused`
+            helpPopup.show(((Node)event.getSource()).getScene().getWindow()); //show on screen from where its called from
+    }
+
     // Call this from a button or event handler
     @FXML
     private void flipCard(Node card) {
@@ -303,4 +365,42 @@ public class GameController extends GUIController {
         }
     }//end returnImageUrl
 
+    public void updateStats() {
+        health.setText("Health: "+player.getCurrentHealth()+"/"+player.getMaxHealth());
+        oxygen.setText("Oxygen: "+player.getOxygenLevel());
+
+        // show items gained out of 5
+        ArrayList<Item> requiredItems = new ArrayList<>();
+        for (Item item : player.getInventory()) {
+            if (item instanceof RequiredItem) requiredItems.add(item);
+        }
+
+        progress.setText("Progress: "+requiredItems.size()+"/5");
+    }
+
+}
+
+class OxygenThread extends Thread {
+    @Override
+    public void run() {
+        Player player = GameController.player;
+
+        Item spaceSuit = null;
+        for (Item item : GameController.gameState.getMap().getItems()) {
+            if (item.getId().equals("spacesuit")) spaceSuit = item;
+        }
+
+        while (GameController.gameState.getGameRunning()) {
+            if (player.isOutdoor() && !player.getInventory().contains(spaceSuit)) {
+                //if no space suit and outdoors
+                player.decreaseOxygen((int) (Math.random()*3)); //decrease by random amount from 1-3
+                try {
+                    OxygenThread.sleep(1000);
+                } catch (InterruptedException ex) {
+                }
+            } else {
+                player.setOxygenLevel(100); //set to max if not outdoors
+            }
+        }
+    }
 }

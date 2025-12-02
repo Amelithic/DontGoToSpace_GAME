@@ -102,14 +102,14 @@
             "name": "Locker",
             "description": "A rusty locker that may contain some useful items...",
             "type": "storage",
-            "inventory": ["apple", "apple"],
+            "inventory": ["spacesuit","idcard"],
             "isPortable": false
         },
         {
-            "id": "item003",
-            "name": "Book",
-            "description": "An old leather-bound book",
-            "type": "required",
+            "id": "spacesuit",
+            "name": "Spacesuit",
+            "description": "It still works! When in inventory, you can leave base without losing oxygen.",
+            "type": "none",
             "isPortable": true
         },
         {
@@ -129,7 +129,7 @@
             "exits": {
                 "north": "base_main"
             },
-            "items": ["locker"]
+            "items": ["locker", "spacesuit"]
         },
         {
             "id": "base_main",
@@ -174,7 +174,7 @@
             "exits": {
                 "east": "base_corridor"
             },
-            "items": ["terminal"]
+            "items": ["terminal", "chip"]
         },
         {
             "id": "base_bathrooms",
@@ -268,7 +268,8 @@
             "type": "outdoor",
             "exits": {
                 "north": "outdoors_02"
-            }
+            },
+            "items": ["gearbox"]
         },
         {
             "id": "crater",

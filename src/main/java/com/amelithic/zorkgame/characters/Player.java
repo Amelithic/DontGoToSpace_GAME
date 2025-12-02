@@ -3,25 +3,40 @@ package com.amelithic.zorkgame.characters;
 import java.util.ArrayList;
 
 import com.amelithic.zorkgame.items.Item;
+import com.amelithic.zorkgame.locations.OutdoorArea;
 import com.amelithic.zorkgame.locations.Room;
 
 public class Player extends Character {
     private ArrayList<Item> inventory;
-    private boolean isAdmin;
+    private int oxygenLevel;
 
     public Player(String name, Room startingRoom, int maxHealth, int currentHealth, int attackDamage) {
         super(name, startingRoom, maxHealth, currentHealth, attackDamage);
         this.inventory = new ArrayList<>();
-        this.isAdmin = false;
+        this.oxygenLevel = 100;
     }
     public Player(String name, Room startingRoom, int maxHealth, int attackDamage) {
         super(name, startingRoom, maxHealth, attackDamage);
         this.inventory = new ArrayList<>();
-        this.isAdmin = false;
+        this.oxygenLevel = 100;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+    public void setOxygenLevel(int oxygenLevel) {
+        this.oxygenLevel = oxygenLevel;
+    }
+    public int getOxygenLevel() {
+        return oxygenLevel;
+    }
+    public void decreaseOxygen(int amount) {
+        oxygenLevel -= amount;
+        if (oxygenLevel < 0) oxygenLevel = 0;
+    }
+    public void increaseOxygen(int amount) {
+        oxygenLevel += amount;
+        if (oxygenLevel > 100) oxygenLevel = 100;
     }
 
     public void setInventory(Item... items) {
@@ -60,6 +75,10 @@ public class Player extends Character {
         } else {
             return "There are no items in your inventory.";
         }
+    }
+
+    public boolean isOutdoor() {
+        return currentRoom instanceof OutdoorArea;
     }
 
     @Override

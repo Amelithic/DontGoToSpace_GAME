@@ -31,7 +31,7 @@
          <children>
             <Label fx:id="titleText" alignment="CENTER" contentDisplay="CENTER" prefHeight="78.0" prefWidth="352.0">
                <font>
-                  <Font size="32.0" />
+                  <Font size="60.0" />
                </font>
             </Label>
             <AnchorPane prefHeight="46.0" prefWidth="318.0" />
@@ -40,12 +40,12 @@
                   <Font size="22.0" />
                </font>
             </Button>
-            <Button fx:id="load" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Load Save" onAction="#loadGame">
+            <Button fx:id="load" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Load Save" onAction="#loadGame" visible="false" managed="false">
                <font>
                   <Font size="22.0" />
                </font>
             </Button>
-            <Button fx:id="setting" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Settings">
+            <Button fx:id="setting" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Settings" onAction="#settings">
                <font>
                   <Font size="22.0" />
                </font>
@@ -59,13 +59,11 @@
       </VBox>
 
       <!-- Buttons -->
-      <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="admin" styleClass="iconButton">
-         <graphic>
-            <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                  <Image url="/gui/resources/icons/bulb.png"/>
-            </ImageView>
-         </graphic>
-      </Button>
+      <AnchorPane layoutX="14.0" layoutY="355.0" prefHeight="32.0" prefWidth="36.0" fx:id="admin" visible="false">
+         <ImageView fitWidth="30" fitHeight="30" preserveRatio="true">
+               <Image url="/gui/resources/icons/admin.png"/>
+         </ImageView>
+      </AnchorPane>
       <Button layoutX="600.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" fx:id="info" styleClass="iconButton" onAction="#info">
          <graphic>
             <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
@@ -76,7 +74,7 @@
       <Button layoutX="14.0" layoutY="17.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="exit" styleClass="iconButton" onAction="#exit">
          <graphic>
             <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
-                  <Image url="/gui/resources/icons/sign-out.png"/>
+                  <Image url="/gui/resources/icons/cross.png"/>
             </ImageView>
          </graphic>
       </Button>

@@ -12,10 +12,10 @@ import javafx.fxml.FXML;
 
 public abstract class GUIController {
     //fields
-    protected final Main gameState;
-    protected final Player player;
-    protected final CommandManager commandManager;
-    protected final GUI gui;
+    protected static Main gameState;
+    protected static Player player;
+    protected CommandManager commandManager;
+    protected GUI gui;
 
     //constructors
     public GUIController(GUI gui, Main gameState, Player player, CommandManager commandManager) {
