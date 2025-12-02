@@ -1,7 +1,9 @@
 package com.amelithic.zorkgame.gui;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import com.amelithic.zorkgame.Command;
 import com.amelithic.zorkgame.CommandManager;
 import com.amelithic.zorkgame.GUI;
 import com.amelithic.zorkgame.Main;
@@ -11,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Popup;
 
 public class NewGameController extends GUIController {
     //fields
@@ -34,7 +37,7 @@ public class NewGameController extends GUIController {
     }//end initialize
 
     @FXML
-    public void inputName(ActionEvent event){ 
+    public void inputName(ActionEvent event) throws IOException { 
         TextField inputField;
 
         if (event.getSource() instanceof TextField textField) {
@@ -42,7 +45,19 @@ public class NewGameController extends GUIController {
             String inputString = inputField.getText();
             System.out.println(inputString);
             player.setName(inputString);
-            System.err.println("Name changed");
+
+            //auto-save
+            Optional<Command> cmdCheck = commandManager.parse(gameState, player, "save");
+            if (cmdCheck.isPresent()) {
+                Command cmd = cmdCheck.get();
+                String result = cmd.execute();
+                switchToGame(event);
+            } else {
+                Popup errorLoadPopup = new Popup();
+                Label popupContent = new Label();
+                popupContent.setText("Error with creating new save...");
+                errorLoadPopup.getContent().add(popupContent);
+            }
         }
     }//end inputName
 

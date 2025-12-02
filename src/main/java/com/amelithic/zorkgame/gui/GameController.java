@@ -94,8 +94,6 @@ public class GameController extends GUIController {
                     trie.insert(playerItem.getId());
                 }
                 for (Item roomItem : (ArrayList<Item>) player.getCurrentRoom().getRoomItems()) {
-                    //dunno why issue? 
-                    //TODO: fix required cast
                     trie.insert(roomItem.getName());
                     trie.insert(roomItem.getId());
                 }
@@ -179,7 +177,7 @@ public class GameController extends GUIController {
 
         if (event.getSource() instanceof TextField textField) {
             inputField = textField;
-            String inputString = inputField.getText();
+            String inputString = inputField.getText().trim().toLowerCase();
             System.out.println(inputString);
             inputField.setText("");
             autoCompletePopup.hide();

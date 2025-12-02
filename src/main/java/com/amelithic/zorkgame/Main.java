@@ -5,9 +5,7 @@ package com.amelithic.zorkgame;
 
 import java.io.FileInputStream;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.Properties;
-import java.util.Scanner;
 
 import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.locations.Room;
@@ -24,15 +22,14 @@ public class Main {
 
     //constructors
     public Main() {
-        Path fileNameMap = Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\map_default.json");
-        map = new GameMap(fileNameMap);
-        saveManager = new SaveManager();
-        gameRunning = true;
-
-        properties = new Properties();
+        Path fileNameMap = Path.of("config/map_default.json");
+        this.map = new GameMap(fileNameMap);
+        this.saveManager = new SaveManager();
+        this.properties = new Properties();
+        this.gameRunning = true;
 
         try {
-            properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
+            properties.load(new FileInputStream("config/config.properties"));
             String startRoomId = properties.getProperty("engine.start_room").trim();
             Room startRoom = null;
             for (Room room : map.getRooms()) {
@@ -46,72 +43,54 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     //getters
     public static GameMap getMap() {
         return map;
     }
-    public static void setMap(GameMap map) {
-        Main.map = map;
+    public void setMap(GameMap map) {
+        this.map = map;
     }
 
     public static Player getPlayer() {
         return player;
     }
-    public static void setPlayer(Player player) {
-        Main.player = player;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public static SaveManager getSaveManager() {
         return saveManager;
     }
+
+    public boolean getGameRunning() {
+        return gameRunning;
+    }
     public void setGameRunning(boolean gameRunning) {
-        Main.gameRunning = gameRunning;
+        this.gameRunning = gameRunning;
+    }
+
+    public static Properties getProperties() {
+        return properties;
     }
     
     //main
     public static void main(String[] args) {
-        Main gameState = new Main();
-        Scanner scanner = new Scanner(System.in);
-        CommandManager commandManager = new CommandManager();
+        Main game = new Main(); // initialise everything once
 
-        try {
-            String uiMode = properties.getProperty("ui.ui_mode").trim();
-            System.out.println(uiMode);
-            if (uiMode != null) {
-                switch (uiMode) {
-                    case "gui":
-                        System.err.println("GUI SELECTED");
-                        Application.launch(GUI.class, args);
-                        break;
-                    case "cli":
-                        System.err.println("CLI SELECTED");
-                        break;
-                    default:
-                        System.err.println("property not found");
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        String uiMode = game.getProperties().getProperty("ui.ui_mode", "cli").trim();
+        switch (uiMode) {
+            case "gui":
+                System.out.println("GUI SELECTED");
+                Application.launch(GUI.class, args);
+                break;
+            case "cli":
+                System.out.println("CLI SELECTED");
+                CLI.run(game);
+                break;
+            default:
+                System.err.println("Unknown UI mode: " + uiMode);
         }
-
-
-        while (gameRunning) {
-            System.out.print("> ");
-            String input = scanner.nextLine();
-
-            Optional<Command> cmdCheck = commandManager.parse(gameState, player, input);
-            if (cmdCheck.isPresent()) {
-                Command cmd = cmdCheck.get();
-                System.out.println(cmd.execute());
-            } else {
-                System.out.println("I don't understand that command.");
-            }
-
-        }
-        System.out.println("Thank you for playing. Goodbye.");
     }
 }

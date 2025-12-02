@@ -419,7 +419,7 @@ class SaveCommand implements Command {
 
     @Override
     public String execute() {
-        return Main.getSaveManager().save(game);
+        return game.getSaveManager().save(game);
     }
 
     @Override
@@ -460,7 +460,7 @@ class LoadCommand implements Command {
 
     @Override
     public String execute() {
-        SaveManager saveManager = Main.getSaveManager();
+        SaveManager saveManager = game.getSaveManager();
         player = saveManager.load(Path.of(pathToSaveFile)).get();
         return "Loaded save successfully";
     }
