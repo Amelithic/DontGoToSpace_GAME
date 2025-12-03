@@ -381,6 +381,25 @@ public class GameController extends GUIController {
             goalPopup.show(((Node)event.getSource()).getScene().getWindow()); //show on screen from where its called from
     }
 
+    @FXML private void map(ActionEvent event) {
+            Popup goalPopup = new Popup();
+            ImageView popupContent = new ImageView();
+            popupContent.getStyleClass().add("darkMode");
+            popupContent.setStyle("-fx-padding: 10px;");
+            popupContent.setFitWidth(500);
+            popupContent.setFitHeight(750);
+            //popupContent.setFitHeight(100);
+
+
+            Image mapImage = new Image(getClass().getResource("/images/gameMap.png").toExternalForm());
+
+            popupContent.setImage(mapImage);
+            goalPopup.getContent().add(popupContent);
+            goalPopup.setHideOnEscape(true);
+            goalPopup.setAutoHide(true); //doesnt show if not focused`
+            goalPopup.show(((Node)event.getSource()).getScene().getWindow()); //show on screen from where its called from
+    }
+
     // Call this from a button or event handler
     @FXML
     private void flipCard(Node card) {

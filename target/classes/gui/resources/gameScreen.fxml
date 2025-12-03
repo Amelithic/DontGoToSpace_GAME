@@ -149,7 +149,7 @@
       </GridPane>
 
       <!-- Buttons -->
-      <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="map" styleClass="iconButton">
+      <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" fx:id="map" styleClass="iconButton" onAction="#map">
          <graphic>
             <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
                   <Image url="/gui/resources/icons/map.png"/>
