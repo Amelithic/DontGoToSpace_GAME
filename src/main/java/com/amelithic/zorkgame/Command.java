@@ -280,6 +280,17 @@ class UseCommand implements Command {
 
         if (useItem != null) {
             if ((useItem instanceof Usable)) {
+                //item type specific logic
+                if (useItem instanceof StorageItem useItemStorage) {
+                    //avoiding removing while iterating, or invalid results
+                    ArrayList<Item> copy = new ArrayList<>(useItemStorage.getInventory());
+                    for (Item storedItem : copy) {
+                        useItemStorage.removeFromInventory(storedItem);
+                        player.getCurrentRoom().setRoomItems(storedItem);
+                    }
+                }
+                
+                //general return string
                 return ((Usable)useItem).use();
             } else {
                 return "This item cannot be used";

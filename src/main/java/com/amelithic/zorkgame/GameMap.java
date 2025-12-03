@@ -118,6 +118,32 @@ public class GameMap {
                 items.add(item);
             }
 
+            //for each storage item, add stored items
+            for (Item item : items) {
+                if (item instanceof StorageItem) {
+                    StorageItem storeItem = (StorageItem) item;
+
+                    //match item to its place in the JSON
+                    for (int i=0; i < itemsArrayFromFile.size(); i++) {
+                        String itemId = itemsArrayFromFile.get(i).get("id").asText();
+                        String itemType = itemsArrayFromFile.get(i).get("type").asText();
+
+                        if ((storeItem.getId().equalsIgnoreCase(itemId)) && (itemType.equalsIgnoreCase("storage"))) {
+                            //if match, go through all items in JSON inventory and all items in room, match and add to inventory
+                            JsonNode storedItems = itemsArrayFromFile.get(i).get("inventory");
+                            for (int storedItemIndex=0; storedItemIndex < storedItems.size(); storedItemIndex++) {
+                                //TODO: oh my god these nested for loops are horrible, please add getItemById checker function :(
+                                for (Item itemPossible : items) {
+                                    if (itemPossible.getId().equalsIgnoreCase(storedItems.get(storedItemIndex).asText())) {
+                                        storeItem.setInventory(itemPossible);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } //end of storage items assignment, thank fuck
+
             //initialise all rooms, using items + add to array
             rooms = new ArrayList<>();
             ArrayNode roomsArrayFromFile = (ArrayNode) map.get("rooms");
@@ -268,6 +294,14 @@ public class GameMap {
         for (Room<ExitDirection> room : rooms) {
             if (room.getId().equals(id)) {
                 return room;
+            }
+        }
+        return null;
+    }
+    public Item getItemById(String id) {
+        for (Item item : items) {
+            if (item.getId().equalsIgnoreCase(id)) {
+                return item;
             }
         }
         return null;

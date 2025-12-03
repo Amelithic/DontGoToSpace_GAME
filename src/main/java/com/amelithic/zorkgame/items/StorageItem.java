@@ -30,7 +30,7 @@ public class StorageItem extends Item implements Usable{
             return "No items in this item's inventory.";
         }
     }
-    public boolean removeRoomItem(Item item) {
+    public boolean removeFromInventory(Item item) {
         if (inventory.contains(item)) {
             inventory.remove(item);
             return true;
@@ -41,6 +41,10 @@ public class StorageItem extends Item implements Usable{
 
     @Override
     public String use() {
-        return "yay";
+        String result = "Items found in "+name+": ";
+        for (Item item : inventory) {
+            result += "\t\n"+item.getName();
+        }
+        return result + (inventory.isEmpty()? "None.":"");
     }
 }

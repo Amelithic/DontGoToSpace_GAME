@@ -75,7 +75,7 @@ public abstract class Room<T> {
     }
     public String printRoomItems() {
         if (!roomItems.isEmpty()) {
-            String itemString = "Objects in the room: ";
+            String itemString = "";
             for (Item item : roomItems) {
                 itemString += "\n\t- "+ item.getName();
             }

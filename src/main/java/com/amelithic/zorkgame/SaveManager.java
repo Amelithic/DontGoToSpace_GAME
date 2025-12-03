@@ -122,8 +122,18 @@ public class SaveManager {
                         if (saveAlienRoom != null) alien.setCurrentRoom(saveAlienRoom);
                     }
                 }
-
             }//end get aliens
+
+            //goals
+            for (Goal goal : Main.getMap().getGoals()) {
+                ArrayNode saveGoalArray = (ArrayNode) map.get("goals");
+                for (int saveGoalArrayIndex=0; saveGoalArrayIndex < saveGoalArray.size(); saveGoalArrayIndex++) {
+                    int saveGoalId = saveGoalArray.get(saveGoalArrayIndex).get("id").asInt();
+                    boolean saveGoalSolved = saveGoalArray.get(saveGoalArrayIndex).get("solved").asBoolean();
+
+                    if (goal.getId() == saveGoalId) goal.setSolved(saveGoalSolved);
+                }
+            }
 
             //player data and inventory
             JsonNode player = saveFile.get("player");

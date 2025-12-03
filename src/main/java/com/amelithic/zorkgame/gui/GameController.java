@@ -171,8 +171,7 @@ public class GameController extends GUIController {
                     for (int i=0; i < newTextWords.length-1; i++) newInput += newTextWords[i] + " ";
                     newInput += selected;
                     inputConsole.setText(newInput);
-                    //TODO: moves to end of new words, not previous
-                    inputConsole.endOfNextWord();
+                    for (String string : newTextWords) inputConsole.endOfNextWord();
                     autoCompletePopup.hide();
                     event.consume(); // prevent default focus traversal
                 } else if (event.getCode() == KeyCode.UP) {
@@ -240,9 +239,9 @@ public class GameController extends GUIController {
             if (cmdCheck.isPresent()) {
                 Command cmd = cmdCheck.get();
                 String result = cmd.execute();
-                outputConsole.appendText(result);
+                outputConsole.appendText("\n"+result);
             } else {
-                outputConsole.appendText("I don't understand that command.\n");
+                outputConsole.appendText("\nI don't understand that command.");
             }
 
             //change bg image if move to next room
@@ -257,7 +256,7 @@ public class GameController extends GUIController {
     @FXML //references button with #move in onAction property
     public void move(Event event){
         String idButtonPressed = ((Button) event.getSource()).getId();
-        System.err.println(idButtonPressed);
+        //System.err.println(idButtonPressed);
 
         Optional<Command> cmdCheck = commandManager.parse(gameState, player, "go "+idButtonPressed);
         if (cmdCheck.isPresent()) {
@@ -268,7 +267,7 @@ public class GameController extends GUIController {
             String roomImgUrl = returnImageUrl(roomId);
             bg.setImage(new Image(roomImgUrl));
         } else {
-            outputConsole.appendText("I don't understand that command.\n");
+            outputConsole.appendText("\nI don't understand that command.");
         }
     }//end move
 
@@ -278,9 +277,9 @@ public class GameController extends GUIController {
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
             String result = cmd.execute();
-            outputConsole.appendText(result+"\n");
+            outputConsole.appendText("\n"+result);
         } else {
-            outputConsole.appendText("I don't understand that command.\n");
+            outputConsole.appendText("\nI don't understand that command.");
         }
     }//end inventoryView
 
@@ -311,9 +310,9 @@ public class GameController extends GUIController {
             if (cmdCheck.isPresent()) {
                 Command cmd = cmdCheck.get();
                 String result = cmd.execute();
-                outputConsole.appendText(result);
+                outputConsole.appendText("\n"+result);
             } else {
-                outputConsole.appendText("I don't understand that command.\n");
+                outputConsole.appendText("\nI don't understand that command.");
             }
     }
 
@@ -406,6 +405,9 @@ public class GameController extends GUIController {
             String mapFileStr = Files.readString(Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\lore.json"));
             JsonNode lore = parse(mapFileStr);
             lore.get("startGame").asText();
+
+            //check for 5 required items -> items by id check
+            //if (player.getInventory().contains())
         } catch (IOException e) {
             System.err.println("Exception when reading the JSON lore file...");
             e.printStackTrace();
@@ -419,7 +421,7 @@ public class GameController extends GUIController {
 
     public void win() {
         gameState.setGameRunning(false);
-        outputConsole.appendText("You won the game and got to space!");
+        outputConsole.appendText("\nYou won the game and got to space!");
         //switchToWin(event);
     }
 
