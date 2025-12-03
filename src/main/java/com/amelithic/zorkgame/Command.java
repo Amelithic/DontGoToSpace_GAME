@@ -453,6 +453,7 @@ class SaveCommand implements Command {
         return "";
     }
 } //end Save
+
 class LoadCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -903,3 +904,44 @@ class SayCommand implements Command {
         return "say, speak, tell";
     }
 }
+
+class GoalsCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+
+        text = text.trim().toLowerCase();
+        if (text.equals("goals")) {
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        String goalsRemaining = "Goals: ";
+        for (Goal goal : game.getMap().getGoals()) {
+            if (goal.getSolved() != true) goalsRemaining += "\n\t" + goal.getName();
+        }
+        return goalsRemaining + ((goalsRemaining.equals("Goals: "))? "No goals remaining!" : "");
+    }
+
+    @Override
+    public String getName() {
+        return "goals";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Show remaining goals";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "";
+    }
+} //end Save

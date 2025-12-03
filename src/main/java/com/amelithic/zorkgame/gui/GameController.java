@@ -337,6 +337,27 @@ public class GameController extends GUIController {
             helpPopup.show(((Node)event.getSource()).getScene().getWindow()); //show on screen from where its called from
     }
 
+    @FXML private void goal(ActionEvent event) {
+            Popup goalPopup = new Popup();
+            Label popupContent = new Label();
+            popupContent.getStyleClass().add("darkMode");
+            popupContent.getStyleClass().add("text");
+            popupContent.setStyle("-fx-padding: 10px;");
+
+            Optional<Command> cmdCheck = commandManager.parse(gameState, player, "goals");
+            if (cmdCheck.isPresent()) {
+                Command cmd = cmdCheck.get();
+                String result = cmd.execute();
+                popupContent.setText(result);
+            } else {
+                popupContent.setText("Error loading goals...");
+            }
+            goalPopup.getContent().add(popupContent);
+            goalPopup.setHideOnEscape(true);
+            goalPopup.setAutoHide(true); //doesnt show if not focused`
+            goalPopup.show(((Node)event.getSource()).getScene().getWindow()); //show on screen from where its called from
+    }
+
     // Call this from a button or event handler
     @FXML
     private void flipCard(Node card) {

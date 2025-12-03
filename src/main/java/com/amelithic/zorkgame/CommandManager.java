@@ -25,6 +25,7 @@ public class CommandManager {
         commands.add(new SaveCommand());
         commands.add(new LoadCommand());
         commands.add(new AttackCommand());
+        commands.add(new GoalsCommand());
     }
 
     //TODO: clear previous values from command before execute
