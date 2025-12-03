@@ -144,7 +144,7 @@
             "isPortable": false
         },
         {
-            "id": "item001",
+            "id": "cake",
             "name": "Cake",
             "description": "OOOOOOOO a tasty treat! (Consumable)",
             "type": "food",
@@ -183,7 +183,7 @@
             "exits": {
                 "north": "base_main"
             },
-            "items": ["locker", "spacesuit"]
+            "items": ["locker"]
         },
         {
             "id": "base_main",
@@ -276,7 +276,7 @@
             "exits": {
                 "west": "tunnel_02"
             },
-            "items": ["item001"]
+            "items": ["cake"]
         },
         {
             "id": "airlock",

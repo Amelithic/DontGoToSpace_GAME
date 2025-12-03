@@ -42,7 +42,6 @@
 #card {
     -fx-background-color: -fx-base-light;
     -fx-text-fill: -fx-base;
-    -fx-padding: 10px 50px 10px 50px;
 }
 
 .iconButton {

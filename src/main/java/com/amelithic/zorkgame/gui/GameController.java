@@ -18,6 +18,7 @@ import com.amelithic.zorkgame.TrieAutocomplete;
 import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.items.RequiredItem;
+import com.amelithic.zorkgame.locations.OutdoorArea;
 import com.amelithic.zorkgame.locations.Room;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,6 +71,8 @@ public class GameController extends GUIController {
     @FXML
     private StackPane card; // from FXML
     @FXML
+    private TextArea cardContent; // from FXML
+    @FXML
     private TextArea outputConsole;
     @FXML
     private TextField inputConsole;
@@ -86,7 +89,23 @@ public class GameController extends GUIController {
     public void initialize() {
         outputConsole.setEditable(false);
         outputConsole.setWrapText(true);
+        cardContent.setEditable(false);
+        cardContent.setWrapText(true);
+        cardContent.setStyle("-fx-padding: 10px; -fx-font-size: 11px;");
         inputConsole.setPromptText("Enter your command here..."); //to set the hint text
+
+        try {
+            String mapFileStr = Files.readString(Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\lore.json"));
+            JsonNode lore = parse(mapFileStr);
+            cardContent.setText(lore.get("mission1").asText());
+        } catch (IOException e) {
+            System.err.println("Exception when reading the JSON lore file...");
+            e.printStackTrace();
+        }
+
+        //initial message
+        outputConsole.appendText(gameState.getPlayer().displayInfo());
+        outputConsole.appendText("\n"+gameState.getPlayer().getCurrentRoom().getLongDescription());
     
         //set bg image
         String roomId = player.getCurrentRoom().getId();
@@ -108,6 +127,10 @@ public class GameController extends GUIController {
         autoCompleteList.setId("autoList");
         autoCompletePopup.getContent().add(autoCompleteList);
 
+        //listener to flip card on new content
+        cardContent.textProperty().addListener((obs, o, n) -> flipCard(card));
+
+        //listener for text input for autocomplete
         inputConsole.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> obs, String oldText, String newText) {
@@ -364,7 +387,7 @@ public class GameController extends GUIController {
         RotateTransition rotator = new RotateTransition(Duration.millis(1000), card);
         rotator.setAxis(Rotate.Y_AXIS);
         rotator.setFromAngle(0);
-        rotator.setToAngle(180); //flips card
+        rotator.setToAngle(360); //flips card
         rotator.setInterpolator(Interpolator.LINEAR);
         rotator.setCycleCount(1);
 
@@ -439,6 +462,22 @@ public class GameController extends GUIController {
             }else if (player.getInventory().contains(gameState.getMap().getItemById("gearbox"))) {
                 gameState.getMap().getGoalById(5).setSolved(true);
             }
+
+            //if no longer in base_quarters
+            if (player.getCurrentRoom() != gameState.getMap().getRoomById("base_quarters")) {
+                gameState.getMap().getGoalById(6).setSolved(true);
+                cardContent.setText(lore.get("mission2").asText());
+            }
+
+            //if enter outdoor area
+            if (player.getCurrentRoom() instanceof OutdoorArea) {
+                gameState.getMap().getGoalById(8).setSolved(true);
+            }
+
+            //if secret room reached 
+            if (player.getCurrentRoom() == gameState.getMap().getRoomById("base_secret")) {
+                gameState.getMap().getGoalById(13).setSolved(true);
+            }
         } catch (IOException e) {
             System.err.println("Exception when reading the JSON lore file...");
             e.printStackTrace();
@@ -463,15 +502,13 @@ class OxygenThread extends Thread {
     public void run() {
         Player player = GameController.player;
 
-        Item spaceSuit = null;
-        for (Item item : GameController.gameState.getMap().getItems()) {
-            if (item.getId().equals("spacesuit")) spaceSuit = item;
-        }
+        Item spaceSuit = GameController.gameState.getMap().getItemById("spacesuit");
 
         while (GameController.gameState.getGameRunning()) {
             if (player.isOutdoor() && !player.getInventory().contains(spaceSuit)) {
                 //if no space suit and outdoors
                 player.decreaseOxygen((int) (Math.random()*3)); //decrease by random amount from 1-3
+                System.out.println("decrease oxygen. now oxygen: "+player.getOxygenLevel());
                 try {
                     OxygenThread.sleep(1000);
                 } catch (InterruptedException ex) {

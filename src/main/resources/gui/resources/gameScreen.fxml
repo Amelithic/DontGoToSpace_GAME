@@ -72,9 +72,7 @@
          <TextField fx:id="inputConsole" styleClass="darkMode, text" onAction="#inputToTextField"/>
       </VBox>
       <StackPane fx:id="card" layoutX="244.0" layoutY="60.0" prefHeight="200.0" prefWidth="162.0">
-         <ImageView fitHeight="100.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="false">
-            <Image url="/images/galaxy3.png"/>
-         </ImageView> 
+         <TextArea fx:id="cardContent" styleClass="darkModeTransparent, text"/>
       </StackPane>
 
 
