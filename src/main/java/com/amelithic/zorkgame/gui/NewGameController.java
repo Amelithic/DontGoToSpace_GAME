@@ -1,9 +1,11 @@
 package com.amelithic.zorkgame.gui;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Properties;
 
 import com.amelithic.zorkgame.Command;
 import com.amelithic.zorkgame.CommandManager;
@@ -71,6 +73,16 @@ public class NewGameController extends GUIController {
             String inputString = inputField.getText();
             System.out.println(inputString);
             player.setName(inputString);
+
+            try { 
+                Properties properties = gameState.getProperties();
+                properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
+
+                String startRoom = properties.getProperty("engine.start_room").trim(); 
+                player.setCurrentRoom(gameState.getMap().getRoomById(startRoom));
+            } catch (Exception e) {
+            e.printStackTrace();
+            }
 
             //auto-save
             Optional<Command> cmdCheck = commandManager.parse(gameState, player, "save");
