@@ -267,6 +267,9 @@ public class GameController extends GUIController {
                 outputConsole.appendText("\nI don't understand that command.");
             }
 
+            //goal checker
+            checkForGoals();
+
             //change bg image if move to next room
             if (inputString.matches("^(go|move|walk|travel).*")) {
                 String roomId = player.getCurrentRoom().getId();
@@ -292,6 +295,8 @@ public class GameController extends GUIController {
         } else {
             outputConsole.appendText("\nI don't understand that command.");
         }
+        //goal checker
+        checkForGoals();
     }//end move
 
     @FXML //references button with #move in onAction property
@@ -463,7 +468,19 @@ public class GameController extends GUIController {
         }
         progress.setText("Progress: "+requiredItems.size()+"/5");
 
-        //goal checker
+        //win checker
+        if ((requiredItems.size() >= 5) && (player.getCurrentRoom().getId().equals("broken_spacecraft"))) {
+            win();
+        }
+    }
+
+    public void win() {
+        gameState.setGameRunning(false);
+        outputConsole.appendText("\nYou won the game and got to space!");
+        //switchToWin(event);
+    }//end win
+
+    public void checkForGoals() {
         try {
             String mapFileStr = Files.readString(Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\lore.json"));
             JsonNode lore = parse(mapFileStr);
@@ -502,17 +519,7 @@ public class GameController extends GUIController {
             e.printStackTrace();
         }
 
-        //win checker
-        if ((requiredItems.size() >= 5) && (player.getCurrentRoom().getId().equals("broken_spacecraft"))) {
-            win();
-        }
-    }
-
-    public void win() {
-        gameState.setGameRunning(false);
-        outputConsole.appendText("\nYou won the game and got to space!");
-        //switchToWin(event);
-    }
+    }//end check for goals
 
 }
 
