@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import com.amelithic.zorkgame.characters.Alien;
@@ -209,7 +208,7 @@ public class GameMap {
                         ExitDirection enumDirection = mapDirection(direction);
 
                         String destinationId = entry.getValue().asText();
-                        Room<ExitDirection> targetRoom = findRoomById(destinationId, rooms);
+                        Room<ExitDirection> targetRoom = getRoomById(destinationId);
 
                         if (enumDirection != null && targetRoom != null) {
                             Room<ExitDirection> room = null;
@@ -290,7 +289,8 @@ public class GameMap {
             default:           return null;
         }
     }
-    private Room<ExitDirection> findRoomById(String id, List<Room<ExitDirection>> rooms) {
+
+    public Room<ExitDirection> getRoomById(String id) {
         for (Room<ExitDirection> room : rooms) {
             if (room.getId().equals(id)) {
                 return room;
@@ -302,6 +302,15 @@ public class GameMap {
         for (Item item : items) {
             if (item.getId().equalsIgnoreCase(id)) {
                 return item;
+            }
+        }
+        return null;
+    }
+
+    public Goal getGoalById(int id) {
+        for (Goal goal : goals) {
+            if (goal.getId() == id) {
+                return goal;
             }
         }
         return null;

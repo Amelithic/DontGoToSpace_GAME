@@ -289,6 +289,11 @@ class UseCommand implements Command {
                         player.getCurrentRoom().setRoomItems(storedItem);
                     }
                 }
+
+                if (useItem.getId().equalsIgnoreCase("brokenpower")) {
+                    player.getCurrentRoom().removeRoomItem(useItem);
+                    player.getCurrentRoom().setRoomItems(game.getMap().getItemById("workingpower"));
+                }
                 
                 //general return string
                 return ((Usable)useItem).use();
@@ -577,9 +582,11 @@ class AttackCommand implements Command {
                     switch (attackee.getName()) {
                         case "Alien 1":
                             player.setInventory(alienDrop1);
+                            game.getMap().getGoalById(9).setSolved(true);
                             break;
                         case "Alien 2":
                             player.setInventory(alienDrop2);
+                            game.getMap().getGoalById(10).setSolved(true);
                             break;
                     }
                     return "Alien defeated! Check inventory for acquired items!";

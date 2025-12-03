@@ -130,6 +130,20 @@
             "isPortable": false
         },
         {
+            "id": "brokenpower",
+            "name": "Power Unit (Broken)",
+            "description": "Crackling electricity comes from the unit. Must be fixed to allow airlock to open.",
+            "type": "none",
+            "isPortable": false
+        },
+        {
+            "id": "workingpower",
+            "name": "Power Unit (working)",
+            "description": "Loud but powerful, allowing the airlock to be accessed.",
+            "type": "none",
+            "isPortable": false
+        },
+        {
             "id": "item001",
             "name": "Cake",
             "description": "OOOOOOOO a tasty treat! (Consumable)",
@@ -194,7 +208,7 @@
                 "south": "base_main",
                 "west": "base_storage"
             },
-            "items": ["item001", "item002"]
+            "items": ["brokenpower"]
         },
         {
             "id": "base_kitchen",

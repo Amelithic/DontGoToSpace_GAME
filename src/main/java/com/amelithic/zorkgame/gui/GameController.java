@@ -407,7 +407,17 @@ public class GameController extends GUIController {
             lore.get("startGame").asText();
 
             //check for 5 required items -> items by id check
-            //if (player.getInventory().contains())
+            if (player.getInventory().contains(gameState.getMap().getItemById("thruster"))) {
+                gameState.getMap().getGoalById(1).setSolved(true);
+            } else if (player.getInventory().contains(gameState.getMap().getItemById("fuel"))) {
+                gameState.getMap().getGoalById(2).setSolved(true);
+            } else if (player.getInventory().contains(gameState.getMap().getItemById("chip"))) {
+                gameState.getMap().getGoalById(3).setSolved(true);
+            } else if (player.getInventory().contains(gameState.getMap().getItemById("idcard"))) {
+                gameState.getMap().getGoalById(4).setSolved(true);
+            }else if (player.getInventory().contains(gameState.getMap().getItemById("gearbox"))) {
+                gameState.getMap().getGoalById(5).setSolved(true);
+            }
         } catch (IOException e) {
             System.err.println("Exception when reading the JSON lore file...");
             e.printStackTrace();
