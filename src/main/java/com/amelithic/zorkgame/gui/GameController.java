@@ -12,7 +12,6 @@ import java.util.Properties;
 import com.amelithic.zorkgame.Command;
 import com.amelithic.zorkgame.CommandManager;
 import com.amelithic.zorkgame.GUI;
-import com.amelithic.zorkgame.GameMap;
 import com.amelithic.zorkgame.Main;
 import com.amelithic.zorkgame.TrieAutocomplete;
 import com.amelithic.zorkgame.characters.Alien;
@@ -20,7 +19,6 @@ import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.items.RequiredItem;
 import com.amelithic.zorkgame.locations.OutdoorArea;
-import com.amelithic.zorkgame.locations.Room;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -80,11 +78,14 @@ public class GameController extends GUIController {
     @FXML
     private ImageView bg;
     @FXML
+    private ImageView effects; //public for threads
+    @FXML
     private Label health;
     @FXML
     private Label oxygen;
     @FXML
     private Label progress;
+
 
     @FXML
     public void initialize() {
@@ -114,6 +115,9 @@ public class GameController extends GUIController {
         String roomId = player.getCurrentRoom().getId();
         String roomImgUrl = returnImageUrl(roomId);
         bg.setImage(new Image(roomImgUrl));
+
+        //set effects image
+        effects.setImage(new Image("/images/oxygenEffect.png"));
 
         //change to component listener
         outputConsole.textProperty().addListener((obs, oldText, newText) -> {
@@ -241,6 +245,10 @@ public class GameController extends GUIController {
         Thread oxyThread = new OxygenThread();
         oxyThread.setDaemon(true); //thread ends when app closes
         oxyThread.start();
+
+        Thread attackedThread = new AlienAttackThread();
+        attackedThread.setDaemon(true); //thread ends when app closes
+        attackedThread.start();
 
     }//end initialize
 
@@ -481,7 +489,23 @@ public class GameController extends GUIController {
 
     public void updateStats() {
         health.setText("Health: "+player.getCurrentHealth()+"/"+player.getMaxHealth());
+
+        if (player.getCurrentHealth() < player.getMaxHealth()){
+            health.setStyle("-fx-text-fill: rgba(249, 83, 83, 1);");
+        } else {
+            health.setStyle("-fx-text-fill: rgb(226, 227, 238);");
+        }
+
+        //oxygen
         oxygen.setText("Oxygen: "+player.getOxygenLevel());
+        
+        //if low and outdoors without spacesuit, set effect visible
+        if ((player.isOutdoor()) && !(player.getInventory().contains(gameState.getMap().getItemById("spacesuit")))) {
+                //if no space suit and outdoors visual effects visible
+                effects.setVisible(true);
+        } else {
+            effects.setVisible(false);
+        }
 
         // show items gained out of 5
         ArrayList<Item> requiredItems = new ArrayList<>();
@@ -592,6 +616,7 @@ public class GameController extends GUIController {
 
 }
 
+/* THREADS */
 class OxygenThread extends Thread {
     @Override
     public void run() {
@@ -603,15 +628,48 @@ class OxygenThread extends Thread {
             //System.err.println("oxy loop!");
             if ((player.isOutdoor()) && !(player.getInventory().contains(spaceSuit))) {
                 //if no space suit and outdoors
+
+                //decrease oxygen
                 player.decreaseOxygen((int) (Math.random()*8)); //decrease by random amount from 1-8
                 System.out.println("decrease oxygen. now oxygen: "+player.getOxygenLevel());
+
+                //wait
                 try {
                     OxygenThread.sleep(1000);
-                } catch (InterruptedException ex) {
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             } else {
                 player.setOxygenLevel(100); //set to max if not outdoors
             }
         }
     }
-}
+}// OxygenThread
+
+class AlienAttackThread extends Thread {
+    @Override
+    public void run() {
+        Player player = GameController.player;
+
+        while (GameController.gameState.getGameRunning()) {
+            //attacked if in room with Alien
+            for (Alien alien : GameController.gameState.getMap().getAliens()) {
+                if ((player.getCurrentRoom().equals(alien.getCurrentRoom())) && (alien.getDefeated() != true)) {
+                    //attack amount ranges from 5 to (max+5);
+                    int randomAttackRange = (int) (Math.random()*alien.getAttackDamage()) + 5;
+                    player.setCurrentHealth(player.getCurrentHealth()-randomAttackRange);
+                } else {
+                    //slowly regain health if not in room with undefeated alien
+                    player.setCurrentHealth(player.getCurrentHealth()+5);
+                }
+
+            }
+
+            try {
+                OxygenThread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}//end AlienAttackDamage

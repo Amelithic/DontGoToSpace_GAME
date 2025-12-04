@@ -43,7 +43,11 @@ public abstract class Character {
     }
 
     public void setCurrentHealth(int currentHealth) {
-        this.currentHealth = currentHealth;
+        if (currentHealth <= maxHealth) {
+            this.currentHealth = currentHealth;
+        } else {
+            this.currentHealth = maxHealth;
+        }
     }
     public int getCurrentHealth() {
         return currentHealth;

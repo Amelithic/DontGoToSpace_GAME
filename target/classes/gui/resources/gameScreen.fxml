@@ -26,6 +26,9 @@
       <!-- Background Image -->
       <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="false" fx:id="bg" styleClass="imageVignette" /> 
 
+      <!-- Effects overlay-->
+      <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="false" fx:id="effects" visible="false" /> 
+
       <!-- Inventory Preview -->
       <VBox alignment="CENTER" layoutX="600.0" layoutY="14.0" prefHeight="188.0" prefWidth="36.0" style="-fx-padding: 10px; -fx-spacing: 20px;">
          <children>
