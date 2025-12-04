@@ -150,7 +150,7 @@ public class GameController extends GUIController {
                     trie.insert(playerItem.getName());
                     trie.insert(playerItem.getId());
                 }
-                for (Item roomItem : (ArrayList<Item>) player.getCurrentRoom().getRoomItems()) {
+                for (Item roomItem : (List<Item>) player.getCurrentRoom().getRoomItems()) {
                     trie.insert(roomItem.getName());
                     trie.insert(roomItem.getId());
                 }
@@ -512,7 +512,7 @@ public class GameController extends GUIController {
         }
 
         // show items gained out of 5
-        ArrayList<Item> requiredItems = new ArrayList<>();
+        List<Item> requiredItems = new ArrayList<>();
         for (Item item : player.getInventory()) {
             if (item instanceof RequiredItem) requiredItems.add(item);
         }

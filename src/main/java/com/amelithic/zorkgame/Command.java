@@ -3,6 +3,7 @@ package com.amelithic.zorkgame;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -338,7 +339,7 @@ class ShowCommand implements Command {
         } 
 
         //possible matches
-        ArrayList<String> itemSearchArray = new ArrayList<>(); //array of all item ids and names
+        List<String> itemSearchArray = new ArrayList<>(); //array of all item ids and names
         for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
             Item item = (Item) player.getCurrentRoom().getRoomItems().get(i);
             itemSearchArray.add(item.getId());
@@ -350,7 +351,7 @@ class ShowCommand implements Command {
             if (itemPossibleString.equalsIgnoreCase(target)) {
                 //if string matches, find corresponding item
 
-                for (Item item : (ArrayList<Item>) player.getCurrentRoom().getRoomItems()) {
+                for (Item item : (List<Item>) player.getCurrentRoom().getRoomItems()) {
                     String itemReturn = "";
                     if ((itemPossibleString.equalsIgnoreCase(item.getId())) || (itemPossibleString.equalsIgnoreCase(item.getName()))) {
                         itemReturn += item.getDescription();

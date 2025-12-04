@@ -43,6 +43,7 @@ public class CommandManager {
 
     public Optional<Command> parse(Main game, Player player, String input) {
         for (Command cmd : commands) {
+            //Command interface as reference
             Optional<Command> result = cmd.parse(game, player, input);
             if (result.isPresent()) {
                 return result;

@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.amelithic.zorkgame.characters.Alien;
@@ -20,7 +21,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 public class SaveManager {
     //fields
     String saveDir;
-    private ArrayList<Path> saveFilePaths;
+    private List<Path> saveFilePaths;
 
     //constructor
     public SaveManager() {
@@ -30,7 +31,7 @@ public class SaveManager {
         updateSavesArray();
     }
 
-    public ArrayList<Path> getSaves() {
+    public List<Path> getSaves() {
         return saveFilePaths;
     }
 
@@ -84,7 +85,7 @@ public class SaveManager {
                     String saveRoomId = saveRoomArray.get(saveRoomIndex).get("id").asText();
 
                     //find saved item ids in saved room, then find equivalent from Main.getMap()
-                    ArrayList<Item> itemsToLoad = new ArrayList<>();
+                    List<Item> itemsToLoad = new ArrayList<>();
                     ArrayNode saveItemArray = (ArrayNode) saveRoomArray.get(saveRoomIndex).get("roomItems");
                     if (room.getId().equalsIgnoreCase(saveRoomId)) {
                         for (int saveRoomItemIndex = 0; saveRoomItemIndex < saveItemArray.size(); saveRoomItemIndex++) {

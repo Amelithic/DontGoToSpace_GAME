@@ -2,16 +2,17 @@ package com.amelithic.zorkgame.items;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class StorageItem extends Item implements Usable{
-    private ArrayList<Item> inventory;
+    private List<Item> inventory;
 
     public StorageItem(String id, String name, String description, boolean isPortable) {
         super(id, name, description, isPortable);
         inventory = new ArrayList<>();
     }
 
-    public ArrayList<Item> getInventory() {
+    public List<Item> getInventory() {
         return inventory;
     }
 

@@ -2,6 +2,7 @@ package com.amelithic.zorkgame.locations;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.amelithic.zorkgame.items.Item;
@@ -12,7 +13,7 @@ public abstract class Room<T> {
     protected String name;
     protected String description;
     protected Map<T, Room> exits; // Map direction to neighboring Room
-    protected ArrayList<Item> roomItems;
+    protected List<Item> roomItems;
 
     //constructors
     private Room() {};
@@ -70,7 +71,7 @@ public abstract class Room<T> {
             }
         }
     }
-    public ArrayList<Item> getRoomItems() {
+    public List<Item> getRoomItems() {
         return roomItems;
     }
     public String printRoomItems() {

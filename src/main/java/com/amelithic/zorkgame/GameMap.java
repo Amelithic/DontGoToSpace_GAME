@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.amelithic.zorkgame.characters.Alien;
@@ -25,10 +26,10 @@ public class GameMap {
     //fields
     private String name;
     private String description;
-    private ArrayList<Item> items; //all initialised Item objects in the Map (used in Rooms)
-    private ArrayList<Room<ExitDirection>> rooms; //all initialised Room objects in the Map
-    private ArrayList<Goal> goals;
-    private ArrayList<Alien> aliens;
+    private List<Item> items; //all initialised Item objects in the Map (used in Rooms)
+    private List<Room<ExitDirection>> rooms; //all initialised Room objects in the Map
+    private List<Goal> goals;
+    private List<Alien> aliens;
     private static ObjectMapper objmap = getDefaultObjectMapper(); //for JSON parsing
 
     private static ObjectMapper getDefaultObjectMapper() {
@@ -262,16 +263,16 @@ public class GameMap {
     public String getDescription() {
         return description;
     }
-    public ArrayList<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
-    public ArrayList<Room<ExitDirection>> getRooms() {
+    public List<Room<ExitDirection>> getRooms() {
         return rooms;
     }
-    public ArrayList<Goal> getGoals() {
+    public List<Goal> getGoals() {
         return goals;
     }
-    public ArrayList<Alien> getAliens() {
+    public List<Alien> getAliens() {
         return aliens;
     }
 

@@ -1,13 +1,14 @@
 package com.amelithic.zorkgame.characters;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.locations.OutdoorArea;
 import com.amelithic.zorkgame.locations.Room;
 
 public class Player extends Character {
-    private ArrayList<Item> inventory;
+    private List<Item> inventory;
     private int oxygenLevel;
 
     public Player(String name, Room startingRoom, int maxHealth, int currentHealth, int attackDamage) {
@@ -49,7 +50,7 @@ public class Player extends Character {
             }
         }
     }
-    public ArrayList<Item> getInventory() {
+    public List<Item> getInventory() {
         return inventory;
     }
     public boolean removeFromInventory(Item item) {
