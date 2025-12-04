@@ -27,3 +27,5 @@ replay_pid*
 # whole compiled classes
 target/
 saves/
+.idea/
+.vscode/
