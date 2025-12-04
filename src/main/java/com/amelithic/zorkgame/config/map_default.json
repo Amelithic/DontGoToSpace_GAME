@@ -167,11 +167,12 @@
             "isPortable": true
         },
         {
-            "id": "item004",
-            "name": "Statue",
-            "description": "A heavy marble statue",
-            "type": "none",
-            "isPortable": false
+            "id": "blackmold",
+            "name": "Black mold",
+            "description": "Probably shouldn't eat that...",
+            "type": "food",
+            "consumeMessage": "It slides down your throat...",
+            "isPortable": true
         }
     ],
   "rooms": [
@@ -195,7 +196,7 @@
                 "south": "base_quarters",
                 "west": "base_bathrooms"
             },
-            "items": ["item001", "item002"]
+            "items": []
         },
         {
             "id": "base_corridor",
@@ -218,7 +219,7 @@
             "exits": {
                 "west": "base_corridor"
             },
-            "items": []
+            "items": ["blackmold"]
         },
         {
             "id": "base_storage",
@@ -239,7 +240,7 @@
                 "east": "base_main",
                 "southwest": "tunnel_01"
             },
-            "items": ["item001", "item002"]
+            "items": []
         },
         {
             "id": "tunnel_01",
@@ -323,8 +324,7 @@
             "type": "outdoor",
             "exits": {
                 "north": "outdoors_02"
-            },
-            "items": ["gearbox"]
+            }
         },
         {
             "id": "crater",
@@ -353,7 +353,8 @@
             "type": "outdoor",
             "exits": {
                 "southwest": "crater"
-            }
+            },
+            "items": ["gearbox"]
         }
     ]
 }

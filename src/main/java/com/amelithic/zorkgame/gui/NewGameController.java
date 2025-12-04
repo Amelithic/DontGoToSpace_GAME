@@ -89,6 +89,7 @@ public class NewGameController extends GUIController {
             if (cmdCheck.isPresent()) {
                 Command cmd = cmdCheck.get();
                 String result = cmd.execute();
+                gameState.setGameRunning(true);
                 switchToGame(event);
             } else {
                 Popup errorLoadPopup = new Popup();

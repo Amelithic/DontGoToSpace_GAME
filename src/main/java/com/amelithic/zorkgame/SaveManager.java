@@ -144,10 +144,7 @@ public class SaveManager {
             int playerAttackDamage = player.get("attackDamage").asInt();
 
             //find room from playerRoomId
-            Room<GameMap.ExitDirection> playerCurrentRoom = null;
-            for (Room<GameMap.ExitDirection> room : Main.getMap().getRooms()) {
-                if (room.getId().equalsIgnoreCase(playerRoomId)) playerCurrentRoom = room;
-            }
+            Room<GameMap.ExitDirection> playerCurrentRoom = Main.getMap().getRoomById(playerRoomId);
 
             Player newPlayer = null;
             if (playerCurrentRoom != null) {

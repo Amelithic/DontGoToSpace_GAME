@@ -38,13 +38,17 @@ public class StorageItem extends Item implements Usable{
             return false; //no item
         }
     }
+    public void clearInventory() {
+        inventory.clear();
+    }
 
     @Override
     public String use() {
         String result = "Items found in "+name+": ";
+        String resultString = "";
         for (Item item : inventory) {
-            result += "\t\n"+item.getName();
+            resultString += "\t\n"+item.getName();
         }
-        return result + (inventory.isEmpty()? "None.":"");
+        return result + ((inventory.isEmpty())? "None.": resultString);
     }
 }

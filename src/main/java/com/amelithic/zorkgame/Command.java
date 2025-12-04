@@ -21,6 +21,8 @@ public interface Command {
     String getName();
     String getDescription();
     String getSynonyms();
+    boolean getFailed();
+    String getFailedResult();
 }
 
 class TakeCommand implements Command {
@@ -29,24 +31,25 @@ class TakeCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
     private Item takeItem;
+    private String modText;
+    private boolean failedCmd;
 
     //methods
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
         this.game = game;
         this.player = player;
+        failedCmd = false;
 
         text = text.trim().toLowerCase(); //remove spaces and all lowercase
         if (text.matches("^(take|pick up|grab)\\s+.+$")) {
-            itemInString = text.replaceFirst("^(take|pick up|grab)( the)? ", "");
-            if (!itemInString.isEmpty()) {
-                return Optional.of(this);
-            } else {
-                return Optional.empty();
-            }
+            itemInString = text.replaceFirst("^(take|pick up|grab)( the)?\\s+", "");
+            return Optional.of(this);
         } else if (text.matches("^(take|pick up|grab)\\s*$")) {
-            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            System.out.println(modText+" what?");
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
         }
         return Optional.empty();
     }
@@ -98,6 +101,16 @@ class TakeCommand implements Command {
     public String getSynonyms() {
         return "take, pick up, grab";
     }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
 } //end Take
 
 class DropCommand implements Command {
@@ -105,19 +118,24 @@ class DropCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
     private Item removeItem;
+    private String modText;
+    private boolean failedCmd;
 
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
+        failedCmd = false;
 
         text = text.trim().toLowerCase();
         if (text.matches("^(drop|discard|remove)\\s+.+$")) {
             itemInString = text.replaceFirst("^(drop|discard|remove)\\s+", "");
             return Optional.of(this);
         } else if (text.matches("^(drop|discard|remove)\\s*$")) {
-            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            System.out.println(modText+" what?");
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
         }
         return Optional.empty();
     }
@@ -166,6 +184,16 @@ class DropCommand implements Command {
     public String getSynonyms() {
         return "drop, discard, remove";
     }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
 } //end Drop
 
 class DescribeCommand implements Command {
@@ -173,19 +201,24 @@ class DescribeCommand implements Command {
     private Main game; //game instance
     private String itemInString;
     private Item describeItem;
+    private String modText;
+    private boolean failedCmd;
 
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
+        failedCmd = false;
 
         text = text.trim().toLowerCase();
         if (text.matches("^(describe|explain|info)\\s+.+$")) {
             itemInString = text.replaceFirst("^(describe|explain|info)\\s+", "");
             return Optional.of(this);
         } else if (text.matches("^(describe|explain|info)\\s*$")) {
-            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            System.out.println(modText+" what?");
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
         }
         return Optional.empty();
     }
@@ -232,27 +265,41 @@ class DescribeCommand implements Command {
     public String getSynonyms() {
         return "describe, explain, info";
     }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
 } //end Describe
 
 class UseCommand implements Command {
-    //TODO: it alllllll
     private Player player; //author of command (whos running it)
     private Main game; //game instance
     private String itemInString;
     private Item useItem;
+    private String modText;
+    private boolean failedCmd;
 
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
+        failedCmd = false;
 
         text = text.trim().toLowerCase();
         if (text.matches("^(use|interact)\\s+.+$")) {
             itemInString = text.replaceFirst("^(use|interact)\\s+", "");
             return Optional.of(this);
         } else if (text.matches("^(use|interact)\\s*$")) {
-            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            System.out.println(modText+" what?");
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
         }
         return Optional.empty();
     }
@@ -264,8 +311,6 @@ class UseCommand implements Command {
             if (item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) {
                 useItem = item;
                 break;
-            } else {
-                continue;
             }
         }
         for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
@@ -273,30 +318,22 @@ class UseCommand implements Command {
             if (item.getName().equalsIgnoreCase(itemInString)) {
                 useItem = item;
                 break;
-            } else {
-                continue;
             }
         }
 
         if (useItem != null) {
             if ((useItem instanceof Usable)) {
                 //item type specific logic
+                String useString = ((Usable)useItem).use();
                 if (useItem instanceof StorageItem useItemStorage) {
-                    //avoiding removing while iterating, or invalid results
-                    ArrayList<Item> copy = useItemStorage.getInventory();
-                    for (Item storedItem : copy) {
-                        player.getCurrentRoom().setRoomItems(storedItem);
-                        useItemStorage.removeFromInventory(storedItem);
+                    for (Item storedItem : useItemStorage.getInventory()) {
+                        player.getCurrentRoom().setRoomItems(game.getMap().getItemById(storedItem.getId()));
                     }
-                }
-
-                if (useItem.getId().equalsIgnoreCase("brokenpower")) {
-                    player.getCurrentRoom().removeRoomItem(useItem);
-                    player.getCurrentRoom().setRoomItems(game.getMap().getItemById("workingpower"));
+                    useItemStorage.clearInventory();
                 }
                 
                 //general return string
-                return ((Usable)useItem).use();
+                return useString;
             } else {
                 return "This item cannot be used";
             }
@@ -319,17 +356,119 @@ class UseCommand implements Command {
     public String getSynonyms() {
         return "interact";
     }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
 } //end Use
 
-class GoCommand implements Command {
-    private String direction;
+class FixCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
+    private String itemInString;
+    private Item fixItem;
+    private String modText;
+    private boolean failedCmd;
 
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
+        failedCmd = false;
+
+        text = text.trim().toLowerCase();
+        if (text.matches("^(fix|repair)\\s+.+$")) {
+            itemInString = text.replaceFirst("^(fix|repair)\\s+", "");
+            return Optional.of(this);
+        } else if (text.matches("^(fix|repair)\\s*$")) {
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        //find item in room
+        for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
+            Item item = (Item) player.getCurrentRoom().getRoomItems().get(i);
+            if (item.getId().equalsIgnoreCase(itemInString)) {
+                fixItem = item;
+                break;
+            }
+        }
+
+        if (fixItem != null) {
+            if ((fixItem.getId().equalsIgnoreCase("brokenpower"))) {
+                player.getCurrentRoom().removeRoomItem(fixItem);
+                player.getCurrentRoom().setRoomItems(game.getMap().getItemById("workingpower"));
+                return "Power unit fixed!";
+            } else {
+                return "This item cannot be fixed.";
+            }
+        } else if (itemInString.matches("(rocket|spacecraft|space craft|spaceship)\\s*")) {
+            if ((player.getInventory().contains(game.getMap().getItemById("thruster")))
+                && (player.getInventory().contains(game.getMap().getItemById("fuel")))
+                && (player.getInventory().contains(game.getMap().getItemById("idcard")))
+                && (player.getInventory().contains(game.getMap().getItemById("chip")))
+                && (player.getInventory().contains(game.getMap().getItemById("gearbox")))
+            ) {
+                game.setGameRunning(false);
+                game.getMap().getGoalById(13).setSolved(true);
+                return "You won the game and got to space!";
+            }
+            return "You do not have all the necessary pieces to repair the rocket!";
+        } else {
+            return "There is no item of that type in this room or inventory.";
+        }
+    }
+
+    @Override
+    public String getName() {
+        return "fix";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Fixes a broken object";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "repair";
+    }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
+} //end Fix
+
+class GoCommand implements Command {
+    private String direction;
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+    private String modText;
+    private boolean failedCmd;
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+        failedCmd = false;
 
         //TODO: fix 'travel to/to the' without args must return "...where?"
 
@@ -339,8 +478,10 @@ class GoCommand implements Command {
             direction = text.replaceFirst("^(go|move|walk|travel)( to| to the)?\\s+", "");
             return Optional.of(this);
         } else if (text.matches("^(go|move|walk|travel)")) {
-            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            System.out.println(modText+" where?");
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " where?";
+            failedCmd = true;
+            return Optional.of(this);
         }
         return Optional.empty();
     }
@@ -388,6 +529,14 @@ class GoCommand implements Command {
                 if (game.getMap().getRooms().contains(targetRoom)) {
                     int roomIndexInMap = game.getMap().getRooms().indexOf(targetRoom);
                     Room roomInMap = game.getMap().getRooms().get(roomIndexInMap);
+
+                    //check that power is working to exit airlock
+                    if (roomInMap.getId().equalsIgnoreCase("airlock")) {
+                        if (!(game.getMap().getRoomById("base_corridor").getRoomItems().contains(game.getMap().getItemById("workingpower")))) {
+                            return "Airlock cannot be used while the power is out!";
+                        }
+                    }
+
                     player.setCurrentRoom(roomInMap);
                     return roomInMap.getName()+": "+roomInMap.getDescription()+"\nExits: "+roomInMap.getExitString()+"\nItems: "+roomInMap.printRoomItems();
                 }
@@ -414,6 +563,16 @@ class GoCommand implements Command {
     @Override
     public String getSynonyms() {
         return "go, move, walk, travel";
+    }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+    
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
     }
 } //end Go
 
@@ -452,25 +611,40 @@ class SaveCommand implements Command {
     public String getSynonyms() {
         return "";
     }
+
+    @Override
+    public String getFailedResult() {
+        return "";
+    }
+
+    @Override
+    public boolean getFailed() {
+        return false;
+    }
 } //end Save
 
 class LoadCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
     private String pathToSaveFile;
+    private String modText;
+    private boolean failedCmd;
 
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
+        failedCmd = false;
 
         text = text.trim().toLowerCase();
         if (text.matches("^(load)?\\s+.+$")) {
             pathToSaveFile = text.replaceFirst("^(load)\\s+", "");
             return Optional.of(this);
         } else if (text.equalsIgnoreCase("load")) {
-            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            System.out.println(modText+" where?");
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
         }
         return Optional.empty();
     }
@@ -496,6 +670,16 @@ class LoadCommand implements Command {
     @Override
     public String getSynonyms() {
         return "";
+    }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
     }
 } //end Load
 
@@ -534,6 +718,16 @@ class QuitCommand implements Command {
     @Override
     public String getSynonyms() {
         return "quit, exit";
+    }
+
+    @Override
+    public String getFailedResult() {
+        return "";
+    }
+    
+    @Override
+    public boolean getFailed() {
+        return false;
     }
 } //end 
 
@@ -614,6 +808,16 @@ class AttackCommand implements Command {
     public String getSynonyms() {
         return "hit, punch";
     }
+
+    @Override
+    public String getFailedResult() {
+        return "";
+    }
+
+    @Override
+    public boolean getFailed() {
+        return false;
+    }
 } //end Attack
 
 class HelpCommand implements Command {
@@ -669,25 +873,40 @@ class HelpCommand implements Command {
     public String getSynonyms() {
         return "help, commands";
     }
+
+    @Override
+    public String getFailedResult() {
+        return "";
+    }
+
+    @Override
+    public boolean getFailed() {
+        return false;
+    }
 } //end Help
 
 class LookCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
     private String itemInString;
+    private String modText;
+    private boolean failedCmd;
 
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
+        failedCmd = false;
 
         text = text.trim().toLowerCase();
         if (text.matches("^(look|examine|scan)\\s+.+$")) {
             itemInString = text.replaceFirst("^(look|examine|scan)\\s+", "");
             return Optional.of(this);
         } else if (text.matches("^(look|examine|scan)")) {
-            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            System.out.println(modText+" what?");
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
         }
         return Optional.empty();
     }
@@ -743,6 +962,16 @@ class LookCommand implements Command {
     public String getSynonyms() {
         return "look, examine, scan";
     }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
 }
 
 class EatCommand implements Command {
@@ -750,19 +979,24 @@ class EatCommand implements Command {
     private Main game; //game instance
     private String itemInString;
     private FoodItem foodItem;
+    private String modText;
+    private boolean failedCmd;
 
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
+        failedCmd = false;
 
         text = text.trim().toLowerCase();
         if (text.matches("^(eat|consume|devour|snack)\\s+.+$")) {
             itemInString = text.replaceFirst("^(eat|consume|devour|snack)\\s+", "");
             return Optional.of(this);
         } else if (text.matches("^(eat|consume|devour|snack)")) {
-            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            System.out.println(modText+" what?");
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
         }
         return Optional.empty();
     }
@@ -774,8 +1008,6 @@ class EatCommand implements Command {
             if ((item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) && item instanceof FoodItem) {
                 foodItem = (FoodItem) item;
                 break;
-            } else {
-                continue;
             }
         }
 
@@ -783,6 +1015,11 @@ class EatCommand implements Command {
         if (foodItem != null) {
         //check its in inventory + remove from inventory + add to room
             if (player.getInventory().contains(foodItem)) {
+
+                if (foodItem.getId().equalsIgnoreCase("blackmold")) {
+                    game.setGameRunning(false);
+                    return String.format("Consumed %s!\n", foodItem.getName())+foodItem.getConsumptionMessage()+"\nIt poisons your digestive system.\nYou died.";
+                }
 
                 if (player.removeFromInventory(foodItem)) {
                     return String.format("Consumed %s!\n", foodItem.getName())+foodItem.getConsumptionMessage();
@@ -810,17 +1047,30 @@ class EatCommand implements Command {
     public String getSynonyms() {
         return "eat, consume, devour, snack";
     }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
 } //end Eat
 
 class ShowCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
     private String target;
+    private String modText;
+    private boolean failedCmd;
 
     @Override
     public Optional<Command> parse(Main game, Player player, String text) {
         this.player = player;
         this.game = game;
+        failedCmd = false;
 
         text = text.trim().toLowerCase();
         if (text.matches("^(show|display)\\s+(inventory|inv|room|items)$")) {
@@ -831,8 +1081,10 @@ class ShowCommand implements Command {
             target = "inventory";
             return Optional.of(this);
         } else if (text.matches("^(show|display)")) {
-            String modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            System.out.println(modText+" what?");
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
         }
         return Optional.empty();
     }
@@ -860,6 +1112,16 @@ class ShowCommand implements Command {
     @Override
     public String getSynonyms() {
         return "show, display";
+    }
+    
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
     }
 }
 
@@ -903,6 +1165,16 @@ class SayCommand implements Command {
     public String getSynonyms() {
         return "say, speak, tell";
     }
+
+    @Override
+    public String getFailedResult() {
+        return "";
+    }
+
+    @Override
+    public boolean getFailed() {
+        return false;
+    }
 }
 
 class GoalsCommand implements Command {
@@ -944,4 +1216,14 @@ class GoalsCommand implements Command {
     public String getSynonyms() {
         return "";
     }
-} //end Save
+
+    @Override
+    public String getFailedResult() {
+        return "";
+    }
+
+    @Override
+    public boolean getFailed() {
+        return false;
+    }
+} //end Goals

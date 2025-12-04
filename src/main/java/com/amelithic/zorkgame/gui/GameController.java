@@ -15,6 +15,7 @@ import com.amelithic.zorkgame.GUI;
 import com.amelithic.zorkgame.GameMap;
 import com.amelithic.zorkgame.Main;
 import com.amelithic.zorkgame.TrieAutocomplete;
+import com.amelithic.zorkgame.characters.Alien;
 import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.Item;
 import com.amelithic.zorkgame.items.RequiredItem;
@@ -93,6 +94,8 @@ public class GameController extends GUIController {
         cardContent.setWrapText(true);
         cardContent.setStyle("-fx-padding: 10px; -fx-font-size: 11px;");
         inputConsole.setPromptText("Enter your command here..."); //to set the hint text
+        inputConsole.disableProperty().set(false);
+        inputConsole.setEditable(true);
 
         try {
             String mapFileStr = Files.readString(Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\lore.json"));
@@ -115,7 +118,6 @@ public class GameController extends GUIController {
         //change to component listener
         outputConsole.textProperty().addListener((obs, oldText, newText) -> {
             outputConsole.setScrollTop(Double.MAX_VALUE);
-            //TODO: fix -> eat table breaks scroll
         });
 
         // Create popup with a ListView
@@ -227,14 +229,19 @@ public class GameController extends GUIController {
                     break;
                 }
             }
+
+            if (gameState.getGameRunning()==false) {
+                inputConsole.disableProperty().set(true);
+                inputConsole.setEditable(false);
+            }
         });
         liveStats.setDaemon(true); //thread ends when app closes
+        liveStats.start();
 
         Thread oxyThread = new OxygenThread();
         oxyThread.setDaemon(true); //thread ends when app closes
-
-        liveStats.start();
         oxyThread.start();
+
     }//end initialize
 
     @FXML
@@ -261,14 +268,19 @@ public class GameController extends GUIController {
             Optional<Command> cmdCheck = commandManager.parse(gameState, player, inputString);
             if (cmdCheck.isPresent()) {
                 Command cmd = cmdCheck.get();
-                String result = cmd.execute();
-                outputConsole.appendText("\n"+result);
+                if (cmd.getFailed() == true) {
+                    outputConsole.appendText("\n"+cmd.getFailedResult());
+                } else {
+                    String result = cmd.execute();
+                    outputConsole.appendText("\n"+result);
+                }
             } else {
-                outputConsole.appendText("\nI don't understand that command.");
+                outputConsole.appendText("I don't understand that command.");
             }
 
-            //goal checker
+            //goal and death checker
             checkForGoals();
+            checkForDeath();
 
             //change bg image if move to next room
             if (inputString.matches("^(go|move|walk|travel).*")) {
@@ -287,14 +299,19 @@ public class GameController extends GUIController {
         Optional<Command> cmdCheck = commandManager.parse(gameState, player, "go "+idButtonPressed);
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
-            String result = cmd.execute();
-            outputConsole.appendText(result+"\n");
-            String roomId = player.getCurrentRoom().getId();
-            String roomImgUrl = returnImageUrl(roomId);
-            bg.setImage(new Image(roomImgUrl));
+            if (cmd.getFailed() == true) {
+                outputConsole.appendText("\n"+cmd.getFailedResult());
+            } else {
+                String result = cmd.execute();
+                outputConsole.appendText("\n"+result);
+                String roomId = player.getCurrentRoom().getId();
+                String roomImgUrl = returnImageUrl(roomId);
+                bg.setImage(new Image(roomImgUrl));
+            }
         } else {
-            outputConsole.appendText("\nI don't understand that command.");
+            outputConsole.appendText("I don't understand that command.");
         }
+
         //goal checker
         checkForGoals();
     }//end move
@@ -304,10 +321,14 @@ public class GameController extends GUIController {
         Optional<Command> cmdCheck = commandManager.parse(gameState, player, "show inv");
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
-            String result = cmd.execute();
-            outputConsole.appendText("\n"+result);
+            if (cmd.getFailed() == true) {
+                outputConsole.appendText("\n"+cmd.getFailedResult());
+            } else {
+                String result = cmd.execute();
+                outputConsole.appendText("\n"+result);
+            }
         } else {
-            outputConsole.appendText("\nI don't understand that command.");
+            outputConsole.appendText("I don't understand that command.");
         }
     }//end inventoryView
 
@@ -395,7 +416,6 @@ public class GameController extends GUIController {
             popupContent.setFitHeight(750);
             //popupContent.setFitHeight(100);
 
-
             Image mapImage = new Image(getClass().getResource("/images/gameMap.png").toExternalForm());
 
             popupContent.setImage(mapImage);
@@ -472,6 +492,11 @@ public class GameController extends GUIController {
         if ((requiredItems.size() >= 5) && (player.getCurrentRoom().getId().equals("broken_spacecraft"))) {
             win();
         }
+        //oxygen or health death check
+        if ((player.getOxygenLevel()<=0) || (player.getCurrentHealth()<=0)) {
+            outputConsole.appendText("You died.");
+            gameState.setGameRunning(false);
+        }
     }
 
     public void win() {
@@ -489,13 +514,17 @@ public class GameController extends GUIController {
             //check for 5 required items -> items by id check
             if (player.getInventory().contains(gameState.getMap().getItemById("thruster"))) {
                 gameState.getMap().getGoalById(1).setSolved(true);
-            } else if (player.getInventory().contains(gameState.getMap().getItemById("fuel"))) {
+            }
+            if (player.getInventory().contains(gameState.getMap().getItemById("fuel"))) {
                 gameState.getMap().getGoalById(2).setSolved(true);
-            } else if (player.getInventory().contains(gameState.getMap().getItemById("chip"))) {
+            }
+            if (player.getInventory().contains(gameState.getMap().getItemById("chip"))) {
                 gameState.getMap().getGoalById(3).setSolved(true);
-            } else if (player.getInventory().contains(gameState.getMap().getItemById("idcard"))) {
+            }
+            if (player.getInventory().contains(gameState.getMap().getItemById("idcard"))) {
                 gameState.getMap().getGoalById(4).setSolved(true);
-            }else if (player.getInventory().contains(gameState.getMap().getItemById("gearbox"))) {
+            }
+            if (player.getInventory().contains(gameState.getMap().getItemById("gearbox"))) {
                 gameState.getMap().getGoalById(5).setSolved(true);
             }
 
@@ -505,10 +534,41 @@ public class GameController extends GUIController {
                 cardContent.setText(lore.get("mission2").asText());
             }
 
+            //if power solved 
+            if (gameState.getMap().getRoomById("base_corridor").getRoomItems().contains(gameState.getMap().getItemById("workingpower"))) {
+                gameState.getMap().getGoalById(7).setSolved(true);
+                cardContent.setText(lore.get("mission3").asText());
+
+            }
+
             //if enter outdoor area
             if (player.getCurrentRoom() instanceof OutdoorArea) {
                 gameState.getMap().getGoalById(8).setSolved(true);
+                cardContent.setText(lore.get("mission4").asText());
+
+                if (player.getCurrentRoom().equals(gameState.getMap().getRoomById("outdoors_02"))) {
+                    cardContent.setText(lore.get("mission5").asText());
+                }
             }
+
+            //if aliens defeated
+            for (Alien alien : gameState.getMap().getAliens()) {
+                String alienName = alien.getName();
+                
+                if (alien.getDefeated() && alienName.equalsIgnoreCase("Alien 1")) {
+                    gameState.getMap().getGoalById(9).setSolved(true);
+                } else if (alien.getDefeated() && alienName.equalsIgnoreCase("Alien 2")) {
+                    gameState.getMap().getGoalById(10).setSolved(true);
+                }
+            }
+
+            //if got all 5 pieces
+            if ((player.getInventory().contains(gameState.getMap().getItemById("thruster")))
+                && (player.getInventory().contains(gameState.getMap().getItemById("fuel")))
+                && (player.getInventory().contains(gameState.getMap().getItemById("idcard")))
+                && (player.getInventory().contains(gameState.getMap().getItemById("chip")))
+                && (player.getInventory().contains(gameState.getMap().getItemById("gearbox")))
+            ) gameState.getMap().getGoalById(11).setSolved(true);
 
             //if secret room reached 
             if (player.getCurrentRoom() == gameState.getMap().getRoomById("base_secret")) {
@@ -521,6 +581,23 @@ public class GameController extends GUIController {
 
     }//end check for goals
 
+    public void checkForDeath() {
+        boolean death = false;
+        //death checker
+        if (player.getCurrentRoom() == gameState.getMap().getRoomById("cliff")) {
+            outputConsole.appendText("\nYou slipped and fell off the cliff...");
+            death = true;
+        } else if (player.getCurrentRoom() == gameState.getMap().getRoomById("tunnel_03")) {
+            outputConsole.appendText("\nAs you crawled deeper into the tunnel, you heard a sudden crack and fell into the abyss...\nIn space no-one can hear you scream...");
+            death = true;
+        }
+
+        if (death) {
+            outputConsole.appendText("\nYou died.");
+            gameState.setGameRunning(false);
+        }
+    }
+
 }
 
 class OxygenThread extends Thread {
@@ -531,9 +608,10 @@ class OxygenThread extends Thread {
         Item spaceSuit = GameController.gameState.getMap().getItemById("spacesuit");
 
         while (GameController.gameState.getGameRunning()) {
-            if (player.isOutdoor() && !player.getInventory().contains(spaceSuit)) {
+            //System.err.println("oxy loop!");
+            if ((player.isOutdoor()) && !(player.getInventory().contains(spaceSuit))) {
                 //if no space suit and outdoors
-                player.decreaseOxygen((int) (Math.random()*3)); //decrease by random amount from 1-3
+                player.decreaseOxygen((int) (Math.random()*8)); //decrease by random amount from 1-8
                 System.out.println("decrease oxygen. now oxygen: "+player.getOxygenLevel());
                 try {
                     OxygenThread.sleep(1000);

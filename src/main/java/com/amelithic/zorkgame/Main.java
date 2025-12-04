@@ -15,7 +15,7 @@ import javafx.application.Application;
 public class Main {
     //fields
     private static Player player;
-    private static boolean gameRunning;
+    private volatile static boolean gameRunning;
     private static GameMap map;
     private static SaveManager saveManager;
     private static Properties properties;
