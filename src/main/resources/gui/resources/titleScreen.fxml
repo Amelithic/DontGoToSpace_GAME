@@ -60,7 +60,7 @@
 
       <!-- Buttons -->
       <AnchorPane layoutX="14.0" layoutY="355.0" prefHeight="32.0" prefWidth="36.0" fx:id="admin" visible="false">
-         <ImageView fitWidth="30" fitHeight="30" preserveRatio="true">
+         <ImageView fitWidth="24" fitHeight="24" preserveRatio="true">
                <Image url="/gui/resources/icons/admin.png"/>
          </ImageView>
       </AnchorPane>

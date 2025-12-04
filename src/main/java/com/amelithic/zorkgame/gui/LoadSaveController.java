@@ -15,6 +15,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 
@@ -32,9 +34,6 @@ public class LoadSaveController extends GUIController {
     private Label titleText;
     @FXML
     private VBox saves;
-    //Button layoutX="-1.0" layoutY="-2.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="318.0" text="item" />
-
-
 
     @FXML
     public void initialize() {

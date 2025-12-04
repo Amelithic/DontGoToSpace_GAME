@@ -313,7 +313,7 @@ class ShowCommand implements Command {
         failedCmd = false;
 
         text = text.trim().toLowerCase();
-        if (text.matches("^(show|display|look|examine|scan)\\s+(inventory|inv|room|items)$")) {
+        if (text.matches("^(show|display|look|examine|scan)\\s+.+$")) {
             target = text.replaceFirst("^(show|display|look|examine|scan)\\s+", "");
             return Optional.of(this);
         } else if (text.matches("^(inventory|inv)")) {
@@ -330,11 +330,11 @@ class ShowCommand implements Command {
 
     @Override
     public String execute() {
-        if (target.matches("^(inventory|inv)")) {
+        if (target.matches("(inventory|inv)")) {
             return player.printInventory();
-        } else if (target.matches("^(items|room items|items in room)")) {
-            return player.getCurrentRoom().printRoomItems();
-        } else if (target.matches("^(around|room|here)")) {
+        } else if (target.matches("(items|room items|items in room)")) {
+            return "Items in room: "+player.getCurrentRoom().printRoomItems();
+        } else if (target.matches("(around|room|here)")) {
             return player.getCurrentRoom().getLongDescription(); //look around room
         } 
 

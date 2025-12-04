@@ -172,12 +172,8 @@ public class GameController extends GUIController {
                 if ((!results.isEmpty()) && (!oldText.equals(newText))) {
                     autoCompleteList.getItems().setAll(results);
                     
-                    // Position popup ABOVE the input field
                     Bounds bounds = inputConsole.localToScreen(inputConsole.getBoundsInLocal());
-                    autoCompletePopup.show(inputConsole,
-                            bounds.getMinX(),
-                            bounds.getMinY() - autoCompleteList.getHeight()); // above the field
-                    //TODO: fix dimensions of popup
+                    autoCompletePopup.show(inputConsole,bounds.getMinX(), bounds.getMinY() - autoCompleteList.getHeight()); // above the field
                 } else {
                     autoCompletePopup.hide();
                 }
@@ -191,7 +187,7 @@ public class GameController extends GUIController {
                 for (int i=0; i < newTextWords.length-1; i++) newInput += newTextWords[i] + " ";
                 newInput += selected;
                 inputConsole.setText(newInput);
-                inputConsole.endOfNextWord();
+                for (String string : newTextWords) inputConsole.endOfNextWord();
                 autoCompletePopup.hide();
             }
         });
