@@ -80,6 +80,8 @@ public class GameController extends GUIController {
     @FXML
     private ImageView effects; //public for threads
     @FXML
+    private ImageView inv1, inv2, inv3, inv4, inv5;
+    @FXML
     private Label health;
     @FXML
     private Label oxygen;
@@ -546,18 +548,23 @@ public class GameController extends GUIController {
             //check for 5 required items -> items by id check
             if (player.getInventory().contains(gameState.getMap().getItemById("thruster"))) {
                 gameState.getMap().getGoalById(1).setSolved(true);
+                inv1.setImage(new Image("/gui/resources/icons/star.png"));
             }
             if (player.getInventory().contains(gameState.getMap().getItemById("fuel"))) {
                 gameState.getMap().getGoalById(2).setSolved(true);
+                inv2.setImage(new Image("/gui/resources/icons/star.png"));
             }
             if (player.getInventory().contains(gameState.getMap().getItemById("chip"))) {
                 gameState.getMap().getGoalById(3).setSolved(true);
+                inv3.setImage(new Image("/gui/resources/icons/star.png"));
             }
             if (player.getInventory().contains(gameState.getMap().getItemById("idcard"))) {
                 gameState.getMap().getGoalById(4).setSolved(true);
+                inv4.setImage(new Image("/gui/resources/icons/star.png"));
             }
             if (player.getInventory().contains(gameState.getMap().getItemById("gearbox"))) {
                 gameState.getMap().getGoalById(5).setSolved(true);
+                inv5.setImage(new Image("/gui/resources/icons/star.png"));
             }
 
             //if no longer in base_quarters
