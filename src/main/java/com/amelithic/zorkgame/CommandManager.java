@@ -27,6 +27,10 @@ public class CommandManager {
         commands.add(new AttackCommand());
         commands.add(new GoalsCommand());
         commands.add(new FixCommand());
+
+        //admin-only
+        commands.add(new GiveCommand());
+        commands.add(new WinCommand());
     }
 
     //TODO: clear previous values from command before execute

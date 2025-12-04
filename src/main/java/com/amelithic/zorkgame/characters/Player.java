@@ -70,6 +70,8 @@ public class Player extends Character {
             String itemString = "Current inventory: ";
             for (Item item : inventory) {
                 itemString += "\n\t- "+ item.getName();
+
+                if (item.getCount() > 0) itemString += " x "+item.getCount();
             }
             return itemString;
         } else {

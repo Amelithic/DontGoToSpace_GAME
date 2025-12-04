@@ -256,15 +256,6 @@ public class GameController extends GUIController {
             inputField.setText("");
             autoCompletePopup.hide();
 
-            if (inputString.equalsIgnoreCase("win")) {
-                for (Item item : gameState.getMap().getItems()) {
-                    if (item instanceof RequiredItem) player.setInventory(item);
-                }
-                for (Room<GameMap.ExitDirection> room : gameState.getMap().getRooms()) {
-                    if (room.getId().equals("broken_spacecraft")) player.setCurrentRoom(room);
-                }
-            }
-
             Optional<Command> cmdCheck = commandManager.parse(gameState, player, inputString);
             if (cmdCheck.isPresent()) {
                 Command cmd = cmdCheck.get();
@@ -275,7 +266,7 @@ public class GameController extends GUIController {
                     outputConsole.appendText("\n"+result);
                 }
             } else {
-                outputConsole.appendText("I don't understand that command.");
+                outputConsole.appendText("\nI don't understand that command.");
             }
 
             //goal and death checker
@@ -319,18 +310,28 @@ public class GameController extends GUIController {
 
     @FXML //references button with #move in onAction property
     public void inventoryView(Event event){
+        Popup helpPopup = new Popup();
+        Label popupContent = new Label();
+        popupContent.getStyleClass().add("darkMode");
+        popupContent.getStyleClass().add("text");
+        popupContent.setStyle("-fx-padding: 10px;");
+
         Optional<Command> cmdCheck = commandManager.parse(gameState, player, "show inv");
         if (cmdCheck.isPresent()) {
             Command cmd = cmdCheck.get();
             if (cmd.getFailed() == true) {
-                outputConsole.appendText("\n"+cmd.getFailedResult());
+                popupContent.setText("\n"+cmd.getFailedResult());
             } else {
                 String result = cmd.execute();
-                outputConsole.appendText("\n"+result);
+                popupContent.setText(result);
             }
         } else {
-            outputConsole.appendText("I don't understand that command.");
+            popupContent.setText("Error loading inventory...");
         }
+        helpPopup.getContent().add(popupContent);
+        helpPopup.setHideOnEscape(true);
+        helpPopup.setAutoHide(true); //doesnt show if not focused`
+        helpPopup.show(((Node)event.getSource()).getScene().getWindow()); //show on screen from where its called from
     }//end inventoryView
 
     @FXML

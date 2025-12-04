@@ -1,14 +1,17 @@
 package com.amelithic.zorkgame;
 
+import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Properties;
 
 import com.amelithic.zorkgame.GameMap.ExitDirection;
 import com.amelithic.zorkgame.characters.Alien;
 import com.amelithic.zorkgame.characters.Player;
 import com.amelithic.zorkgame.items.FoodItem;
 import com.amelithic.zorkgame.items.Item;
+import com.amelithic.zorkgame.items.RequiredItem;
 import com.amelithic.zorkgame.items.StorageItem;
 import com.amelithic.zorkgame.items.Usable;
 import com.amelithic.zorkgame.locations.Room;
@@ -1094,7 +1097,7 @@ class ShowCommand implements Command {
         if (target.equals("inventory") || target.equals("inv")) {
             return player.printInventory();
         } else if (target.equals("room") || target.equals("items")) {
-            return "Items in room: "+player.getCurrentRoom().printRoomItems();
+            return player.getCurrentRoom().getLongDescription();
         } 
         return "Invalid option, please try again.";
     }
@@ -1123,7 +1126,153 @@ class ShowCommand implements Command {
     public boolean getFailed() {
         return failedCmd;
     }
-}
+} //end show
+
+class GiveCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+    private String target;
+    private String modText;
+    private boolean failedCmd;
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+        failedCmd = false;
+
+        text = text.trim().toLowerCase();
+        if (text.matches("^(give)\\s+.+$")) {
+            target = text.replaceFirst("^(give)\\s+", "");
+            return Optional.of(this);
+        } else if (text.matches("^(give)")) {
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        Item targetItem = game.getMap().getItemById(target);
+
+        try {
+            Properties properties = game.getProperties();
+            properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
+            String adminEnabled = properties.getProperty("engine.admin_commands").trim();
+
+            if (targetItem != null) {
+                if (adminEnabled.equalsIgnoreCase("true")) {
+                    player.setInventory(targetItem);
+                    return targetItem.getName()+" added to inventory!";
+                }
+                return "Cannot add item as admin_commands is false.";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return "Invalid option, please try again.";
+    }
+
+    @Override
+    public String getName() {
+        return "give";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Give player any item in game! (Admin)";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "";
+    }
+    
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
+} //end give
+
+class WinCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+    private String target;
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+
+        text = text.trim().toLowerCase();
+        if (text.equalsIgnoreCase("win") || text.equalsIgnoreCase("chris")) {
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        try {
+            Properties properties = game.getProperties();
+            properties.load(new FileInputStream("src\\main\\java\\com\\amelithic\\zorkgame\\config\\config.properties"));
+            String adminEnabled = properties.getProperty("engine.admin_commands").trim();
+
+            if (adminEnabled.equalsIgnoreCase("true")) {
+                    for (Item item : game.getMap().getItems()) {
+                        if (item instanceof RequiredItem) player.setInventory(item);
+                    }
+                    for (Room<GameMap.ExitDirection> room : game.getMap().getRooms()) {
+                        if (room.getId().equals("broken_spacecraft")) player.setCurrentRoom(room);
+                    }
+                
+                    return "Win conditions manually added.";
+            }
+            return "Cannot run command as admin_commands is false.";
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return "Invalid option, please try again.";
+    }
+
+    @Override
+    public String getName() {
+        return "win";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Automatically creates win condition! (Admin)";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "chris";
+    }
+    
+    @Override
+    public String getFailedResult() {
+        return "";
+    }
+
+    @Override
+    public boolean getFailed() {
+        return false;
+    }
+} //end win
 
 class SayCommand implements Command {
     //for future use: LAN multiplayer option
