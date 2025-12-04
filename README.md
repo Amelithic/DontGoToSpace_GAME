@@ -5,10 +5,10 @@ Text-based sci-fi game with GUI using JavaFX.
 Collect all the necessary rocket parts to repair the spacecraft and leave the strange empty planet, whilst facing obstacles such as alien attackers and strange death circumstances!
 
 **Index**:
--> Features
--> Documentation
-    -> Installing and compiling the game
--> Next Steps
+- -> Features
+- -> Documentation
+    - -> Installing and compiling the game
+- -> Next Steps
 
 ---
 
