@@ -149,12 +149,20 @@ public class SaveManager {
             Player newPlayer = null;
             if (playerCurrentRoom != null) {
                 newPlayer = new Player(playerName, playerCurrentRoom, playerHealthMax, playerHealthCurrent, playerAttackDamage);
+
+                //load inventory
+                ArrayNode playerInv = (ArrayNode) player.get("inventory");
+                for (int i=0; i < playerInv.size(); i++) {
+                    String loadItemId = playerInv.get(i).get("id").asText();
+                    Item itemInv = Main.getMap().getItemById(loadItemId);
+                    if (itemInv != null) newPlayer.setInventory(itemInv);
+                }
+
+                System.out.println("Loaded save successfully: " + savePath);
+                return Optional.of(newPlayer);
             }
 
-            System.out.println("Loaded save successfully: " + savePath);
-            
             return Optional.of(newPlayer);
-            //return saveFile.getPlayer(); //doesnt work so manual parse
         } catch (IOException e) {
             e.printStackTrace();
         }

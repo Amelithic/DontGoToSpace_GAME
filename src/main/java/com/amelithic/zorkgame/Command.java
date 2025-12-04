@@ -414,7 +414,7 @@ class FixCommand implements Command {
             } else {
                 return "This item cannot be fixed.";
             }
-        } else if (itemInString.matches("(rocket|spacecraft|space craft|spaceship)\\s*")) {
+        } else if (itemInString.matches("^(rocket|spacecraft|space craft|spaceship)\\s*")) {
             if ((player.getInventory().contains(game.getMap().getItemById("thruster")))
                 && (player.getInventory().contains(game.getMap().getItemById("fuel")))
                 && (player.getInventory().contains(game.getMap().getItemById("idcard")))

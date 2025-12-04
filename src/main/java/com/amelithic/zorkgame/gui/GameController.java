@@ -221,7 +221,7 @@ public class GameController extends GUIController {
             while (gameState.getGameRunning()) {
                 //required to send the command to the UI thread, or else update UI is ignored :(
                 Platform.runLater(() -> updateStats());
-                System.out.println("loop!");
+                //System.out.println("loop!");
                 try {
                     Thread.sleep(1000); // avoid busy loop
                 } catch (InterruptedException e) {
@@ -314,6 +314,7 @@ public class GameController extends GUIController {
 
         //goal checker
         checkForGoals();
+        checkForDeath();
     }//end move
 
     @FXML //references button with #move in onAction property
@@ -488,22 +489,12 @@ public class GameController extends GUIController {
         }
         progress.setText("Progress: "+requiredItems.size()+"/5");
 
-        //win checker
-        if ((requiredItems.size() >= 5) && (player.getCurrentRoom().getId().equals("broken_spacecraft"))) {
-            win();
-        }
         //oxygen or health death check
         if ((player.getOxygenLevel()<=0) || (player.getCurrentHealth()<=0)) {
             outputConsole.appendText("You died.");
             gameState.setGameRunning(false);
         }
     }
-
-    public void win() {
-        gameState.setGameRunning(false);
-        outputConsole.appendText("\nYou won the game and got to space!");
-        //switchToWin(event);
-    }//end win
 
     public void checkForGoals() {
         try {
@@ -584,15 +575,15 @@ public class GameController extends GUIController {
     public void checkForDeath() {
         boolean death = false;
         //death checker
-        if (player.getCurrentRoom() == gameState.getMap().getRoomById("cliff")) {
+        if (player.getCurrentRoom().equals(gameState.getMap().getRoomById("cliff"))) {
             outputConsole.appendText("\nYou slipped and fell off the cliff...");
             death = true;
-        } else if (player.getCurrentRoom() == gameState.getMap().getRoomById("tunnel_03")) {
+        } else if (player.getCurrentRoom().equals(gameState.getMap().getRoomById("tunnel_03"))) {
             outputConsole.appendText("\nAs you crawled deeper into the tunnel, you heard a sudden crack and fell into the abyss...\nIn space no-one can hear you scream...");
             death = true;
         }
 
-        if (death) {
+        if (death == true) {
             outputConsole.appendText("\nYou died.");
             gameState.setGameRunning(false);
         }
