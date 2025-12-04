@@ -59,8 +59,8 @@ public class LoadSaveController extends GUIController {
                 Button linkToSave = new Button();
                 linkToSave.setText(saveFileName);
                 linkToSave.setId(""+i); //not quite sure why not auto-cast?
-                linkToSave.prefHeight(55.0);
-                linkToSave.prefWidth(300);
+                linkToSave.setPrefHeight(46.0);
+                linkToSave.setMaxWidth(Double.MAX_VALUE); //fills space horizontally
                 linkToSave.setOnAction(event -> {
                     try {
                         loadSave(event);

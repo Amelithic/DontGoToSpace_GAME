@@ -10,27 +10,32 @@ public class CommandManager {
     private final List<Command> commands = new ArrayList<>();
 
     public CommandManager() {
-        // Register all command instances here
-        commands.add(new GoCommand());
-        commands.add(new QuitCommand());
-        commands.add(new HelpCommand());
-        commands.add(new LookCommand());
-        commands.add(new EatCommand());
-        commands.add(new ShowCommand());
+        //Register all command instances here
+
+        //interactions
         commands.add(new TakeCommand());
         commands.add(new DropCommand());
-        commands.add(new SayCommand());
         commands.add(new DescribeCommand());
+        commands.add(new ShowCommand()); //previously LookCommand + ShowCommand (old)
+        commands.add(new GoalsCommand());
         commands.add(new UseCommand());
+        commands.add(new FixCommand());
+        commands.add(new AttackCommand());
+        commands.add(new EatCommand());
+        commands.add(new GoCommand());
+
+        //game state
         commands.add(new SaveCommand());
         commands.add(new LoadCommand());
-        commands.add(new AttackCommand());
-        commands.add(new GoalsCommand());
-        commands.add(new FixCommand());
+        commands.add(new QuitCommand());
+        commands.add(new HelpCommand());
 
         //admin-only
         commands.add(new GiveCommand());
         commands.add(new WinCommand());
+
+        //future use
+        commands.add(new SayCommand());
     }
 
     //TODO: clear previous values from command before execute

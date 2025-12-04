@@ -28,6 +28,18 @@ public interface Command {
     String getFailedResult();
 }
 
+
+//custom annotations
+@interface CommandInfo {
+    String name();
+    String[] aliases() default {};
+    String description() default "No description provided.";
+}
+
+
+/* COMMANDS */
+
+@CommandInfo(name = "take",aliases = {"grab", "pick up"},description = "Picks up an item and adds it to your inventory.")
 class TakeCommand implements Command {
     //fields
     private String itemInString;
@@ -97,12 +109,12 @@ class TakeCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Pick up an item";
+        return "Picks up an item and adds it to your inventory.";
     }
 
     @Override
     public String getSynonyms() {
-        return "take, pick up, grab";
+        return "pick up, grab";
     }
 
     @Override
@@ -116,6 +128,8 @@ class TakeCommand implements Command {
     }
 } //end Take
 
+
+@CommandInfo(name = "drop",aliases = {"discard", "remove"},description = "Removes item from inventory.")
 class DropCommand implements Command {
     private String itemInString;
     private Player player; //author of command (whos running it)
@@ -180,12 +194,12 @@ class DropCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Removes item from inventory";
+        return "Removes item from inventory.";
     }
 
     @Override
     public String getSynonyms() {
-        return "drop, discard, remove";
+        return "discard, remove";
     }
 
     @Override
@@ -199,6 +213,8 @@ class DropCommand implements Command {
     }
 } //end Drop
 
+
+@CommandInfo(name = "describe",aliases = {"explain", "info"},description = "Describes an item in the room or in inventory.")
 class DescribeCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -261,12 +277,12 @@ class DescribeCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Describes an item in the room or in inventory";
+        return "Describes an item in the room or in inventory.";
     }
 
     @Override
     public String getSynonyms() {
-        return "describe, explain, info";
+        return "explain, info";
     }
 
     @Override
@@ -280,6 +296,159 @@ class DescribeCommand implements Command {
     }
 } //end Describe
 
+
+@CommandInfo(name = "show",aliases = {"display", "look", "examine", "scan"},description = "Display inventory or items in room.")
+class ShowCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+    private String target;
+    private String modText;
+    private boolean failedCmd;
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+        failedCmd = false;
+
+        text = text.trim().toLowerCase();
+        if (text.matches("^(show|display|look|examine|scan)\\s+(inventory|inv|room|items)$")) {
+            target = text.replaceFirst("^(show|display|look|examine|scan)\\s+", "");
+            return Optional.of(this);
+        } else if (text.matches("^(inventory|inv)")) {
+            target = "inventory";
+            return Optional.of(this);
+        } else if (text.matches("^(show|display|look|examine|scan)")) {
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        if (target.matches("^(inventory|inv)")) {
+            return player.printInventory();
+        } else if (target.matches("^(items|room items|items in room)")) {
+            return player.getCurrentRoom().printRoomItems();
+        } else if (target.matches("^(around|room|here)")) {
+            return player.getCurrentRoom().getLongDescription(); //look around room
+        } 
+
+        //possible matches
+        ArrayList<String> itemSearchArray = new ArrayList<>(); //array of all item ids and names
+        for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
+            Item item = (Item) player.getCurrentRoom().getRoomItems().get(i);
+            itemSearchArray.add(item.getId());
+            itemSearchArray.add(item.getName());
+        }
+
+        //look at items
+        if (!itemSearchArray.isEmpty()) for (String itemPossibleString : itemSearchArray) {
+            if (itemPossibleString.equalsIgnoreCase(target)) {
+                //if string matches, find corresponding item
+
+                for (Item item : (ArrayList<Item>) player.getCurrentRoom().getRoomItems()) {
+                    String itemReturn = "";
+                    if ((itemPossibleString.equalsIgnoreCase(item.getId())) || (itemPossibleString.equalsIgnoreCase(item.getName()))) {
+                        itemReturn += item.getDescription();
+                    }
+
+                    //storage items
+                    if (item instanceof StorageItem storageItem) {
+                        itemReturn += "\n" + storageItem.showInventory();
+                    }
+
+                    return itemReturn;
+                }
+            }
+        }
+        return "Invalid option, please try again.";
+    }
+
+    @Override
+    public String getName() {
+        return "show";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Shows information about the room or an item.";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "display, look, examine, scan";
+    }
+    
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
+} //end Show
+
+
+@CommandInfo(name = "goals",aliases = {},description = "Show remaining goals.")
+class GoalsCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+
+        text = text.trim().toLowerCase();
+        if (text.equals("goals")) {
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        String goalsRemaining = "Goals: ";
+        for (Goal goal : game.getMap().getGoals()) {
+            if (goal.getSolved() != true) goalsRemaining += "\n\t" + goal.getName();
+        }
+        return goalsRemaining + ((goalsRemaining.equals("Goals: "))? "No goals remaining!" : "");
+    }
+
+    @Override
+    public String getName() {
+        return "goals";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Show remaining goals.";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "";
+    }
+
+    @Override
+    public String getFailedResult() {
+        return "";
+    }
+
+    @Override
+    public boolean getFailed() {
+        return false;
+    }
+} //end Goals
+
+
+@CommandInfo(name = "use",aliases = {"interact"},description = "Uses a consumable or interactable item.")
 class UseCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -352,7 +521,7 @@ class UseCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Uses a consumable or interactable item";
+        return "Uses a consumable or interactable item.";
     }
 
     @Override
@@ -371,6 +540,8 @@ class UseCommand implements Command {
     }
 } //end Use
 
+
+@CommandInfo(name = "fix",aliases = {"repair"},description = "Fixes a broken object.")
 class FixCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -441,7 +612,7 @@ class FixCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Fixes a broken object";
+        return "Fixes a broken object.";
     }
 
     @Override
@@ -460,6 +631,189 @@ class FixCommand implements Command {
     }
 } //end Fix
 
+
+@CommandInfo(name = "attack",aliases = {"hit","punch"},description = "Attacks if alien in the room.")
+class AttackCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+
+        text = text.trim().toLowerCase();
+        if (text.matches("^(attack|hit|punch)\\s*$")) {
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        //find if player current room has alien
+        Room playerRoom  = player.getCurrentRoom();
+
+        Alien attackee = null;
+        for (Alien alien : game.getMap().getAliens()) {
+            if (alien.getCurrentRoom().equals(playerRoom)) {
+                attackee = alien;
+                break; //get first alien
+            }
+        }
+
+        Item alienDrop1 = null;
+        Item alienDrop2 = null;
+        for (Item item : game.getMap().getItems()) {
+            if (item.getId().equals("fuel")) alienDrop1 = item;
+            if (item.getId().equals("thruster")) alienDrop2= item;
+        }
+
+        //attack
+        if (attackee != null) {
+            if (attackee.getDefeated()==false) {
+                //if not defeated, attack
+                attackee.setCurrentHealth(attackee.getCurrentHealth() - player.getAttackDamage());
+                if (attackee.getCurrentHealth() <= 0) {
+                    attackee.setDefeated(true);
+                    switch (attackee.getName()) {
+                        case "Alien 1":
+                            player.setInventory(alienDrop1);
+                            game.getMap().getGoalById(9).setSolved(true);
+                            break;
+                        case "Alien 2":
+                            player.setInventory(alienDrop2);
+                            game.getMap().getGoalById(10).setSolved(true);
+                            break;
+                    }
+                    return "Alien defeated! Check inventory for acquired items!";
+                }
+                return "Alien attacked! Health remaining: "+attackee.getCurrentHealth();
+            } else {
+                return "Alien already defeated!";
+            }
+        }
+        return "Attacked nothing...";
+    }
+
+    @Override
+    public String getName() {
+        return "attack";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Attacks if alien in the room.";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "hit, punch";
+    }
+
+    @Override
+    public String getFailedResult() {
+        return "";
+    }
+
+    @Override
+    public boolean getFailed() {
+        return false;
+    }
+} //end Attack
+
+
+@CommandInfo(name = "eat",aliases = {"consume", "devour", "snack"},description = "Eat something.")
+class EatCommand implements Command {
+    private Player player; //author of command (whos running it)
+    private Main game; //game instance
+    private String itemInString;
+    private FoodItem foodItem;
+    private String modText;
+    private boolean failedCmd;
+
+    @Override
+    public Optional<Command> parse(Main game, Player player, String text) {
+        this.player = player;
+        this.game = game;
+        failedCmd = false;
+
+        text = text.trim().toLowerCase();
+        if (text.matches("^(eat|consume|devour|snack)\\s+.+$")) {
+            itemInString = text.replaceFirst("^(eat|consume|devour|snack)\\s+", "");
+            return Optional.of(this);
+        } else if (text.matches("^(eat|consume|devour|snack)")) {
+            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
+            modText += " what?";
+            failedCmd = true;
+            return Optional.of(this);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String execute() {
+        //find item in inventory
+        for (Item item : player.getInventory()) {
+            if ((item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) && item instanceof FoodItem) {
+                foodItem = (FoodItem) item;
+                break;
+            }
+        }
+
+        //verify it exists
+        if (foodItem != null) {
+        //check its in inventory + remove from inventory + add to room
+            if (player.getInventory().contains(foodItem)) {
+
+                if (foodItem.getId().equalsIgnoreCase("blackmold")) {
+                    game.setGameRunning(false);
+                    return String.format("Consumed %s!\n", foodItem.getName())+foodItem.getConsumptionMessage()+"\nIt poisons your digestive system.\nYou died.";
+                }
+
+                if (player.removeFromInventory(foodItem)) {
+                    //restores some health
+                    //TODO: specific food items restore defined 'int healingPower' of health
+                    player.setCurrentHealth(player.getCurrentHealth()+20);
+                    return String.format("Consumed %s!\n", foodItem.getName())+foodItem.getConsumptionMessage();
+                } else {
+                    return String.format("Cannot eat %s", foodItem.getName());
+                }
+            }
+        } else {
+            return "There is no item of that type in your inventory.";
+        }
+        return "Invalid item, please try again.";
+    }
+
+    @Override
+    public String getName() {
+        return "eat";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Eat something.";
+    }
+
+    @Override
+    public String getSynonyms() {
+        return "consume, devour, snack";
+    }
+
+    @Override
+    public String getFailedResult() {
+        return modText;
+    }
+
+    @Override
+    public boolean getFailed() {
+        return failedCmd;
+    }
+} //end Eat
+
+
+@CommandInfo(name = "go",aliases = {"walk", "move", "travel"},description = "Move to another room.")
 class GoCommand implements Command {
     private String direction;
     private Player player; //author of command (whos running it)
@@ -560,12 +914,12 @@ class GoCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Move to another room";
+        return "Move to another room.";
     }
 
     @Override
     public String getSynonyms() {
-        return "go, move, walk, travel";
+        return "move, walk, travel";
     }
 
     @Override
@@ -579,6 +933,8 @@ class GoCommand implements Command {
     }
 } //end Go
 
+
+@CommandInfo(name = "save",aliases = {},description = "Saves the game.")
 class SaveCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -607,7 +963,7 @@ class SaveCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Save the game";
+        return "Saves the game.";
     }
 
     @Override
@@ -626,6 +982,8 @@ class SaveCommand implements Command {
     }
 } //end Save
 
+
+@CommandInfo(name = "load",aliases = {},description = "Load a saved state of the game from a file.")
 class LoadCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -667,7 +1025,7 @@ class LoadCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Load a saved state of the game";
+        return "Load a saved state of the game from a file.";
     }
 
     @Override
@@ -686,6 +1044,7 @@ class LoadCommand implements Command {
     }
 } //end Load
 
+@CommandInfo(name = "quit",aliases = {"exit"},description = "Exits the game.")
 class QuitCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -715,7 +1074,7 @@ class QuitCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "End the game";
+        return "Exits the game.";
     }
 
     @Override
@@ -732,97 +1091,10 @@ class QuitCommand implements Command {
     public boolean getFailed() {
         return false;
     }
-} //end 
+} //end Quit
 
-class AttackCommand implements Command {
-    private Player player; //author of command (whos running it)
-    private Main game; //game instance
 
-    @Override
-    public Optional<Command> parse(Main game, Player player, String text) {
-        this.player = player;
-        this.game = game;
-
-        text = text.trim().toLowerCase();
-        if (text.matches("^(attack|hit|punch)\\s*$")) {
-            return Optional.of(this);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public String execute() {
-        //find if player current room has alien
-        Room playerRoom  = player.getCurrentRoom();
-
-        Alien attackee = null;
-        for (Alien alien : game.getMap().getAliens()) {
-            if (alien.getCurrentRoom().equals(playerRoom)) {
-                attackee = alien;
-                break; //get first alien
-            }
-        }
-
-        Item alienDrop1 = null;
-        Item alienDrop2 = null;
-        for (Item item : game.getMap().getItems()) {
-            if (item.getId().equals("fuel")) alienDrop1 = item;
-            if (item.getId().equals("thruster")) alienDrop2= item;
-        }
-
-        //attack
-        if (attackee != null) {
-            if (attackee.getDefeated()==false) {
-                //if not defeated, attack
-                attackee.setCurrentHealth(attackee.getCurrentHealth() - player.getAttackDamage());
-                if (attackee.getCurrentHealth() <= 0) {
-                    attackee.setDefeated(true);
-                    switch (attackee.getName()) {
-                        case "Alien 1":
-                            player.setInventory(alienDrop1);
-                            game.getMap().getGoalById(9).setSolved(true);
-                            break;
-                        case "Alien 2":
-                            player.setInventory(alienDrop2);
-                            game.getMap().getGoalById(10).setSolved(true);
-                            break;
-                    }
-                    return "Alien defeated! Check inventory for acquired items!";
-                }
-                return "Alien attacked! Health remaining: "+attackee.getCurrentHealth();
-            } else {
-                return "Alien already defeated!";
-            }
-        }
-        return "Attacked nothing...";
-    }
-
-    @Override
-    public String getName() {
-        return "attack";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Attacks if alien in the room";
-    }
-
-    @Override
-    public String getSynonyms() {
-        return "hit, punch";
-    }
-
-    @Override
-    public String getFailedResult() {
-        return "";
-    }
-
-    @Override
-    public boolean getFailed() {
-        return false;
-    }
-} //end Attack
-
+@CommandInfo(name = "help",aliases = {"commands"},description = "Shows help for specific commands or all possible commands.")
 class HelpCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -869,12 +1141,12 @@ class HelpCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Shows help for specific commands or all possible commands";
+        return "Shows help for specific commands or all possible commands.";
     }
 
     @Override
     public String getSynonyms() {
-        return "help, commands";
+        return "commands";
     }
 
     @Override
@@ -888,246 +1160,10 @@ class HelpCommand implements Command {
     }
 } //end Help
 
-class LookCommand implements Command {
-    private Player player; //author of command (whos running it)
-    private Main game; //game instance
-    private String itemInString;
-    private String modText;
-    private boolean failedCmd;
 
-    @Override
-    public Optional<Command> parse(Main game, Player player, String text) {
-        this.player = player;
-        this.game = game;
-        failedCmd = false;
+/* ADMIN COMMANDS */
 
-        text = text.trim().toLowerCase();
-        if (text.matches("^(look|examine|scan)\\s+.+$")) {
-            itemInString = text.replaceFirst("^(look|examine|scan)\\s+", "");
-            return Optional.of(this);
-        } else if (text.matches("^(look|examine|scan)")) {
-            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            modText += " what?";
-            failedCmd = true;
-            return Optional.of(this);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public String execute() {
-        //possible matches
-        ArrayList<String> itemSearchArray = new ArrayList<>(); //array of all item ids and names
-        for (int i=0; i < player.getCurrentRoom().getRoomItems().size(); i++) {
-            Item item = (Item) player.getCurrentRoom().getRoomItems().get(i);
-            itemSearchArray.add(item.getId());
-            itemSearchArray.add(item.getName());
-        }
-
-        if (itemInString.matches("^(around|room|here)")) {
-            return player.getCurrentRoom().getLongDescription(); //look around room
-        } else {
-            //look at items
-            if (!itemSearchArray.isEmpty()) for (String itemPossibleString : itemSearchArray) {
-                if (itemPossibleString.equalsIgnoreCase(itemInString)) {
-                    //if string matches, find corresponding item
-
-                    for (Item item : (ArrayList<Item>) player.getCurrentRoom().getRoomItems()) {
-                        String itemReturn = "";
-                        if ((itemPossibleString.equalsIgnoreCase(item.getId())) || (itemPossibleString.equalsIgnoreCase(item.getName()))) {
-                            itemReturn += item.getDescription();
-                        }
-
-                        //storage items
-                        if (item instanceof StorageItem storageItem) {
-                            itemReturn += "\n" + storageItem.showInventory();
-                        }
-
-                        return itemReturn;
-                    }
-                }
-            }
-        }
-       return "Nothing to look at, please try again.";
-    }
-
-    @Override
-    public String getName() {
-        return "look";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Look around";
-    }
-
-    @Override
-    public String getSynonyms() {
-        return "look, examine, scan";
-    }
-
-    @Override
-    public String getFailedResult() {
-        return modText;
-    }
-
-    @Override
-    public boolean getFailed() {
-        return failedCmd;
-    }
-}
-
-class EatCommand implements Command {
-    private Player player; //author of command (whos running it)
-    private Main game; //game instance
-    private String itemInString;
-    private FoodItem foodItem;
-    private String modText;
-    private boolean failedCmd;
-
-    @Override
-    public Optional<Command> parse(Main game, Player player, String text) {
-        this.player = player;
-        this.game = game;
-        failedCmd = false;
-
-        text = text.trim().toLowerCase();
-        if (text.matches("^(eat|consume|devour|snack)\\s+.+$")) {
-            itemInString = text.replaceFirst("^(eat|consume|devour|snack)\\s+", "");
-            return Optional.of(this);
-        } else if (text.matches("^(eat|consume|devour|snack)")) {
-            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            modText += " what?";
-            failedCmd = true;
-            return Optional.of(this);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public String execute() {
-        //find item in inventory
-        for (Item item : player.getInventory()) {
-            if ((item.getName().equalsIgnoreCase(itemInString) || item.getId().equalsIgnoreCase(itemInString)) && item instanceof FoodItem) {
-                foodItem = (FoodItem) item;
-                break;
-            }
-        }
-
-        //verify it exists
-        if (foodItem != null) {
-        //check its in inventory + remove from inventory + add to room
-            if (player.getInventory().contains(foodItem)) {
-
-                if (foodItem.getId().equalsIgnoreCase("blackmold")) {
-                    game.setGameRunning(false);
-                    return String.format("Consumed %s!\n", foodItem.getName())+foodItem.getConsumptionMessage()+"\nIt poisons your digestive system.\nYou died.";
-                }
-
-                if (player.removeFromInventory(foodItem)) {
-                    return String.format("Consumed %s!\n", foodItem.getName())+foodItem.getConsumptionMessage();
-                } else {
-                    return String.format("Cannot eat %s", foodItem.getName());
-                }
-            }
-        } else {
-            return "There is no item of that type in your inventory.";
-        }
-        return "Invalid item, please try again.";
-    }
-
-    @Override
-    public String getName() {
-        return "eat";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Eat something";
-    }
-
-    @Override
-    public String getSynonyms() {
-        return "eat, consume, devour, snack";
-    }
-
-    @Override
-    public String getFailedResult() {
-        return modText;
-    }
-
-    @Override
-    public boolean getFailed() {
-        return failedCmd;
-    }
-} //end Eat
-
-class ShowCommand implements Command {
-    private Player player; //author of command (whos running it)
-    private Main game; //game instance
-    private String target;
-    private String modText;
-    private boolean failedCmd;
-
-    @Override
-    public Optional<Command> parse(Main game, Player player, String text) {
-        this.player = player;
-        this.game = game;
-        failedCmd = false;
-
-        text = text.trim().toLowerCase();
-        if (text.matches("^(show|display)\\s+(inventory|inv|room|items)$")) {
-            //TODO: fix -> ??? dont remember what to fix here? it works tho?
-            target = text.replaceFirst("^(show|display)\\s+", "");
-            return Optional.of(this);
-        } else if (text.matches("^(inventory|inv)")) {
-            target = "inventory";
-            return Optional.of(this);
-        } else if (text.matches("^(show|display)")) {
-            modText = text.substring(0,1).toUpperCase() + text.substring(1); //capitalise first letter
-            modText += " what?";
-            failedCmd = true;
-            return Optional.of(this);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public String execute() {
-        if (target.equals("inventory") || target.equals("inv")) {
-            return player.printInventory();
-        } else if (target.equals("room") || target.equals("items")) {
-            return player.getCurrentRoom().getLongDescription();
-        } 
-        return "Invalid option, please try again.";
-    }
-
-    @Override
-    public String getName() {
-        return "show";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Display inventory or items in room";
-    }
-
-    @Override
-    public String getSynonyms() {
-        return "show, display";
-    }
-    
-    @Override
-    public String getFailedResult() {
-        return modText;
-    }
-
-    @Override
-    public boolean getFailed() {
-        return failedCmd;
-    }
-} //end show
-
+@CommandInfo(name = "give",aliases = {},description = "Give player any item in game! (Admin)")
 class GiveCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -1204,6 +1240,8 @@ class GiveCommand implements Command {
     }
 } //end give
 
+
+@CommandInfo(name = "win",aliases = {"chris"},description = "Automatically creates win condition! (Admin)")
 class WinCommand implements Command {
     private Player player; //author of command (whos running it)
     private Main game; //game instance
@@ -1274,6 +1312,10 @@ class WinCommand implements Command {
     }
 } //end win
 
+
+/* FUTURE USE */
+
+@CommandInfo(name = "say",aliases = {"speak","tell"},description = "Repeats input from user to screen. (For future multiplayer use)")
 class SayCommand implements Command {
     //for future use: LAN multiplayer option
     private Player author; //author of command (whos running it)
@@ -1307,12 +1349,12 @@ class SayCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Repeats input from user to screen";
+        return "Repeats input from user to screen. (For future multiplayer use)";
     }
 
     @Override
     public String getSynonyms() {
-        return "say, speak, tell";
+        return "speak, tell";
     }
 
     @Override
@@ -1324,55 +1366,4 @@ class SayCommand implements Command {
     public boolean getFailed() {
         return false;
     }
-}
-
-class GoalsCommand implements Command {
-    private Player player; //author of command (whos running it)
-    private Main game; //game instance
-
-    @Override
-    public Optional<Command> parse(Main game, Player player, String text) {
-        this.player = player;
-        this.game = game;
-
-        text = text.trim().toLowerCase();
-        if (text.equals("goals")) {
-            return Optional.of(this);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public String execute() {
-        String goalsRemaining = "Goals: ";
-        for (Goal goal : game.getMap().getGoals()) {
-            if (goal.getSolved() != true) goalsRemaining += "\n\t" + goal.getName();
-        }
-        return goalsRemaining + ((goalsRemaining.equals("Goals: "))? "No goals remaining!" : "");
-    }
-
-    @Override
-    public String getName() {
-        return "goals";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Show remaining goals";
-    }
-
-    @Override
-    public String getSynonyms() {
-        return "";
-    }
-
-    @Override
-    public String getFailedResult() {
-        return "";
-    }
-
-    @Override
-    public boolean getFailed() {
-        return false;
-    }
-} //end Goals
+}//end Say

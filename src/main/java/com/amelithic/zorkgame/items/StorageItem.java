@@ -47,7 +47,9 @@ public class StorageItem extends Item implements Usable{
         String result = "Items found in "+name+": ";
         String resultString = "";
         for (Item item : inventory) {
-            resultString += "\t\n"+item.getName();
+            resultString += "\n\t- "+item.getName();
+            
+            if (item.getCount() > 1) resultString += " x "+item.getCount();
         }
         return result + ((inventory.isEmpty())? "None.": resultString);
     }

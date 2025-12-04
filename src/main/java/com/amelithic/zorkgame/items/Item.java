@@ -74,7 +74,11 @@ public class Item implements Stackable {
 
     @Override
     public void decreaseCount(int decrease) {
-        count--;
+        if (count > 1) {
+            count--;
+        } else {
+            count = 1;
+        }
     }
 
 }

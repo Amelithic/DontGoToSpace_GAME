@@ -78,6 +78,8 @@ public abstract class Room<T> {
             String itemString = "";
             for (Item item : roomItems) {
                 itemString += "\n\t- "+ item.getName();
+
+                if (item.getCount() > 1) itemString += " x "+item.getCount();
             }
             return itemString;
         } else {
