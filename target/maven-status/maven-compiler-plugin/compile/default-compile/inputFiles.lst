@@ -1,6 +1,7 @@
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\items\RequiredItem.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\characters\Player.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\characters\Alien.java
+C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\gui\LoadSaveController.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\GUI.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\locations\IndoorArea.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\characters\Character.java
@@ -16,6 +17,7 @@ C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\gu
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\gui\GUIController.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\locations\Room.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\MapExplorer.java
+C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\CLI.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\gui\NewGameController.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\items\InfoItem.java
 C:\Users\ameli\Documents\ISE\ZorkProject\src\main\java\com\amelithic\zorkgame\items\FoodItem.java

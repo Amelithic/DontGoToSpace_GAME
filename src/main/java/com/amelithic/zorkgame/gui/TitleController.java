@@ -22,8 +22,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -42,16 +40,12 @@ public class TitleController extends GUIController {
     @FXML
     private Button load;    
     @FXML
-    private ImageView bg;
-    @FXML
     private AnchorPane admin;
 
     @FXML
     public void initialize() {
         titleText.setText(gui.fetchTitle());
         titleText.setStyle("-fx-font-size: 28px;");
-        bg.setImage(new Image("/images/space.gif"));
-
 
         try {
             Properties properties = gameState.getProperties();
