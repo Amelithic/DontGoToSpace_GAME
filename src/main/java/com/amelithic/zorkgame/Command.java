@@ -1016,6 +1016,7 @@ class LoadCommand implements Command {
         SaveManager saveManager = game.getSaveManager();
         player = saveManager.load(Path.of(pathToSaveFile)).get();
         game.setPlayer(player);
+        GUI.setPlayer(player);
         return "Loaded save successfully";
     }
 

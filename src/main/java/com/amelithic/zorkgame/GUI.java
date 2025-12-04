@@ -22,7 +22,7 @@ public class GUI extends Application {
 
     protected Main gameState;
     protected CommandManager commandManager;
-    protected Player player;
+    protected static Player player;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -103,5 +103,9 @@ public class GUI extends Application {
 
         // Instead of creating a new Scene, just swap the root
         scene.setRoot(newRoot);
+    }
+
+    public static void setPlayer(Player player) {
+        GUI.player = player;
     }
 }
