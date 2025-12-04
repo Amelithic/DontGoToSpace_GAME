@@ -300,7 +300,7 @@ public class GameController extends GUIController {
             checkForDeath();
 
             //change bg image if move to next room
-            if (inputString.matches("^(go|move|walk|travel).*")) {
+            if (inputString.matches("^(go|move|walk|travel|win|chris).*")) {
                 String roomId = player.getCurrentRoom().getId();
                 String roomImgUrl = returnImageUrl(roomId);
                 bg.setImage(new Image(roomImgUrl));

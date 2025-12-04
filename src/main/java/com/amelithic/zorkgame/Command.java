@@ -1283,9 +1283,8 @@ class WinCommand implements Command {
                     for (Item item : game.getMap().getItems()) {
                         if (item instanceof RequiredItem) player.setInventory(item);
                     }
-                    for (Room<GameMap.ExitDirection> room : game.getMap().getRooms()) {
-                        if (room.getId().equals("broken_spacecraft")) player.setCurrentRoom(room);
-                    }
+                    player.setInventory(game.getMap().getItemById("spacesuit"));
+                    player.setCurrentRoom(game.getMap().getRoomById("broken_spacecraft"));
                 
                     return "Win conditions manually added.";
             }
