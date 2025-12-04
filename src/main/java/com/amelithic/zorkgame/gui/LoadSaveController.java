@@ -29,7 +29,7 @@ public class LoadSaveController extends GUIController {
 
     //FXML Components
     @FXML
-    private Label title;
+    private Label titleText;
     @FXML
     private VBox saves;
     //Button layoutX="-1.0" layoutY="-2.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="318.0" text="item" />
@@ -38,7 +38,7 @@ public class LoadSaveController extends GUIController {
 
     @FXML
     public void initialize() {
-        title.setStyle("-fx-font-size: 28px;");
+        titleText.setStyle("-fx-font-size: 28px;");
 
         String saveDir = "./saves/";
         File dir = new File(saveDir);

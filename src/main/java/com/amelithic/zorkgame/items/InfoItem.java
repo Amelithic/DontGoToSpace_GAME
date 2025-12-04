@@ -80,7 +80,8 @@ public class InfoItem extends Item implements Readable, Usable {
 
     @Override
     public String use() {
-        return "yay";
+        //TODO: future readable object popout screen -> full nested page navigation system
+        return initialMessage + " Then it buffers, before eventually the screen cuts out again.";
     }
     
 }

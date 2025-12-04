@@ -47,6 +47,7 @@
 
 .iconButton {
     -fx-background-color: transparent;
+    -fx-font-size: 12px;
 }
 .iconButton:hover {
     -fx-background-color: rgba(0,0,0,0.2);
