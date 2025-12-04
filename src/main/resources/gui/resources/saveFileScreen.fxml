@@ -20,8 +20,12 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amelithic.zorkgame.gui.LoadSaveController">
    <children>
       <!-- Background Image -->
-      <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="false" fx:id="bg" styleClass="imageVignette" /> 
-
+      <ImageView fitHeight="400.0" fitWidth="650.0" pickOnBounds="true" preserveRatio="false" fx:id="bg" styleClass="imageVignette">
+         <image>
+            <Image url="/images/space.png"/>
+         </image>
+      </ImageView> 
+      
       <!-- Title Menu -->
       <VBox alignment="TOP_CENTER" layoutX="180" layoutY="23.0" prefHeight="354.0" prefWidth="318.0">
          <children>

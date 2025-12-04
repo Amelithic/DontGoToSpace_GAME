@@ -589,6 +589,10 @@ class FixCommand implements Command {
             } else {
                 return "This item cannot be fixed.";
             }
+        } else if ((itemInString.matches("^(power)\\s*")) && (player.getCurrentRoom().getRoomItems().contains(game.getMap().getItemById("brokenpower")))) {
+                player.getCurrentRoom().removeRoomItem(game.getMap().getItemById("brokenpower"));
+                player.getCurrentRoom().setRoomItems(game.getMap().getItemById("workingpower"));
+                return "Power unit fixed!";
         } else if (itemInString.matches("^(rocket|spacecraft|space craft|spaceship)\\s*")) {
             if ((player.getInventory().contains(game.getMap().getItemById("thruster")))
                 && (player.getInventory().contains(game.getMap().getItemById("fuel")))
@@ -879,7 +883,7 @@ class GoCommand implements Command {
         }
 
         if (enumDirection != null) {
-            System.out.println(enumDirection);
+            //System.out.println(enumDirection);//debug
 
             if (player.getCurrentRoom().hasExit(enumDirection)) {
                 Room targetRoom = player.getCurrentRoom().getExit(enumDirection);
@@ -1123,12 +1127,19 @@ class HelpCommand implements Command {
         CommandManager cmdManager = new CommandManager();
         if (!itemInString.isEmpty() || !itemInString.equals("")) {
             for (Command cmd : cmdManager.getAllCommands()) {
+                //if equal to a command or its aliases
                 if (cmd.getName().equalsIgnoreCase(itemInString)) {
-                    return cmd.getName()+ "\n" + cmd.getDescription() + "\nSynonyms: " + cmd.getSynonyms();
+                    return "Command: "+cmd.getName()+ "\n" + cmd.getDescription() + "\nSynonyms: " + cmd.getSynonyms();
+                } else {
+                    for (String alias : cmd.getSynonyms().split(", ")) {
+                        if (alias.equalsIgnoreCase(itemInString)) {
+                            return "Command: "+cmd.getName()+ "\n" + cmd.getDescription() + "\nSynonyms: " + cmd.getSynonyms();
+                        }
+                    }
                 }
             }
             //if no matching command to arg
-            return "Command now found, please try again.";
+            return "Command not found, please try again.";
         } else {
             String possibleCommands = "Possible commands: ";
             for (Command cmd : cmdManager.getAllCommands()) possibleCommands += "\n\t" + cmd.getName();

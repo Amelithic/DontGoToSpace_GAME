@@ -218,9 +218,6 @@ public class SaveManager {
         for (Path path : saveFilePaths) {
             String pathName = path.getFileName().toString().trim();
 
-            System.out.println("path: "+pathName);
-            System.out.println("filename: "+fileName);
-
             //remove JSON file extension
             if (pathName.endsWith(".json")) {
                 pathName = pathName.substring(0, pathName.length() - 5); // remove last 5 chars: ".json"
@@ -229,20 +226,17 @@ public class SaveManager {
             //for each path check if name match
             if (pathName.equalsIgnoreCase(newFileName)) {
 
-                System.out.println("path equals: "+newFileName);
                 //CASE 1: filename already has (n)
                 if (newFileName.matches(".*\\(\\d+\\)$")) {
                     nextNum ++; 
                     // (Anything) followed by '(number)'
                     newFileName = newFileName.replaceAll("\\(\\d+\\)$", "");
                     newFileName += "("+nextNum+")";
-                    System.out.println("1 new name equals: "+newFileName);
                     return newFileName = fileNameCheck(newFileName, nextNum);                
                 }
 
                 //CASE 2: filename exists but has no number
                 newFileName += "("+nextNum+")";
-                System.out.println("2 new name equals: "+newFileName);
                 return fileNameCheck(newFileName, nextNum);
             }
         }

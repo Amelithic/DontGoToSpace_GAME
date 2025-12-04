@@ -138,7 +138,7 @@ public class GameController extends GUIController {
         autoCompletePopup.getContent().add(autoCompleteList);
 
         //listener to flip card on new content
-        cardContent.textProperty().addListener((obs, o, n) -> flipCard(card));
+        cardContent.textProperty().addListener((obs, oldText, newText) -> flipCard(card));
 
         //listener for text input for autocomplete
         inputConsole.textProperty().addListener(new ChangeListener<String>() {
@@ -163,7 +163,10 @@ public class GameController extends GUIController {
                     String[] synonyms = command.getSynonyms().split(", ");
                     for (String string : synonyms) trie.insert(string);
                 }
-                
+                //other manually added words
+                String[] manualWordStrings = {"to", "the", "in", "inv", "inventory", "items", "room", "around", "here", "rocket", "spacecraft", "spaceship", "power"};
+                for (String string : manualWordStrings) trie.insert(string);
+
                 newTextWords = newText.split(" ");
                 String lastWord = newTextWords[newTextWords.length - 1];
                 List<String> results = trie.search(lastWord); // your autocomplete trie
@@ -196,29 +199,42 @@ public class GameController extends GUIController {
                 autoCompleteList.getSelectionModel().selectFirst(); //first in list by default
                 String selected = autoCompleteList.getSelectionModel().getSelectedItem();
                 if (selected != null) {
-                    String newInput = "";
+                    String newInput = ""; //don't override previous inputs, only append
                     for (int i=0; i < newTextWords.length-1; i++) newInput += newTextWords[i] + " ";
                     newInput += selected;
-                    inputConsole.setText(newInput);
-                    for (String string : newTextWords) inputConsole.endOfNextWord();
-                    autoCompletePopup.hide();
-                    event.consume(); // prevent default focus traversal
-                } else if (event.getCode() == KeyCode.UP) {
-                    autoCompleteList.requestFocus();
-                    autoCompleteList.getSelectionModel().selectPrevious();
-                    event.consume();
-                } else if (event.getCode() == KeyCode.DOWN) {
-                    autoCompleteList.requestFocus();
-                    autoCompleteList.getSelectionModel().selectNext();
-                    event.consume();
-                }
 
+                    inputConsole.setText(newInput);
+                    for (String string : newTextWords) inputConsole.endOfNextWord(); //skips cursor to last word out of words 
+                    autoCompletePopup.hide();
+                    event.consume(); //unfocus
+                }
+            } else if (event.getCode() == KeyCode.ENTER) {
+                String selected = autoCompleteList.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    String newInput = ""; //don't override previous inputs, only append
+                    for (int i=0; i < newTextWords.length-1; i++) newInput += newTextWords[i] + " ";
+                    newInput += selected;
+
+                    inputConsole.setText(newInput);
+                    for (String string : newTextWords) inputConsole.endOfNextWord(); //skips cursor to last word out of input words
+                    autoCompletePopup.hide();
+                    event.consume(); //unfocus
+                }
+            } else if (event.getCode() == KeyCode.UP) {
+                autoCompleteList.requestFocus();
+                autoCompleteList.getSelectionModel().selectPrevious();
+                event.consume();
+            } else if (event.getCode() == KeyCode.DOWN) {
+                autoCompleteList.requestFocus();
+                autoCompleteList.getSelectionModel().selectNext();
+                event.consume();
             }
+
         });
-        // Flip once on hover
-        card.setOnMouseEntered(event -> {
+        // Flip once on hover -> disabled as it was annoying :(
+        /*card.setOnMouseEntered(event -> {
             flipCard(card);
-        });
+        });*/ 
 
         //live stats thread
         Thread liveStats = new Thread(() -> {
@@ -631,7 +647,7 @@ class OxygenThread extends Thread {
 
                 //decrease oxygen
                 player.decreaseOxygen((int) (Math.random()*8)); //decrease by random amount from 1-8
-                System.out.println("decrease oxygen. now oxygen: "+player.getOxygenLevel());
+                System.out.println("Decreased oxygen. Current oxygen level: "+player.getOxygenLevel());
 
                 //wait
                 try {
@@ -658,6 +674,7 @@ class AlienAttackThread extends Thread {
                     //attack amount ranges from 5 to (max+5);
                     int randomAttackRange = (int) (Math.random()*alien.getAttackDamage()) + 5;
                     player.setCurrentHealth(player.getCurrentHealth()-randomAttackRange);
+                    System.out.println("Player attacked, damage inflicted: "+randomAttackRange);
                 } else {
                     //slowly regain health if not in room with undefeated alien
                     player.setCurrentHealth(player.getCurrentHealth()+5);

@@ -41,22 +41,22 @@
             <AnchorPane prefHeight="46.0" prefWidth="318.0" />
             <Button fx:id="new" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="New Save" onAction="#newGame">
                <font>
-                  <Font size="22.0" />
+                  <Font size="28.0" />
                </font>
             </Button>
             <Button fx:id="load" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Load Save" onAction="#loadGame" visible="false" managed="false">
                <font>
-                  <Font size="22.0" />
+                  <Font size="28.0" />
                </font>
             </Button>
             <Button fx:id="setting" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Settings" onAction="#settings">
                <font>
-                  <Font size="22.0" />
+                  <Font size="28.0" />
                </font>
             </Button>
             <Button fx:id="Exit" alignment="CENTER" graphicTextGap="3.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="318.0" text="Exit" onAction="#exit">
                <font>
-                  <Font size="22.0" />
+                  <Font size="28.0" />
                </font>
             </Button>
          </children>
