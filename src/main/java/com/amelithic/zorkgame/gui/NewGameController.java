@@ -52,6 +52,7 @@ public class NewGameController extends GUIController {
     @FXML
     public void initialize() {
         title.setText(gui.fetchTitle());
+        title.setStyle("-fx-font-size: 28px;");
         desc.setWrapText(true);
 
         try {

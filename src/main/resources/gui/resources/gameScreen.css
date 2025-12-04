@@ -9,9 +9,10 @@
 
 .text, #autoList .list-cell {
     -fx-text-fill: -fx-base-light;
-    -fx-font-size: 14px;
+    -fx-font-size: 12px;
     -fx-font-family: 'Consolas';
 }
+
 #autoList .list-cell:selected {
     -fx-background-color: -fx-accent;
     -fx-text-fill: -fx-base-light;

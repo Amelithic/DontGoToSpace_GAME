@@ -20,9 +20,9 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.control.ScrollPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -45,6 +45,7 @@ public class TitleController extends GUIController {
     @FXML
     public void initialize() {
         titleText.setText(gui.fetchTitle());
+        titleText.setStyle("-fx-font-size: 28px;");
 
         try {
             Properties properties = gameState.getProperties();

@@ -98,6 +98,10 @@ public class GameController extends GUIController {
         inputConsole.disableProperty().set(false);
         inputConsole.setEditable(true);
 
+        health.setStyle("-fx-font-size: 14px;");
+        oxygen.setStyle("-fx-font-size: 14px;");
+        progress.setStyle("-fx-font-size: 14px;");
+
         try {
             String mapFileStr = Files.readString(Path.of("src\\main\\java\\com\\amelithic\\zorkgame\\config\\lore.json"));
             JsonNode lore = parse(mapFileStr);

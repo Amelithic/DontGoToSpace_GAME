@@ -38,6 +38,8 @@ public class LoadSaveController extends GUIController {
 
     @FXML
     public void initialize() {
+        title.setStyle("-fx-font-size: 28px;");
+
         String saveDir = "./saves/";
         File dir = new File(saveDir);
         filesInDir = dir.listFiles(new FilenameFilter() {

@@ -1338,7 +1338,7 @@ class SayCommand implements Command {
 
     @Override
     public String execute() {
-        //TODO: logic
+        //TODO: logic for multiplayer
         return author.getName()+"> "+message;
     }
 
